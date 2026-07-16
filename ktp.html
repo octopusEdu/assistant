@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Генератор календарно‑тематического плана</title>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@600;700;800&family=Raleway:wght@400;500;600;700&display=swap');
+
+    :root {
+      --t50:#f0fdfc; --t100:#ccfbf7; --t200:#99f6ee; --t300:#5eead4;
+      --t400:#2dd4bf; --t500:#14b8a6; --t600:#0d9488; --t700:#0f766e; --t800:#115e59;
+      --bg:#f0fdfc; --border:#99f6ee; --text:#134e4a; --muted:#5eada6;
+      --shadow:0 4px 20px rgba(20,184,166,0.12);
+      --accent: #0d7377;
+      --note: #1976d2;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 100%;
+      font-family: 'Raleway', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+      min-height: 100vh;
+      padding-bottom: 80px;
+    }
+
+    /* ── ШАПКА (без градиента, по центру) ── */
+    .page-header {
+      background: var(--t700);
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      text-align: center;
+    }
+    .page-header .logo-mark {
+      width: 48px;
+      height: 48px;
+      background: rgba(255,255,255,0.18);
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      color: white;
+      flex-shrink: 0;
+      font-size: 22px;
+      line-height: 1;
+    }
+    .page-header .logo-mark svg {
+      width: 28px;
+      height: 28px;
+      fill: none;
+      stroke: white;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .page-header h1 {
+      font-family: 'Unbounded', sans-serif;
+      font-size: clamp(18px, 3vw, 28px);
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -0.01em;
+      margin: 0 0 2px;
+    }
+    .page-header p {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.85);
+      margin: 0;
+      font-weight: 500;
+    }
+    .page-header .header-text {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* ── WRAPPER ── */
+    .wrapper { max-width: 920px; margin: 0 auto; padding: 24px 16px 40px; }
+
+    /* ── CARD ── */
+    .card {
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      padding: 22px 24px;
+      margin-bottom: 20px;
+      background: #ffffff;
+      box-shadow: var(--shadow);
+      transition: box-shadow 0.2s;
+    }
+    .card:hover {
+      box-shadow: 0 6px 28px rgba(20,184,166,0.15);
+    }
+    .card h2 {
+      font-family: 'Unbounded', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--t800);
+      margin: 0 0 16px;
+    }
+
+    /* ── FORM ── */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    @media (max-width: 500px) { .form-grid { grid-template-columns: 1fr; } }
+
+    .field-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      display: block;
+      margin-bottom: 5px;
+    }
+    input[type="date"], textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      font-size: 14px;
+      background: #fff;
+      color: var(--text);
+      font-family: 'Raleway', sans-serif;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    input[type="date"]:focus, textarea:focus {
+      outline: none;
+      border-color: var(--t500);
+      box-shadow: 0 0 0 3px rgba(20,184,166,0.15);
+    }
+    textarea { resize: vertical; min-height: 54px; }
+
+    /* ── WEEKDAYS ── */
+    .section-sep {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin: 18px 0 10px;
+    }
+    .weekdays {
+      display: grid;
+      gap: 8px;
+      grid-template-columns: repeat(4, 1fr);
+    }
+    @media (max-width: 560px) { .weekdays { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 320px) { .weekdays { grid-template-columns: 1fr; } }
+    .weekday {
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+      color: var(--text);
+    }
+    .weekday:has(input:checked) {
+      background: var(--t50);
+      border-color: var(--t500);
+    }
+    .weekday input {
+      accent-color: var(--t500);
+      cursor: pointer;
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    /* ── BUTTONS ── */
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+    button {
+      padding: 10px 22px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      border-radius: 16px;
+      border: none;
+      background: #ffffff;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Raleway', sans-serif;
+      border: 1.5px solid var(--border);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+    button:active { transform: translateY(0); }
+    button.primary {
+      background: linear-gradient(135deg, var(--t500), var(--t600));
+      color: white;
+      border: none;
+      box-shadow: 0 2px 12px rgba(20,184,166,0.3);
+    }
+    button.primary:hover {
+      box-shadow: 0 4px 20px rgba(20,184,166,0.4);
+    }
+    button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+    button.secondary {
+      background: #ffffff;
+      border-color: var(--t300);
+      color: var(--t700);
+    }
+    button.secondary:hover {
+      border-color: var(--t500);
+      background: var(--t50);
+    }
+
+    /* ── HINTS / ERRORS ── */
+    .hint {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 6px;
+      font-weight: 500;
+    }
+    .error {
+      color: #b00020;
+      font-size: 0.85rem;
+      margin-top: 10px;
+      font-weight: 600;
+      padding: 8px 12px;
+      background: #fef2f2;
+      border-radius: 10px;
+      border-left: 3px solid #b00020;
+    }
+
+    /* ── RESULT ── */
+    .result {
+      border: 1.5px dashed var(--border);
+      border-radius: 14px;
+      padding: 16px 18px;
+      background: var(--t50);
+      overflow-x: auto;
+    }
+    .count {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--t700);
+      margin-bottom: 10px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      min-width: 280px;
+    }
+    th, td {
+      text-align: left;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    th {
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(20,184,166,0.05); }
+
+    pre {
+      font-family: 'Raleway', ui-monospace, Menlo, Consolas, monospace;
+      margin-top: 12px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 0.82rem;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* ── CALENDAR ── */
+    #calendar {
+      margin-top: 10px;
+      background: #ffffff;
+      border-radius: 14px;
+      overflow: hidden;
+      padding: 4px;
+    }
+    .fc .fc-toolbar {
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 4px 6px;
+    }
+    .fc .fc-toolbar-title {
+      font-size: 1rem !important;
+      font-weight: 700 !important;
+      color: var(--t800) !important;
+      font-family: 'Unbounded', sans-serif !important;
+    }
+    .fc .fc-button {
+      background: var(--t50) !important;
+      border: 1px solid var(--border) !important;
+      color: var(--t700) !important;
+      font-weight: 600 !important;
+      border-radius: 16px !important;
+      padding: 6px 14px !important;
+      font-size: 0.8rem !important;
+      transition: all 0.2s !important;
+    }
+    .fc .fc-button:hover {
+      background: var(--t100) !important;
+      border-color: var(--t500) !important;
+    }
+    .fc .fc-button-primary:not(:disabled):active,
+    .fc .fc-button-primary:not(:disabled).fc-button-active {
+      background: var(--t500) !important;
+      border-color: var(--t500) !important;
+      color: white !important;
+    }
+    .fc .fc-daygrid-day {
+      border-color: var(--border) !important;
+    }
+    .fc .fc-daygrid-day.fc-day-today {
+      background: var(--t50) !important;
+    }
+    .fc .fc-daygrid-day-number {
+      color: var(--text) !important;
+      font-weight: 500 !important;
+      font-size: 0.8rem !important;
+    }
+    .fc .fc-daygrid-event {
+      border-radius: 8px !important;
+      font-size: 0.7rem !important;
+      padding: 2px 6px !important;
+      border: none !important;
+      font-weight: 600 !important;
+    }
+    .fc .fc-daygrid-event .fc-event-title {
+      font-weight: 600 !important;
+    }
+    @media (max-width: 480px) {
+      .fc .fc-toolbar { flex-direction: column; align-items: stretch; }
+      .fc .fc-toolbar-title { font-size: 0.9rem !important; }
+      .fc .fc-button { padding: 4px 10px !important; font-size: 0.7rem !important; }
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+    .legend {
+      display: flex;
+      gap: 18px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text);
+      margin-top: 6px;
+      flex-wrap: wrap;
+    }
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 6px;
+      vertical-align: middle;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .dot-lesson { background: var(--t500); }
+    .dot-note   { background: var(--note); }
+
+    /* ── BACK BUTTON ── */
+    .back-btn-fixed {
+      position: fixed;
+      bottom: 24px;
+      left: 24px;
+      padding: 12px 24px;
+      background: linear-gradient(135deg, var(--t500), var(--t600));
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.85rem;
+      border-radius: 10px;
+      text-decoration: none;
+      transition: all 0.2s;
+      font-family: 'Raleway', sans-serif;
+      z-index: 100;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .back-btn-fixed:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 24px rgba(20,184,166,0.45);
+      background: linear-gradient(135deg, var(--t600), var(--t700));
+    }
+
+    @media (max-width: 600px) {
+      .page-header { padding: 16px; gap: 12px; }
+      .page-header .logo-mark { width: 40px; height: 40px; }
+      .page-header .logo-mark svg { width: 22px; height: 22px; }
+      .page-header h1 { font-size: 1.1rem; }
+      .card { padding: 16px 18px; }
+      .back-btn-fixed { padding: 10px 18px; font-size: 0.8rem; bottom: 16px; left: 16px; }
+    }
+  </style>
+
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/main.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+</head>
+<body>
+
+  <header class="page-header">
+    <div class="logo-mark">
+      <svg viewBox="0 0 24 24">
+        <rect x="3" y="4" width="18" height="18" rx="2" />
+        <line x1="8" y1="2" x2="8" y2="6" />
+        <line x1="16" y1="2" x2="16" y2="6" />
+        <line x1="3" y1="10" x2="21" y2="10" />
+        <circle cx="12" cy="15" r="1.5" />
+        <circle cx="16" cy="15" r="1.5" />
+        <circle cx="8" cy="15" r="1.5" />
+      </svg>
+    </div>
+    <div class="header-text">
+      <h1>Календарно‑тематический план</h1>
+      <p>Сгенерируйте даты занятий, укажите каникулы, добавляйте заметки и сохраняйте календарь.</p>
+    </div>
+  </header>
+
+  <div class="wrapper">
+
+    <!-- НАСТРОЙКИ -->
+    <div class="card">
+      <h2>Параметры расписания</h2>
+
+      <div class="form-grid">
+        <div>
+          <label class="field-label" for="start">Начальная дата</label>
+          <input type="date" id="start" />
+        </div>
+        <div>
+          <label class="field-label" for="end">Конечная дата</label>
+          <input type="date" id="end" />
+        </div>
+      </div>
+
+      <div class="section-sep">Дни недели</div>
+      <div class="weekdays" id="weekday-container">
+        <label class="weekday"><input type="checkbox" value="1" checked /> Понедельник</label>
+        <label class="weekday"><input type="checkbox" value="2" /> Вторник</label>
+        <label class="weekday"><input type="checkbox" value="3" /> Среда</label>
+        <label class="weekday"><input type="checkbox" value="4" /> Четверг</label>
+        <label class="weekday"><input type="checkbox" value="5" /> Пятница</label>
+        <label class="weekday"><input type="checkbox" value="6" /> Суббота</label>
+        <label class="weekday"><input type="checkbox" value="7" /> Воскресенье</label>
+      </div>
+      <div class="hint">Отметьте все дни, когда проходят уроки.</div>
+
+      <div class="section-sep">Каникулы</div>
+      <div class="form-grid">
+        <div>
+          <label class="field-label" for="vacStart">Начало каникул</label>
+          <input type="date" id="vacStart" />
+        </div>
+        <div>
+          <label class="field-label" for="vacEnd">Конец каникул</label>
+          <input type="date" id="vacEnd" />
+        </div>
+      </div>
+      <div class="hint">Все даты внутри диапазона будут исключены из расписания.</div>
+
+      <div class="section-sep">Дополнительные даты (ДД.ММ.ГГГГ, через запятую)</div>
+      <div class="form-grid">
+        <div>
+          <label class="field-label" for="exclude">Исключить</label>
+          <textarea id="exclude" placeholder="01.01.2026, 08.03.2026"></textarea>
+        </div>
+        <div>
+          <label class="field-label" for="include">Добавить</label>
+          <textarea id="include" placeholder="15.02.2026, 20.02.2026"></textarea>
+          <div class="hint">Можно указать даты вне основного диапазона.</div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="primary" id="generate" type="button">↻ Сгенерировать даты</button>
+        <button id="copy" type="button" disabled>📋 Скопировать список</button>
+        <button id="clear" type="button">✕ Очистить</button>
+      </div>
+      <div id="formError" class="error" style="display:none;"></div>
+    </div>
+
+    <!-- СПИСОК -->
+    <div class="card">
+      <h2>Список занятий</h2>
+      <div class="result">
+        <div class="count" id="count">Пока ничего не сгенерировано.</div>
+        <div style="overflow-x:auto;">
+          <table id="table" style="display:none;">
+            <thead><tr><th>#</th><th>Дата</th><th>День недели</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <pre id="plain" style="display:none;"></pre>
+      </div>
+    </div>
+
+    <!-- КАЛЕНДАРЬ -->
+    <div class="card">
+      <h2>Календарь занятий</h2>
+      <div class="legend">
+        <span><span class="dot dot-lesson"></span>Занятия</span>
+        <span><span class="dot dot-note"></span>Заметки</span>
+      </div>
+      <div id="calendar"></div>
+      <div class="toolbar">
+        <button class="secondary" id="saveCalendar">💾 Сохранить как картинку</button>
+      </div>
+    </div>
+
+    <a href="generators.html" class="back-btn-fixed">← Назад</a>
+
+  </div>
+    
+
+  <script>
+    const WEEKDAY_NAMES={1:"Понедельник",2:"Вторник",3:"Среда",4:"Четверг",5:"Пятница",6:"Суббота",7:"Воскресенье"};
+    const notes=[];
+
+    function parseDateInput(el){if(!el||!el.value)return null;const[y,m,d]=el.value.split("-");return new Date(+y,+m-1,+d);}
+    function parseCustomDates(str){
+      if(!str)return[];
+      return str.split(",").map(s=>s.trim()).filter(Boolean).map(s=>{
+        const[dd,mm,yyyy]=s.split(".");const dt=new Date(+yyyy,+mm-1,+dd);
+        return isNaN(dt)?null:new Date(dt.getFullYear(),dt.getMonth(),dt.getDate());
+      }).filter(Boolean);
+    }
+    function fmt(date){return String(date.getDate()).padStart(2,"0")+"."+String(date.getMonth()+1).padStart(2,"0")+"."+date.getFullYear();}
+    function jsDayToISO(d){return d===0?7:d;}
+    function inRange(day,s,e){
+      if(!(s instanceof Date)||!(e instanceof Date)||isNaN(s)||isNaN(e))return false;
+      const a=new Date(s.getFullYear(),s.getMonth(),s.getDate());
+      const b=new Date(e.getFullYear(),e.getMonth(),e.getDate());
+      const x=new Date(day.getFullYear(),day.getMonth(),day.getDate());
+      return a<=x&&x<=b;
+    }
+    function accentColor(){return getComputedStyle(document.documentElement).getPropertyValue("--accent").trim()||"#14b8a6";}
+    function noteColor()  {return getComputedStyle(document.documentElement).getPropertyValue("--note").trim()||"#1976d2";}
+
+    function generateDates(start,end,isoDays,excl,incl,vacS,vacE){
+      if(!(start instanceof Date)||isNaN(start)||start>end)return[];
+      const exSet=new Set(excl.map(fmt));
+      const out=[];const cur=new Date(start.getFullYear(),start.getMonth(),start.getDate());
+      while(cur<=end){
+        const iso=jsDayToISO(cur.getDay());const key=fmt(cur);
+        const vac=(vacS&&vacE)?inRange(cur,vacS,vacE):false;
+        if(isoDays.size>0&&isoDays.has(iso)&&!exSet.has(key)&&!vac)out.push({date:new Date(cur),label:WEEKDAY_NAMES[iso]});
+        cur.setDate(cur.getDate()+1);
+      }
+      incl.forEach(d=>{
+        const key=fmt(d);const vac=(vacS&&vacE)?inRange(d,vacS,vacE):false;
+        if(!exSet.has(key)&&!vac&&!out.some(o=>fmt(o.date)===key))
+          out.push({date:new Date(d),label:WEEKDAY_NAMES[jsDayToISO(d.getDay())]});
+      });
+      out.sort((a,b)=>a.date-b.date);return out;
+    }
+
+    function render(results){
+      const countEl=document.getElementById("count");
+      const table=document.getElementById("table");
+      const tbody=table.querySelector("tbody");
+      const plain=document.getElementById("plain");
+      const copyBtn=document.getElementById("copy");
+      tbody.innerHTML="";
+      if(!results.length){
+        countEl.textContent="Пока ничего не сгенерировано.";
+        table.style.display="none";plain.style.display="none";copyBtn.disabled=true;
+        if(window.__cal){window.__cal.removeAllEvents();if(notes.length)window.__cal.addEventSource(notes.map(n=>({title:n.title,start:n.dateStr,color:noteColor()})));}
+        return;
+      }
+      countEl.textContent=`Найдено занятий: ${results.length}`;
+      table.style.display="";plain.style.display="";
+      const lines=[];
+      results.forEach((r,i)=>{
+        const tr=document.createElement("tr");
+        tr.innerHTML=`<td>${i+1}</td><td>${fmt(r.date)}</td><td>${r.label}</td>`;
+        tbody.appendChild(tr);lines.push(`${i+1}. ${fmt(r.date)} — ${r.label}`);
+      });
+      plain.textContent=lines.join("\n");copyBtn.disabled=false;
+      if(window.__cal){
+        window.__cal.removeAllEvents();
+        window.__cal.addEventSource(results.map(r=>({
+          title:"Урок",
+          start:`${r.date.getFullYear()}-${String(r.date.getMonth()+1).padStart(2,"0")}-${String(r.date.getDate()).padStart(2,"0")}`,
+          color:accentColor()
+        })));
+        if(notes.length)window.__cal.addEventSource(notes.map(n=>({title:n.title,start:n.dateStr,color:noteColor()})));
+      }
+      postHeight();
+    }
+
+    function copyPlain(){
+      const text=document.getElementById("plain").textContent;if(!text)return;
+      if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(text).then(()=>alert("Скопировано!")).catch(()=>fb(text));}
+      else fb(text);
+    }
+    function fb(text){
+      const ta=document.createElement("textarea");ta.value=text;ta.style.cssText="position:fixed;opacity:0";
+      document.body.appendChild(ta);ta.focus();ta.select();
+      try{document.execCommand("copy");alert("Скопировано!");}catch{alert("Не удалось скопировать.");}
+      document.body.removeChild(ta);
+    }
+
+    function postHeight(){
+      if(window.parent!==window)
+        window.parent.postMessage({type:"ktp-resize",height:document.documentElement.scrollHeight},"*");
+    }
+
+    document.addEventListener("DOMContentLoaded",()=>{
+      const сегодня=new Date();
+      const s=new Date(сегодня.getFullYear(),сегодня.getMonth(),сегодня.getDate());
+      const e=new Date(сегодня.getFullYear(),сегодня.getMonth(),сегодня.getDate()+30);
+      const pad=n=>String(n).padStart(2,"0");
+      const startEl=document.getElementById("start"),endEl=document.getElementById("end");
+      startEl.value=`${s.getFullYear()}-${pad(s.getMonth()+1)}-${pad(s.getDate())}`;
+      endEl.value=`${e.getFullYear()}-${pad(e.getMonth()+1)}-${pad(e.getDate())}`;
+
+      const cal=new FullCalendar.Calendar(document.getElementById("calendar"),{
+        initialView:"dayGridMonth",locale:"ru",height:"auto",handleWindowResize:true,
+        dateClick:function(info){
+          const note=prompt("Заметка для "+info.dateStr);
+          if(note){notes.push({title:note,dateStr:info.dateStr});cal.addEvent({title:note,start:info.dateStr,color:noteColor()});}
+          postHeight();
+        }
+      });
+      cal.render();window.__cal=cal;
+
+      document.getElementById("generate").addEventListener("click",()=>{
+        const errEl=document.getElementById("formError");errEl.style.display="none";errEl.textContent="";
+        const start=parseDateInput(startEl),end=parseDateInput(endEl);
+        if(!start||!end){errEl.textContent="Укажите начальную и конечную дату.";errEl.style.display="block";render([]);return;}
+        if(start>end){errEl.textContent="Начальная дата не может быть позже конечной.";errEl.style.display="block";render([]);return;}
+        const checks=Array.from(document.querySelectorAll("#weekday-container input[type='checkbox']"));
+        const isoDays=new Set(checks.filter(c=>c.checked).map(c=>+c.value));
+        if(!isoDays.size){errEl.textContent="Отметьте хотя бы один день недели.";errEl.style.display="block";render([]);return;}
+        const excl=parseCustomDates(document.getElementById("exclude").value);
+        const incl=parseCustomDates(document.getElementById("include").value);
+        const vacS=parseDateInput(document.getElementById("vacStart"));
+        const vacE=parseDateInput(document.getElementById("vacEnd"));
+        if((vacS&&!vacE)||(!vacS&&vacE)){errEl.textContent="Укажите оба значения каникул или оставьте оба пустыми.";errEl.style.display="block";render([]);return;}
+        if(vacS&&vacE&&vacS>vacE){errEl.textContent="Начало каникул не может быть позже конца.";errEl.style.display="block";render([]);return;}
+        render(generateDates(start,end,isoDays,excl,incl,vacS,vacE));
+      });
+
+      document.getElementById("copy").addEventListener("click",copyPlain);
+
+      document.getElementById("clear").addEventListener("click",()=>{
+        startEl.value="";endEl.value="";
+        document.querySelectorAll("#weekday-container input[type='checkbox']").forEach(c=>c.checked=false);
+        ["exclude","include","vacStart","vacEnd"].forEach(id=>{const el=document.getElementById(id);if(el)el.value="";});
+        const errEl=document.getElementById("formError");errEl.style.display="none";errEl.textContent="";
+        render([]);
+      });
+
+      document.getElementById("saveCalendar").addEventListener("click",async()=>{
+        await new Promise(requestAnimationFrame);
+        try{
+          const canvas=await html2canvas(document.getElementById("calendar"),{backgroundColor:"#fff",scale:2});
+          if(canvas.toBlob){
+            canvas.toBlob(blob=>{
+              const url=URL.createObjectURL(blob);
+              const a=document.createElement("a");a.href=url;a.download="calendar.png";
+              document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+            },"image/png");
+          } else {
+            const a=document.createElement("a");a.download="calendar.png";a.href=canvas.toDataURL("image/png");
+            document.body.appendChild(a);a.click();document.body.removeChild(a);
+          }
+        } catch(e){alert("Не удалось сохранить. Откройте через http-сервер.");console.error(e);}
+      });
+
+      const ro=new ResizeObserver(postHeight);
+      ro.observe(document.body);
+      postHeight();
+    });
+  </script>
+</body>
+</html>

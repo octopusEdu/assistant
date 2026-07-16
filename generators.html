@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Генераторы | e-padruchnik.adu.by</title>
+    <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;600;700;800&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(145deg, #e6f4f2 0%, #d4ebe7 100%);
+            font-family: 'Raleway', sans-serif;
+            color: #0a3c38;
+            min-height: 100vh;
+        }
+
+        .generators-hero {
+            background: linear-gradient(135deg, #0a5c56 0%, #0e7a72 60%, #189e92 100%);
+            padding: 48px 32px 64px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .generators-hero::before {
+            content: "\f013 \f1c0 \f0e8 \f0e4";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            bottom: -20px;
+            right: -20px;
+            font-size: 140px;
+            opacity: 0.08;
+            pointer-events: none;
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(4px);
+            padding: 6px 18px;
+            border-radius: 16px;
+            font-size: 13px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+        }
+
+        .generators-hero h1 {
+            font-family: 'Unbounded', sans-serif;
+            font-size: clamp(28px, 5vw, 48px);
+            font-weight: 800;
+            color: white;
+            line-height: 1.2;
+            margin-bottom: 16px;
+        }
+
+        .generators-hero p {
+            font-size: 18px;
+            color: rgba(255,255,255,0.88);
+            max-width: 600px;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: -32px auto 0;
+            padding: 0 24px 60px;
+            position: relative;
+            z-index: 3;
+        }
+
+        .preview-section {
+            background: white;
+            border-radius: 32px;
+            padding: 32px;
+            margin-bottom: 48px;
+            box-shadow: 0 12px 30px rgba(12,92,86,0.12);
+            border: 1px solid #a8dbd4;
+            display: none;
+            flex-wrap: wrap;
+            gap: 32px;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+        }
+
+        .preview-info {
+            flex: 2;
+            min-width: 240px;
+        }
+
+        .preview-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #0e7a72, #0a5c56);
+            padding: 5px 14px;
+            border-radius: 16px;
+            font-size: 11px;
+            font-weight: 800;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 14px;
+        }
+
+        .preview-badge i {
+            margin-right: 4px;
+            font-size: 11px;
+        }
+
+        .preview-info h2 {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: #0a5c56;
+            margin-bottom: 12px;
+        }
+
+        .preview-info p {
+            color: #548e87;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .preview-stats {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #0a5c56;
+        }
+
+        .stat-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #14b8a6;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: linear-gradient(135deg, #0e7a72, #0a5c56);
+            color: white;
+            text-decoration: none;
+            padding: 14px 32px;
+            border-radius: 16px;
+            font-weight: 700;
+            font-size: 16px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 14px rgba(14,122,114,0.3);
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(14,122,114,0.4);
+            background: linear-gradient(135deg, #0a5c56, #074844);
+        }
+
+        .preview-image {
+            flex: 1;
+            min-width: 180px;
+            text-align: center;
+            background: linear-gradient(135deg, #e6f4f2, #cde9e4);
+            border-radius: 16px;
+            padding: 24px;
+        }
+
+        .preview-img-icon {
+            font-size: 72px;
+            color: #0a5c56;
+            animation: float 3s ease-in-out infinite;
+            display: inline-block;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .preview-image p {
+            margin-top: 12px;
+            font-size: 13px;
+            color: #0a5c56;
+            font-weight: 500;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 28px;
+        }
+
+        .section-header h3 {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: #0a5c56;
+        }
+
+        .generators-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        .generator-card {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid #a8dbd4;
+            box-shadow: 0 4px 16px rgba(10,92,86,0.08);
+            overflow: hidden;
+            transition: all 0.25s ease;
+            cursor: pointer;
+            display: block;
+        }
+
+        .generator-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 28px rgba(10,92,86,0.18);
+            border-color: #5eead4;
+        }
+
+        .card-preview {
+            height: 100px;
+            background: linear-gradient(135deg, #cde9e4, #e6f4f2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0e7a72;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-preview i {
+            font-size: 42px;
+        }
+
+        .card-preview::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 20%, rgba(20,184,166,0.12), transparent);
+            pointer-events: none;
+        }
+
+        .card-content {
+            padding: 20px;
+        }
+
+        .card-tag {
+            display: inline-block;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 4px 12px;
+            border-radius: 16px;
+            margin-bottom: 12px;
+        }
+
+        .card-tag i {
+            margin-right: 4px;
+            font-size: 10px;
+        }
+
+        .tag-ai { background: rgba(14,122,114,0.12); color: #0a5c56; }
+        .tag-visual { background: rgba(245,158,11,0.12); color: #b45309; }
+        .tag-report { background: rgba(59,130,246,0.12); color: #2563eb; }
+        .tag-calendar { background: rgba(139,92,246,0.12); color: #6d28d9; }
+        .tag-variant { background: rgba(236,72,153,0.12); color: #be185d; }
+        .tag-level { background: rgba(16,185,129,0.12); color: #059669; }
+        .tag-plan { background: rgba(14,122,114,0.12); color: #0a5c56; }
+        .tag-cert { background: rgba(236,72,153,0.12); color: #be185d; }
+        .tag-inter { background: rgba(139,92,246,0.12); color: #5b21b6; }
+
+        .card-content h4 {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .card-content p {
+            font-size: 13px;
+            color: #548e87;
+            line-height: 1.45;
+            margin-bottom: 16px;
+        }
+
+        .card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #14b8a6;
+            font-weight: 700;
+        }
+
+        .card-footer i {
+            margin-right: 4px;
+            font-size: 11px;
+        }
+
+        .arrow {
+            transition: transform 0.2s;
+        }
+
+        .generator-card:hover .arrow {
+            transform: translateX(4px);
+        }
+
+        .back-btn-fixed {
+            position: fixed;
+            bottom: 10px;
+            left: 24px;
+            background: #1bb8b3;
+            backdrop-filter: blur(8px);
+            color: white;
+            text-decoration: none;
+            padding: 12px 28px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            font-family: 'Raleway', sans-serif;
+        }
+
+        .back-btn-fixed i {
+            margin-right: 8px;
+        }
+
+        .back-btn-fixed:hover {
+            background: #074844;
+            transform: translateY(-2px);
+        }
+
+        footer {
+            text-align: center;
+            font-size: 12px;
+            color: #548e87;
+            margin-top: 40px;
+            padding-top: 24px;
+            border-top: 1px solid #cde9e4;
+        }
+
+        footer i {
+            margin-right: 4px;
+        }
+
+        @media (max-width: 680px) {
+            .preview-section { flex-direction: column; text-align: center; }
+            .preview-stats { justify-content: center; }
+            .btn-primary { justify-content: center; }
+            .generators-hero { padding: 32px 20px 48px; }
+            .container { padding: 0 16px 60px; }
+            .card-preview i { font-size: 36px; }
+            .card-preview { height: 90px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="generators-hero">
+    <div class="hero-content">
+        <div class="hero-badge"><i class="fas fa-microchip"></i> ИИ-помощники учителя</div>
+        <h1>Генераторы <br>в помощь учителю</h1>
+        <p>Создавайте визуальные опоры, разноуровневые задания, планы-конспекты, сертификаты — всё за минуты с помощью интеллектуальных инструментов.</p>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Динамическое превью -->
+    <div id="dynamicPreview" class="preview-section">
+        <div class="preview-info">
+            <div class="preview-badge" id="previewBadge"><i class="fas fa-magic"></i> ИИ-генератор</div>
+            <h2 id="previewTitle">Генератор визуальных опор</h2>
+            <p id="previewDesc">Создавай опорные схемы и таблицы по биологии, химии, географии на основе белорусских учебников.</p>
+            <div class="preview-stats" id="previewStats"></div>
+            <a href="#" id="previewOpenBtn" class="btn-primary">
+                <i class="fas fa-rocket"></i> Открыть генератор
+                <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+            </a>
+        </div>
+        <div class="preview-image">
+            <div class="preview-img-icon" id="previewEmoji"><i class="fas fa-brain"></i></div>
+            <p id="previewQuote">«Инструмент, который экономит часы подготовки»</p>
+        </div>
+    </div>
+
+    <!-- Сетка генераторов -->
+    <div class="section-header">
+        <h3><i class="fas fa-cogs"></i> Выберите генератор</h3>
+        <span>нажмите на карточку → подробности и запуск</span>
+    </div>
+
+    <div class="generators-grid" id="generatorsGrid">
+        <!-- 1. Генератор визуальных опор -->
+        <div class="generator-card" data-generator="visual">
+            <div class="card-preview"><i class="fas fa-palette"></i></div>
+            <div class="card-content">
+                <div class="card-tag tag-visual"><i class="fas fa-palette"></i> Визуализация</div>
+                <h4>Генератор визуальных опор</h4>
+                <p>Опорные схемы, таблицы и диаграммы ("Биология", "Химия", "География", "Человек и мир").</p>
+                <div class="card-footer">
+                    <span><i class="fas fa-magic"></i> ИИ на основе Gen API</span>
+                    <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Генератор календарно‑тематического плана -->
+        <div class="generator-card" data-generator="ktp">
+            <div class="card-preview"><i class="fas fa-clock"></i></div>
+            <div class="card-content">
+                <div class="card-tag tag-calendar"><i class="fas fa-clock"></i> Планирование</div>
+                <h4>Генератор календарно‑тематического плана</h4>
+                <p>Автоматическое расписание занятий с учётом каникул, праздников и выбранных дней недели. Экспорт в PNG, копирование списка</p>
+                <div class="card-footer">
+                    <span><i class="fas fa-calendar-alt"></i> даты + заметки</span>
+                    <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Генератор вариантов (антисписывание) -->
+        <div class="generator-card" data-generator="variant">
+            <div class="card-preview"><i class="fas fa-shield-alt"></i></div>
+            <div class="card-content">
+                <div class="card-tag tag-variant"><i class="fas fa-shield-alt"></i> Антисписывание</div>
+                <h4>Генератор вариантов работ</h4>
+                <p>Загрузите DOCX или PDF с контрольной — ИИ создаст 2–5 уникальных варианта с изменёнными числами, формулировками и порядком заданий.</p>
+                <div class="card-footer">
+                    <span><i class="fas fa-shuffle"></i> разные данные для каждого</span>
+                    <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. Генератор разноуровневых заданий -->
+        <div class="generator-card" data-generator="diff">
+            <div class="card-preview"><i class="fas fa-layer-group"></i></div>
+            <div class="card-content">
+                <div class="card-tag tag-level"><i class="fas fa-file-alt"></i> Дифференциация</div>
+                <h4>Генератор разноуровневых заданий</h4>
+                <p>Создаёт задания трёх уровней (стандартный / повышенный / олимпиадный) по биологии, химии, географии.</p>
+                <div class="card-footer">
+                    <span><i class="fas fa-layer-group"></i> 3 уровня сложности</span>
+                    <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. Генератор плана-конспекта -->
+        <div class="generator-card" data-generator="plan">
+            <div class="card-preview"><i class="fas fa-file-alt"></i></div>
+            <div class="card-content">
+                <div class="card-tag tag-plan"><i class="fas fa-file-alt"></i> План</div>
+                <h4>Генератор плана-конспекта урока</h4>
+                <p>Создаёт подробный план-конспект урока с учётом типа урока (изучение нового, комбинированный, закрепление, обобщение, контроль знаний) и межпредметных связей.</p>
+                <div class="card-footer">
+                    <span><i class="fas fa-file-alt"></i> 5 типов уроков</span>
+                    <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 7. Генератор сертификатов (beautiful, Bebas Neue, ZIP) -->
+        <div class="generator-card" data-generator="certificate">
+            <div class="card-preview"><i class="fas fa-award"></i></div>
+            <div class="card-content">
+                <div class="card-tag tag-cert"><i class="fas fa-certificate"></i> Дизайн</div>
+                <h4>Генератор сертификатов</h4>
+                <p>Создавайте именные сертификаты, грамоты и дипломы на красивом шаблоне, ZIP-архив, PNG.</p>
+                <div class="card-footer">
+                    <span><i class="fas fa-images"></i> свой фон + наложение текста</span>
+                    <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 8. НОВЫЙ ГЕНЕРАТОР: межпредметные задачи (ссылка на gen_problem.html) -->
+        <div class="generator-card" data-generator="interdisciplinary">
+            <div class="card-preview"><i class="fas fa-globe-europe"></i></div>
+            <div class="card-content">
+                <div class="card-tag tag-inter"><i class="fas fa-globe-europe"></i> STEAM / межпредметность</div>
+                <h4>Генератор межпредметных задач</h4>
+                <p>Урочные, проектные и углублённые задания на стыке биологии, химии, физики, географии, математики и информатики. С фильтрацией по предмету и режимам.</p>
+                <div class="card-footer">
+                    <span><i class="fas fa-flask"></i> 3 режима: урок / проект / углублённый</span>
+                    <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p></p>
+      
+    </footer>
+</div>
+
+<a href="index.html" class="back-btn-fixed"><i class="fas fa-arrow-left"></i> Назад</a>
+
+<script>
+    // Словарь с метаданными для каждого генератора (добавлен interdisciplinary)
+    const generatorsMeta = {
+        visual: {
+            badge: '<i class="fas fa-palette"></i> Визуализация',
+            title: "Генератор визуальных опор",
+            desc: "Создавайте опорные схемы, сравнительные таблицы и структурно-логические схемы на основе белорусских учебников. Предметы: биология, химия, география, 'Человек и мир'. Работает через Gen API.",
+            stats: [
+                { icon: "", text: "4 предмета" },
+                { icon: "", text: "3 типа опор" },
+                { icon: "", text: "история генераций" }
+            ],
+            emoji: '<i class="fas fa-brain"></i>',
+            quote: "«Наглядность — ключ к пониманию»",
+            link: "electron-app/visual__generator.html"
+        },
+        ktp: {
+            badge: '<i class="fas fa-clock"></i> Календарное планирование',
+            title: "Календарно-тематический план",
+            desc: "Сформируйте список занятий на любой период. Укажите дни недели, каникулы, исключите праздничные даты — сервис автоматически построит расписание и покажет календарь с заметками.",
+            stats: [
+                { icon: "", text: "любой интервал" },
+                { icon: "", text: "учёт каникул" },
+                { icon: "", text: "экспорт PNG" },
+                { icon: "", text: "копирование списка" }
+            ],
+            emoji: '<i class="fas fa-calendar-week"></i>',
+            quote: "«Планируйте эффективно»",
+            link: "ktp.html"
+        },
+        variant: {
+            badge: '<i class="fas fa-shield-alt"></i> Антисписывание',
+            title: "Генератор вариантов проверочных работ",
+            desc: "Загрузите исходную контрольную (DOCX/PDF). Нейросетевой алгоритм изменит числовые данные, перефразирует условия и перемешает задания, создавая до 5 уникальных вариантов для класса.",
+            stats: [
+                { icon: "", text: "2–5 вариантов" },
+                { icon: "", text: "смена чисел" },
+                { icon: "", text: "экспорт в DOC" },
+                { icon: "", text: "3 степени изменений" }
+            ],
+            emoji: '<i class="fas fa-file-alt"></i>',
+            quote: "«Каждый ученик получит свой вариант»",
+            link: "variant.html"
+        },
+        diff: {
+            badge: '<i class="fas fa-layer-group"></i> Дифференциация',
+            title: "Генератор разноуровневых заданий",
+            desc: "Создаёт задания трёх уровней сложности (стандартный / повышенный / олимпиадный) по биологии, химии, географии и 'Человек и мир'. Соответствует программе и учебникам e-padruchnik.adu.by.",
+            stats: [
+                { icon: "", text: "3 уровня" },
+                { icon: "", text: "5–10 баллов" },
+                { icon: "", text: "gemini-2-5-flash" },
+                { icon: "", text: "сохранение PNG" }
+            ],
+            emoji: '<i class="fas fa-layer-group"></i>',
+            quote: "«Каждому ученику — своё задание»",
+            link: "diff.html"
+        },
+        plan: {
+            badge: '<i class="fas fa-file-alt"></i> План',
+            title: "Генератор плана-конспекта урока",
+            desc: "Создаёт подробный план-конспект урока с учётом типа урока (изучение нового, комбинированный, закрепление, обобщение, контроль знаний), межпредметных связей и требований программы.",
+            stats: [
+                { icon: "", text: "5 типов уроков" },
+                { icon: "", text: "45 минут" },
+                { icon: "", text: "gemini-2-5-flash" },
+                { icon: "", text: "копирование текста" }
+            ],
+            emoji: '<i class="fas fa-file-alt"></i>',
+            quote: "«Подробный конспект за минуту»",
+            link: "plan.html"
+        },
+        certificate: {
+            badge: '<i class="fas fa-certificate"></i>Дизайн',
+            title: "Генератор именных сертификатов",
+            desc: "Загрузите свой шаблон (PNG или JPG), введите список ФИО — автоматически наложит текст стилем Bebas Neue (чёрный капс без теней). Можно добавлять смещение по Y и размер шрифта. Экспорт отдельных PNG или ZIP-архивом.",
+            stats: [
+                { icon: "", text: "любой фон" },
+                { icon: "", text: "Bebas Neue" },
+                { icon: "", text: "смещение текста" },
+                { icon: "", text: "ZIP-архив" }
+            ],
+            emoji: '<i class="fas fa-award"></i>',
+            quote: "«Именные дипломы за минуты»",
+            link: "cerrtif.html"
+        },
+        interdisciplinary: {
+            badge: '<i class="fas fa-globe-europe"></i> STEAM / Межпредметность',
+            title: "Генератор межпредметных задач",
+            desc: "Более 60 готовых кейсов: уроки, проекты и углублённые исследования на стыке биологии, химии, физики, географии, математики и информатики. Фильтр по предметам, три режима, случайный выбор или по теме.",
+            stats: [
+                { icon: "", text: "3 режима: урок/проект/углублённый" },
+                { icon: "", text: "6+ предметов" },
+                { icon: "", text: "фильтрация по дисциплине" },
+                { icon: "", text: "рандомизация" }
+            ],
+            emoji: '<i class="fas fa-flask"></i>',
+            quote: "«Задачи, которые объединяют науки»",
+            link: "gen_problem.html"
+        }
+    };
+
+    // Элементы динамического превью
+    const previewBlock = document.getElementById('dynamicPreview');
+    const previewBadge = document.getElementById('previewBadge');
+    const previewTitle = document.getElementById('previewTitle');
+    const previewDesc = document.getElementById('previewDesc');
+    const previewStatsContainer = document.getElementById('previewStats');
+    const previewEmoji = document.getElementById('previewEmoji');
+    const previewQuote = document.getElementById('previewQuote');
+    const previewOpenBtn = document.getElementById('previewOpenBtn');
+
+    function showPreview(generatorKey) {
+        const data = generatorsMeta[generatorKey];
+        if (!data) return;
+        
+        previewBadge.innerHTML = data.badge;
+        previewTitle.textContent = data.title;
+        previewDesc.textContent = data.desc;
+        
+        // Отрисовка статистики
+        previewStatsContainer.innerHTML = '';
+        if (data.stats && data.stats.length) {
+            data.stats.forEach(stat => {
+                const statDiv = document.createElement('div');
+                statDiv.className = 'stat';
+                statDiv.innerHTML = `<div class="stat-dot"></div> ${stat.icon} ${stat.text}`;
+                previewStatsContainer.appendChild(statDiv);
+            });
+        } else {
+            // fallback на случай, если статистики нет
+            const statDiv = document.createElement('div');
+            statDiv.className = 'stat';
+            statDiv.innerHTML = `<div class="stat-dot"></div> 🧠 ИИ-поддержка`;
+            previewStatsContainer.appendChild(statDiv);
+        }
+        
+        previewEmoji.innerHTML = data.emoji;
+        previewQuote.textContent = data.quote;
+        previewOpenBtn.href = data.link;
+        
+        previewBlock.style.display = 'flex';
+        previewBlock.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // Навешиваем обработчики на все карточки (включая новую interdisciplinary)
+    const cards = document.querySelectorAll('.generator-card');
+    cards.forEach(card => {
+        const genKey = card.getAttribute('data-generator');
+        if (genKey && generatorsMeta[genKey]) {
+            card.addEventListener('click', (e) => {
+                e.preventDefault();
+                showPreview(genKey);
+            });
+            card.style.cursor = 'pointer';
+        }
+    });
+
+    // Показываем превью для первого генератора (визуальные опоры) при загрузке
+    if (cards.length > 0) {
+        const firstGen = cards[0].getAttribute('data-generator');
+        if (firstGen && generatorsMeta[firstGen]) {
+            showPreview(firstGen);
+        }
+    }
+</script>
+</body>
+</html>

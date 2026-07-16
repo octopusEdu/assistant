@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Генератор сертификатов | Выбор шрифта + ZIP архив</title>
+  <!-- Подключаем шрифты -->
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@700;900&family=Playfair+Display:wght@700;900&family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 0 20px;
+      background: #f0f4f8;
+      color: #1e2a3e;
+    }
+
+    .container {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.1);
+      padding: 28px 32px 40px;
+      transition: all 0.2s;
+    }
+
+    h2 {
+      margin-top: 0;
+      margin-bottom: 8px;
+      font-weight: 900;
+      font-size: 1.9rem;
+      background: linear-gradient(135deg, #1f6e43, #2b8c5e);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: #0d9488;
+    }
+
+    .sub {
+      color: #4a627a;
+      margin-bottom: 28px;
+      border-left: 3px solid #2b8c5e;
+      padding-left: 14px;
+      font-weight: 400;
+    }
+
+    .form-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 28px;
+      margin-bottom: 30px;
+    }
+
+    .input-panel {
+      flex: 1.2;
+      min-width: 260px;
+    }
+
+    .template-panel {
+      flex: 0.9;
+      min-width: 240px;
+      background: #f9fafc;
+      border-radius: 16px;
+      padding: 16px 20px;
+      box-shadow: inset 0 1px 2px #0000, 0 2px 6px rgba(0,0,0,0.02);
+    }
+
+    label {
+      font-weight: 600;
+      display: block;
+      margin-top: 12px;
+      margin-bottom: 6px;
+      color: #0f2b3d;
+    }
+
+    textarea {
+      width: 100%;
+      height: 260px;
+      padding: 14px 16px;
+      font-family: 'Courier New', 'Fira Code', monospace;
+      font-size: 14px;
+      border: 1px solid #cbd5e1;
+      border-radius: 16px;
+      background: #fefefe;
+      resize: vertical;
+      transition: 0.2s;
+    }
+
+    textarea:focus {
+      border-color: #2b8c5e;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(43, 140, 94, 0.2);
+    }
+
+    input[type="file"], select {
+      display: block;
+      margin-top: 6px;
+      font-size: 14px;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      padding: 8px 12px;
+      border-radius: 16px;
+      width: 100%;
+      cursor: pointer;
+    }
+
+    .hint {
+      font-size: 12px;
+      color: #5b6e8c;
+      margin-top: 8px;
+    }
+
+    .btn-generate {
+      background: #0d9488;
+      border: none;
+      color: white;
+      font-weight: 700;
+      font-size: 1.1rem;
+      padding: 12px 28px;
+      border-radius: 16px;
+      cursor: pointer;
+      margin-top: 18px;
+      margin-bottom: 10px;
+      transition: 0.2s;
+      box-shadow: 0 6px 14px rgba(30, 111, 67, 0.3);
+      width: 100%;
+      max-width: 280px;
+    }
+
+    .btn-generate:hover {
+      background: #22d6ca;
+      transform: translateY(-2px);
+      box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .zip-section {
+      margin-top: 20px;
+      display: flex;
+      justify-content: flex-end;
+    }
+    .btn-zip {
+      background: #2c3e66;
+      border: none;
+      color: white;
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 10px 24px;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .btn-zip:hover {
+      background: #1e2c4a;
+      transform: scale(0.98);
+    }
+    .btn-zip.disabled {
+      opacity: 0.5;
+      pointer-events: none;
+      background: #7f8c8d;
+    }
+
+    .result {
+      margin-top: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .cert-card {
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+      transition: all 0.2s;
+      border: 1px solid #e2edf2;
+    }
+
+    .cert-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 24px;
+      background: #fefaf5;
+      border-bottom: 1px solid #e9ecef;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .cert-name {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #1f3b4c;
+      word-break: break-word;
+    }
+
+    .btn-download {
+      background: #2c3e66;
+      border: none;
+      color: white;
+      padding: 8px 20px;
+      border-radius: 16px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: 0.2s;
+      font-size: 0.8rem;
+    }
+
+    .btn-download:hover {
+      background: #1e2c4a;
+    }
+
+    .cert-preview {
+      padding: 20px;
+      text-align: center;
+      background: #fefaf5;
+    }
+
+    .cert-canvas-img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 16px;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
+      border: 1px solid #f0e2cf;
+      background: white;
+    }
+
+    .loading-placeholder {
+      text-align: center;
+      padding: 40px;
+      color: #5e7a93;
+      font-style: italic;
+    }
+
+    .error-msg {
+      background: #fff2f0;
+      border-left: 5px solid #e03a3a;
+      padding: 12px 20px;
+      border-radius: 16px;
+      color: #b91c1c;
+      margin-top: 20px;
+    }
+
+    footer {
+      margin-top: 35px;
+      text-align: center;
+      font-size: 13px;
+      color: #6f8faa;
+    }
+    .font-badge {
+      background: #eef2ff;
+      border-radius: 16px;
+      padding: 4px 12px;
+      display: inline-block;
+      font-size: 12px;
+      font-family: monospace;
+    }
+    .font-selector {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 6px 0;
+    }
+    @media (max-width: 700px) {
+      .container {
+        padding: 20px;
+		bold;
+      }
+      .cert-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .zip-section {
+        justify-content: stretch;
+      }
+      .btn-zip {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+</head>
+<body>
+<div class="container">
+  <h2>Генератор сертификатов</h2>
+  
+  <div class="sub">
+    Выберите шрифт для ФИО: <strong class="font-badge" id="selectedFontLabel">Bebas Neue</strong> — 
+    чёрный цвет, капс, без теней. Скачивайте по отдельности или ZIP-архивом.
+  </div>
+
+  <div class="form-grid">
+    <div class="input-panel">
+      <label>Список ФИО (каждое с новой строки)</label>
+      <textarea id="names" placeholder="Иванов Иван Иванович&#10;Петрова Елена Сергеевна&#10;Смирнов Алексей Дмитриевич&#10;Кузнецова Мария Андреевна"></textarea>
+      <div class="hint">✓ Автоматический капс (заглавные). Подберите шрифт под стиль сертификата.</div>
+    </div>
+
+    <div class="template-panel">
+      <label>Файл шаблона (картинка)</label>
+      <input type="file" id="templateFile" accept="image/jpeg,image/png,image/webp,image/bmp">
+      <div class="hint">Рекомендуемый размер: от 1000px ширины.</div>
+      
+      <label>Выбор шрифта для ФИО</label>
+      <select id="fontSelect" class="font-selector">
+        <option value="Bebas Neue">Bebas Neue (рубленый, динамичный)</option>
+        <option value="Montserrat">Montserrat (строгий гротеск)</option>
+        <option value="Playfair Display">Playfair Display (элегантный с засечками)</option>
+        <option value="Roboto Condensed">Roboto Condensed (плотный современный)</option>
+      </select>
+      <div class="hint">Шрифт применяется только к ФИО. Остальной текст (дата) остаётся нейтральным.</div>
+
+      <label>Настройки текста</label>
+      <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+        <div style="flex:1">
+          <span style="font-size: 13px;">Y-смещение (px):</span>
+          <input type="number" id="offsetY" value="0" step="10" style="width: 85px; border-radius: 30px; border:1px solid #ccc; padding: 5px 8px;">
+        </div>
+        <div style="flex:1">
+          <span style="font-size: 13px;">Размер шрифта (px):</span>
+          <input type="number" id="fontSize" value="64" step="4" style="width: 85px; border-radius: 30px; border:1px solid #ccc; padding: 5px 8px;">
+        </div>
+      </div>
+      <div class="hint">🔧 Смещение по Y: положительное = ниже, отрицательное = выше. Чёрный цвет, без теней.</div>
+    </div>
+  </div>
+
+  <button class="btn-generate" id="generateBtn">⋆˙⟡Сгенерировать сертификаты</button>
+
+  <div class="zip-section" id="zipSection" style="display: none;">
+    <button class="btn-zip" id="downloadAllZipBtn">⬇︎Скачать все сертификаты ZIP-архивом</button>
+  </div>
+
+  <div id="results" class="result"></div>
+  <footer>Сертификаты создаются в браузере. Выберите шрифт, настройте положение — текст будет чёрным, капсом, без теней.</footer>
+</div>
+
+<script>
+  (function() {
+    const generateBtn = document.getElementById('generateBtn');
+    const namesArea = document.getElementById('names');
+    const templateFileInput = document.getElementById('templateFile');
+    const resultsDiv = document.getElementById('results');
+    const offsetYInput = document.getElementById('offsetY');
+    const fontSizeInput = document.getElementById('fontSize');
+    const fontSelect = document.getElementById('fontSelect');
+    const selectedFontLabel = document.getElementById('selectedFontLabel');
+    const zipSection = document.getElementById('zipSection');
+    const downloadAllZipBtn = document.getElementById('downloadAllZipBtn');
+
+    // Хранилище сгенерированных данных (для ZIP)
+    let generatedCertificates = []; 
+
+    // Обновление лейбла выбранного шрифта
+    fontSelect.addEventListener('change', () => {
+      selectedFontLabel.textContent = fontSelect.options[fontSelect.selectedIndex].text.split('(')[0].trim();
+    });
+
+    // Загрузка изображения
+    function loadImageFromFile(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => resolve(img);
+          img.onerror = () => reject(new Error('Не удалось загрузить изображение (повреждён?)'));
+          img.src = e.target.result;
+        };
+        reader.onerror = () => reject(new Error('Ошибка чтения файла'));
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // Преобразование в верхний регистр (капс)
+    function toCaps(str) {
+      return str.toLocaleUpperCase('ru-RU');
+    }
+
+    // Получить CSS font-family по выбранному значению
+    function getFontFamilyFromSelection(selectedValue) {
+      switch(selectedValue) {
+        case 'Bebas Neue': return "'Bebas Neue', 'Impact', 'Arial Black', sans-serif";
+        case 'Montserrat': return "'Montserrat', 'Segoe UI', 'Helvetica Neue', sans-serif";
+        case 'Playfair Display': return "'Playfair Display', 'Times New Roman', serif";
+        case 'Roboto Condensed': return "'Roboto Condensed', 'Arial Narrow', 'Franklin Gothic Medium', sans-serif";
+        default: return "'Bebas Neue', 'Impact', sans-serif";
+      }
+    }
+
+    // Генерация сертификата с ВЫБРАННЫМ шрифтом (чёрный, капс, никаких теней)
+    async function generateCertificateWithFont(templateImg, originalName, yOffsetPx, fontSizePx, selectedFont) {
+      const capsName = toCaps(originalName);
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = templateImg.width;
+      canvas.height = templateImg.height;
+
+      // Рисуем шаблон
+      ctx.drawImage(templateImg, 0, 0, canvas.width, canvas.height);
+
+      // ПОЛНОСТЬЮ УБИРАЕМ ТЕНИ И ЭФФЕКТЫ
+      ctx.shadowColor = "transparent";
+      ctx.shadowBlur = 0;
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = 0;
+
+      // Определяем font-family согласно выбранному шрифту
+      const fontFamily = getFontFamilyFromSelection(selectedFont);
+      
+      let optimalFontSize = Math.min(fontSizePx, canvas.height * 0.22);
+      if (optimalFontSize < 28) optimalFontSize = 32;
+      
+      // Функция замера ширины с текущим шрифтом
+      const measureWidth = (fontSize, text) => {
+        ctx.font = `bold ${fontSize}px ${fontFamily}`;
+        return ctx.measureText(text).width;
+      };
+      
+      const maxWidth = canvas.width * 0.85;
+      let currentWidth = measureWidth(optimalFontSize, capsName);
+      if (currentWidth > maxWidth) {
+        let low = 22;
+        let high = optimalFontSize;
+        for (let i = 0; i < 10; i++) {
+          const mid = Math.floor((low + high) / 2);
+          if (measureWidth(mid, capsName) <= maxWidth) {
+            low = mid;
+          } else {
+            high = mid;
+          }
+        }
+        optimalFontSize = Math.max(22, low);
+      }
+      
+      // Финальный размер
+      let finalFontSize = optimalFontSize;
+      if (measureWidth(finalFontSize, capsName) > maxWidth) {
+        finalFontSize = Math.floor(finalFontSize * (maxWidth / measureWidth(finalFontSize, capsName)));
+        finalFontSize = Math.max(20, finalFontSize);
+      }
+      
+      // Применяем: жирное начертание + выбранный шрифт
+      ctx.font = `bold ${finalFontSize}px ${fontFamily}`;
+      ctx.fillStyle = "#000000";   // строго чёрный
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      
+      // координаты
+      const centerX = canvas.width / 2;
+      let textY = (canvas.height / 2) + (yOffsetPx || 0);
+      // защита от выхода за края
+      const textHeight = finalFontSize * 0.75;
+      if (textY + textHeight > canvas.height - 30) textY = canvas.height - 40;
+      if (textY - textHeight < 30) textY = 40 + textHeight;
+      
+      // Рисуем текст БЕЗ ЭФФЕКТОВ, БЕЗ ТЕНЕЙ, ТОЛЬКО ЧЁРНЫЙ
+      ctx.fillText(capsName, centerX, textY);
+      
+      // Небольшая дата в углу (серым, не влияет на главный текст)
+      ctx.font = `16px 'Segoe UI', sans-serif`;
+      ctx.fillStyle = "#5a5a5a";
+      const year = new Date().getFullYear();
+      ctx.fillText(`${year}`, canvas.width - 50, canvas.height - 20);
+      
+      return canvas;
+    }
+
+    function showLoading() {
+      resultsDiv.innerHTML = `<div class="loading-placeholder">🎨 Генерация сертификатов (шрифт: ${fontSelect.options[fontSelect.selectedIndex].text})...</div>`;
+      zipSection.style.display = 'none';
+      generatedCertificates = [];
+    }
+
+    function displayError(msg) {
+      resultsDiv.innerHTML = `<div class="error-msg">⚠️ Ошибка: ${msg}</div>`;
+      zipSection.style.display = 'none';
+      generatedCertificates = [];
+    }
+
+    function renderCertificates(certList) {
+      if (!certList.length) {
+        resultsDiv.innerHTML = `<div class="error-msg">Нет сгенерированных сертификатов</div>`;
+        zipSection.style.display = 'none';
+        return;
+      }
+      
+      let html = '';
+      for (const cert of certList) {
+        if (cert.error) {
+          html += `
+            <div class="cert-card" style="border-left: 6px solid #dc2626;">
+              <div class="cert-header">
+                <span class="cert-name">❌ ${escapeHtml(cert.name)}</span>
+                <span style="color:#b91c1c;">Ошибка: ${escapeHtml(cert.message)}</span>
+              </div>
+            </div>
+          `;
+        } else {
+          const safeId = escapeHtml(cert.name).replace(/[^a-zа-яё0-9]/gi, '_').substring(0, 50);
+          html += `
+            <div class="cert-card" id="card-${safeId}">
+              <div class="cert-header">
+                <span class="cert-name">🎓 ${escapeHtml(cert.name)}</span>
+                <button class="btn-download single-download" data-url="${cert.dataURL}" data-filename="cert_${safeId}.png">⬇️ Сохранить PNG</button>
+              </div>
+              <div class="cert-preview">
+                <img src="${cert.dataURL}" alt="Сертификат ${escapeHtml(cert.name)}" class="cert-canvas-img" style="max-width:100%; cursor:pointer;" onclick="window.open('${cert.dataURL}')">
+                <div class="hint" style="margin-top: 10px;">🖱️ Шрифт: ${cert.usedFont || '?'} — чёрный капс, без теней</div>
+              </div>
+            </div>
+          `;
+        }
+      }
+      resultsDiv.innerHTML = html;
+      
+      document.querySelectorAll('.single-download').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const url = btn.getAttribute('data-url');
+          const filename = btn.getAttribute('data-filename') || 'certificate.png';
+          if (url) downloadImage(url, filename);
+        });
+      });
+      
+      const hasValid = certList.some(c => !c.error && c.dataURL);
+      if (hasValid) {
+        zipSection.style.display = 'flex';
+      } else {
+        zipSection.style.display = 'none';
+      }
+    }
+    
+    function downloadImage(dataUrl, filename) {
+      const link = document.createElement('a');
+      link.href = dataUrl;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+    
+    async function downloadAllAsZip() {
+      if (!generatedCertificates.length) {
+        alert('Нет сертификатов для скачивания. Сначала сгенерируйте.');
+        return;
+      }
+      const validCerts = generatedCertificates.filter(c => c.dataURL);
+      if (validCerts.length === 0) {
+        alert('Нет валидных сертификатов для архива.');
+        return;
+      }
+      
+      const zip = new JSZip();
+      const folder = zip.folder("certificates");
+      
+      for (const cert of validCerts) {
+        const byteString = atob(cert.dataURL.split(',')[1]);
+        const mimeString = cert.dataURL.split(',')[0].split(':')[1].split(';')[0];
+        const ab = new ArrayBuffer(byteString.length);
+        const ia = new Uint8Array(ab);
+        for (let i = 0; i < byteString.length; i++) {
+          ia[i] = byteString.charCodeAt(i);
+        }
+        const blob = new Blob([ab], { type: mimeString });
+        let safeName = cert.name.replace(/[^a-zа-яё0-9]/gi, '_').substring(0, 50);
+        if (!safeName) safeName = "certificate";
+        folder.file(`${safeName}.png`, blob, { binary: true });
+      }
+      
+      try {
+        const zipBlob = await zip.generateAsync({ type: "blob" });
+        saveAs(zipBlob, `certificates_${new Date().toISOString().slice(0,19)}.zip`);
+      } catch (err) {
+        alert('Ошибка создания ZIP: ' + err.message);
+      }
+    }
+    
+    // Основная генерация
+    generateBtn.addEventListener('click', async () => {
+      const rawNames = namesArea.value.trim();
+      if (!rawNames) {
+        alert('Введите хотя бы одно ФИО');
+        return;
+      }
+      const templateFile = templateFileInput.files[0];
+      if (!templateFile) {
+        alert('Выберите файл шаблона (изображение)');
+        return;
+      }
+      
+      const namesList = rawNames.split(/\r?\n/).map(s => s.trim()).filter(s => s !== "");
+      if (namesList.length === 0) {
+        alert('Нет корректных имён');
+        return;
+      }
+      
+      let yOffset = parseInt(offsetYInput.value, 10);
+      if (isNaN(yOffset)) yOffset = 0;
+      let fontSizeRaw = parseInt(fontSizeInput.value, 10);
+      if (isNaN(fontSizeRaw) || fontSizeRaw < 24) fontSizeRaw = 64;
+      
+      const selectedFont = fontSelect.value;
+      const selectedFontName = fontSelect.options[fontSelect.selectedIndex].text;
+      
+      showLoading();
+      generatedCertificates = [];
+      
+      try {
+        const templateImg = await loadImageFromFile(templateFile);
+        const results = [];
+        
+        for (let i = 0; i < namesList.length; i++) {
+          const name = namesList[i];
+          try {
+            const canvas = await generateCertificateWithFont(templateImg, name, yOffset, fontSizeRaw, selectedFont);
+            const dataURL = canvas.toDataURL('image/png');
+            const certData = { 
+              name: name, 
+              dataURL: dataURL, 
+              error: false,
+              usedFont: selectedFontName
+            };
+            results.push(certData);
+            generatedCertificates.push(certData);
+          } catch (errCert) {
+            console.error(name, errCert);
+            const errObj = { name: name, error: true, message: errCert.message || 'ошибка генерации' };
+            results.push(errObj);
+            generatedCertificates.push(errObj);
+          }
+        }
+        
+        renderCertificates(results);
+        
+        // Переустановка обработчика ZIP, чтобы избежать дублей
+        if (downloadAllZipBtn) {
+          const newZipBtn = downloadAllZipBtn.cloneNode(true);
+          downloadAllZipBtn.parentNode.replaceChild(newZipBtn, downloadAllZipBtn);
+          const finalZipBtn = document.getElementById('downloadAllZipBtn');
+          if (finalZipBtn) {
+            finalZipBtn.addEventListener('click', downloadAllAsZip);
+          }
+        }
+      } catch (err) {
+        console.error(err);
+        displayError(`Ошибка с шаблоном: ${err.message}`);
+      }
+    });
+    
+    // Инициализация кнопки ZIP
+    if (downloadAllZipBtn) {
+      downloadAllZipBtn.addEventListener('click', downloadAllAsZip);
+    }
+    
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+      });
+    }
+    
+    templateFileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const previewHint = document.querySelector('.template-panel .hint:first-of-type');
+        if (previewHint) {
+          const readerPrev = new FileReader();
+          readerPrev.onload = function(ev) {
+            const imgCheck = new Image();
+            imgCheck.onload = () => {
+              previewHint.innerHTML = `✅ Шаблон: ${imgCheck.width}×${imgCheck.height} пикс. Выберите шрифт и генерируйте.`;
+            };
+            imgCheck.src = ev.target.result;
+          };
+          readerPrev.readAsDataURL(file);
+        }
+      }
+    });
+    
+    // Обновление лейбла при старте
+    selectedFontLabel.textContent = fontSelect.options[fontSelect.selectedIndex].text.split('(')[0].trim();
+  })();
+</script>
+</body>
+</html>

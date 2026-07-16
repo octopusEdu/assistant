@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>НейроДиалог – ИИ-тренажёр для учителя</title>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700;800;900&family=Nunito:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --teal-50:  #f0fdfc;
+      --teal-100: #ccfbf1;
+      --teal-200: #99f6e4;
+      --teal-300: #5eead4;
+      --teal-400: #2dd4bf;
+      --teal-500: #14b8a6;
+      --teal-600: #0d9488;
+      --teal-700: #0f766e;
+      --teal-800: #115e59;
+      --teal-900: #134e4a;
+
+      --ink:     #0f2927;
+      --ink-mid: #1f4f4a;
+      --ink-soft:#4a7c75;
+      --muted:   #7fb5b0;
+      --border:  #a5d8d3;
+      --border-light: #cef2ef;
+
+      --bg:      #edfafa;
+      --surface: #ffffff;
+      --surface2:#f4fefe;
+
+      --yellow:  #f59e0b;
+      --pink:    #ec4899;
+      --indigo:  #6366f1;
+      --green:   #10b981;
+      --orange:  #f97316;
+      --red:     #ef4444;
+
+      --radius:  20px;
+      --shadow:  0 4px 24px rgba(13,148,136,0.10);
+      --shadow-lg: 0 12px 40px rgba(13,148,136,0.16);
+    }
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content:'';
+      position: fixed; inset:0;
+      background-image:
+        linear-gradient(rgba(20,184,166,0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(20,184,166,0.06) 1px, transparent 1px);
+      background-size: 36px 36px;
+      pointer-events:none; z-index:0;
+    }
+
+    .screen { display:none; position:relative; z-index:1; }
+    .screen.active { display:block; }
+
+    .landing {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 36px 24px 80px;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 40px 0 44px;
+      animation: fadeDown .7s ease both;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--teal-100);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 6px 20px;
+      font-size: .72rem;
+      font-weight: 800;
+      color: var(--teal-700);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-family: 'Raleway', sans-serif;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 900;
+      line-height: 1.1;
+      background: linear-gradient(135deg, #0d9488 0%, #0891b2 50%, #059669 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 14px;
+    }
+    .hero p {
+      font-size: 1.05rem;
+      color: var(--ink-soft);
+      max-width: 560px;
+      margin: 0 auto 28px;
+      line-height: 1.65;
+    }
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, var(--teal-600), #0891b2);
+      color: white;
+      padding: 13px 32px;
+      border-radius: 16px;
+      font-weight: 800;
+      font-size: .95rem;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 6px 24px rgba(13,148,136,0.30);
+      transition: all .2s;
+      text-decoration: none;
+    }
+    .hero-cta:hover { transform:translateY(-2px); box-shadow: 0 10px 32px rgba(13,148,136,0.38); }
+
+    .bento {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-auto-rows: auto;
+      gap: 16px;
+    }
+
+    .back-btn {
+      position: fixed;
+      bottom: 24px;
+      left: 24px;
+      padding: 10px 26px;
+      background: rgba(0, 120, 120, 0.8);
+      backdrop-filter: blur(8px);
+      color: white;
+      text-decoration: none;
+      border-radius: 12px;
+      font-weight: bold;
+      z-index: 99;
+      transition: 0.2s;
+    }
+
+    .bento-card {
+      background: var(--surface);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      padding: 22px 20px 18px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all .25s cubic-bezier(.34,1.56,.64,1);
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .bento-card::after {
+      content:'';
+      position:absolute;
+      inset:0;
+      background: linear-gradient(135deg, rgba(13,148,136,0.04), transparent);
+      opacity:0;
+      transition: opacity .2s;
+    }
+    .bento-card:hover {
+      transform: translateY(-4px) scale(1.01);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--border);
+    }
+    .bento-card:hover::after { opacity:1; }
+
+    .card-wide  { grid-column: span 2; }
+    .card-tall  { grid-row: span 2; }
+
+    .card-teal   { border-top: 4px solid var(--teal-500); }
+    .card-yellow { border-top: 4px solid var(--yellow); }
+    .card-indigo { border-top: 4px solid var(--indigo); }
+    .card-green  { border-top: 4px solid var(--green); }
+    .card-pink   { border-top: 4px solid var(--pink); }
+    .card-orange { border-top: 4px solid var(--orange); }
+    .card-red    { border-top: 4px solid var(--red); }
+    .card-cyan   { border-top: 4px solid #06b6d4; }
+    .card-purple { border-top: 4px solid #8b5cf6; }
+    .card-rose   { border-top: 4px solid #f43f5e; }
+    .card-blue   { border-top: 4px solid #3b82f6; }
+    .card-amber  { border-top: 4px solid #f59e0b; }
+    .card-lime   { border-top: 4px solid #84cc16; }
+    .card-fuchsia{ border-top: 4px solid #d946ef; }
+    .card-sky    { border-top: 4px solid #0ea5e9; }
+    .card-emerald{ border-top: 4px solid #059669; }
+
+    /* ===== АКТИВНАЯ КАРТОЧКА - ЯРКО-ЖЁЛТАЯ ПОДСВЕТКА С ПУЛЬСАЦИЕЙ (как Менделеев) ===== */
+    .card-highlight {
+      border: 3px solid #ffd700 !important;
+      box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.3), var(--shadow) !important;
+      animation: pulse-gold 2s ease-in-out infinite;
+      background: linear-gradient(145deg, #ffffff, #fffde7) !important;
+      position: relative;
+      z-index: 2;
+    }
+    .card-highlight .card-title {
+      color: #b8860b !important;
+    }
+    .card-highlight .card-icon i {
+      color: #ffd700 !important;
+      text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+    }
+    .card-highlight .card-example-chip {
+      background: #fff8e1 !important;
+      border-color: #ffd700 !important;
+      color: #b8860b !important;
+    }
+    .card-highlight .card-arrow {
+      background: #ffd700 !important;
+      color: #7a5a00 !important;
+    }
+    .card-highlight:hover .card-arrow {
+      background: #f5a623 !important;
+      color: white !important;
+    }
+
+    @keyframes pulse-gold {
+      0% { box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.25), 0 8px 30px rgba(255, 215, 0, 0.15); border-color: #ffd700; }
+      50% { box-shadow: 0 0 0 8px rgba(255, 215, 0, 0.5), 0 12px 40px rgba(255, 215, 0, 0.35); border-color: #f5a623; }
+      100% { box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.25), 0 8px 30px rgba(255, 215, 0, 0.15); border-color: #ffd700; }
+    }
+    .card-highlight:hover {
+      animation: pulse-gold 0.8s ease-in-out infinite;
+    }
+
+    /* ===== СТИЛЬ ДЛЯ ДЕМО⛔-ЧИПА (красный на бирюзовом, как в образце) ===== */
+    .demo-chip-red {
+      background: #0d9488 !important;
+      color: #ff1744 !important;
+      font-weight: 800 !important;
+      border: 2px solid #ff1744 !important;
+      border-radius: 30px !important;
+      padding: 2px 12px !important;
+      font-size: 0.65rem !important;
+      display: inline-block;
+      animation: pulse-demo 1.8s ease-in-out infinite;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    @keyframes pulse-demo {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
+    .demo-chip-red-small {
+      background: #0d9488 !important;
+      color: #fff157 !important;
+      font-weight: 700 !important;
+     
+      border-radius: 20px !important;
+      padding: 1px 10px !important;
+      font-size: 0.55rem !important;
+      display: inline-block;
+      text-transform: uppercase;
+    }
+
+    .card-icon {
+      font-size: 2.4rem;
+      line-height: 1;
+    }
+    .card-title {
+      font-family: 'Raleway', sans-serif;
+      font-weight: 800;
+      font-size: 1.05rem;
+      color: var(--ink);
+      line-height: 1.2;
+    }
+    .card-desc {
+      font-size: .78rem;
+      color: var(--ink-soft);
+      line-height: 1.5;
+      flex: 1;
+    }
+    .card-examples {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 4px;
+    }
+    .card-example-chip {
+      font-size: .67rem;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 20px;
+      background: var(--surface2);
+      border: 1px solid var(--border-light);
+      color: var(--ink-soft);
+    }
+    .card-arrow {
+      position: absolute;
+      bottom: 16px;
+      right: 18px;
+      width: 30px; height: 30px;
+      background: var(--teal-100);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .9rem;
+      color: var(--teal-700);
+      transition: all .2s;
+    }
+    .bento-card:hover .card-arrow {
+      background: var(--teal-600);
+      color: white;
+      transform: translateX(3px);
+    }
+
+    .card-featured {
+      background: linear-gradient(135deg, var(--teal-600) 0%, #0891b2 100%);
+      color: white;
+      border: none;
+    }
+    .card-featured .card-title { color: white; }
+    .card-featured .card-desc  { color: rgba(255,255,255,.82); }
+    .card-featured .card-tag   { background: rgba(255,255,255,.2); color: white; border:1px solid rgba(255,255,255,.3); }
+    .card-featured .card-arrow { background: rgba(255,255,255,.2); color: white; }
+    .card-featured:hover .card-arrow { background: white; color: var(--teal-700); }
+    .card-featured .card-example-chip { background: rgba(255,255,255,.15); border-color: rgba(255,255,255,.25); color: rgba(255,255,255,.9); }
+
+    .card-color-1 { background: linear-gradient(135deg, #f0fdfc, #ccfbf1); border-top: 4px solid #14b8a6; }
+    .card-color-2 { background: linear-gradient(135deg, #fef3c7, #fde68a); border-top: 4px solid #f59e0b; }
+    .card-color-3 { background: linear-gradient(135deg, #ede9fe, #c4b5fd); border-top: 4px solid #8b5cf6; }
+    .card-color-4 { background: linear-gradient(135deg, #fce7f3, #f9a8d4); border-top: 4px solid #ec4899; }
+    .card-color-5 { background: linear-gradient(135deg, #dbeafe, #93c5fd); border-top: 4px solid #3b82f6; }
+    .card-color-6 { background: linear-gradient(135deg, #dcfce7, #86efac); border-top: 4px solid #22c55e; }
+    .card-color-7 { background: linear-gradient(135deg, #fef2f2, #fca5a5); border-top: 4px solid #ef4444; }
+    .card-color-8 { background: linear-gradient(135deg, #fdf2f8, #fbcfe8); border-top: 4px solid #f472b6; }
+
+    .dialog-screen {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 24px 20px 80px;
+    }
+    .dialog-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 24px;
+      animation: fadeDown .4s ease both;
+    }
+    .back-btn-small {
+      display: flex; align-items: center; gap: 6px;
+      padding: 8px 18px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      font-family: 'Nunito', sans-serif;
+      font-size: .82rem;
+      font-weight: 700;
+      color: var(--ink-soft);
+      cursor: pointer;
+      transition: all .2s;
+      text-decoration: none;
+    }
+    .back-btn-small:hover { border-color: var(--teal-500); color: var(--teal-700); background: var(--teal-50); }
+
+    .dialog-topic-badge {
+      display: flex; align-items: center; gap: 8px;
+      font-size: .82rem;
+      font-weight: 700;
+      color: var(--teal-700);
+    }
+    .dialog-topic-icon { font-size: 1.3rem; }
+
+    .chat-win {
+      background: var(--surface);
+      border: 1px solid var(--border-light);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+    }
+    .chat-topbar {
+      display: flex; align-items: center; gap: 10px;
+      padding: 13px 20px;
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border-light);
+    }
+    .dot { width:10px; height:10px; border-radius:50%; }
+    .dot.r { background:#ff5f57; }
+    .dot.y { background:#febc2e; }
+    .dot.g { background:#28c840; }
+    .topbar-title {
+      margin-left: 8px;
+      font-size: .75rem; font-weight: 800;
+      color: var(--muted);
+      text-transform: uppercase; letter-spacing: .6px;
+    }
+    .topbar-live {
+      margin-left: auto;
+      display: flex; align-items: center; gap: 5px;
+      font-size: .72rem; font-weight: 800; color: var(--teal-600);
+    }
+    .topbar-live::before {
+      content:''; width:7px; height:7px;
+      background: var(--teal-500); border-radius:50%;
+      animation: blink 1.4s ease infinite;
+    }
+
+    .chat-msgs {
+      padding: 24px 20px;
+      display: flex; flex-direction: column; gap: 14px;
+      min-height: 180px;
+    }
+    .msg { display:flex; gap:11px; animation: msgIn .35s cubic-bezier(.34,1.56,.64,1) both; }
+    .avatar {
+      width:36px; height:36px; border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      font-size:1.1rem; flex-shrink:0; margin-top:2px;
+    }
+    .msg-body { flex:1; }
+    .msg-name {
+      font-size:.68rem; font-weight:800;
+      letter-spacing:.6px; text-transform:uppercase; margin-bottom:5px;
+    }
+    .msg-name.ai { color:var(--teal-600); }
+    .msg-name.teacher { color:#059669; }
+    .bubble {
+      padding:12px 16px; border-radius:14px;
+      font-size:.91rem; line-height:1.6;
+      display:inline-block; max-width:100%;
+    }
+    .bubble.ai {
+      background: var(--teal-50);
+      border:1px solid var(--border-light);
+      color: var(--ink);
+      border-radius:4px 14px 14px 14px;
+    }
+    .bubble.teacher {
+      background:#f0fdf9;
+      border:1px solid #a7f3d0;
+      color:#065f46;
+      border-radius:14px 4px 14px 14px;
+    }
+
+    .choices { padding:0 20px 22px; display:flex; flex-direction:column; gap:9px; }
+    .choice {
+      display:flex; align-items:center; gap:12px;
+      padding:13px 17px;
+      background:var(--surface2);
+      border:1px solid var(--border-light);
+      border-radius:13px;
+      cursor:pointer;
+      font-family:'Nunito',sans-serif;
+      font-size:.89rem; font-weight:600;
+      color:var(--ink);
+      text-align:left; width:100%;
+      transition: all .2s;
+      position:relative;
+    }
+    .choice:hover {
+      border-color:var(--teal-400);
+      transform:translateX(5px);
+      box-shadow:-4px 0 0 var(--teal-400), 0 4px 16px rgba(13,148,136,0.10);
+      background:var(--teal-50);
+    }
+    .choice-ico { font-size:1.25rem; flex-shrink:0; }
+    .choice-arrow { margin-left:auto; color:var(--muted); font-size:.85rem; transition:all .2s; }
+    .choice:hover .choice-arrow { color:var(--teal-600); transform:translateX(3px); }
+
+    .nav-bottom { display:flex; gap:9px; flex-wrap:wrap; padding:0 20px 22px; }
+    .nav-btn {
+      display:inline-flex; align-items:center; gap:6px;
+      padding:9px 19px;
+      background:transparent;
+      border:1px solid var(--border);
+      border-radius:16px;
+      color:var(--muted);
+      font-family:'Nunito',sans-serif;
+      font-size:.8rem; font-weight:700;
+      cursor:pointer; transition:all .2s;
+    }
+    .nav-btn:hover { border-color:var(--teal-500); color:var(--teal-600); background:var(--teal-50); }
+
+    .preview-card {
+      background: linear-gradient(135deg, #f0fdfc 0%, #e6f9f7 100%);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px 22px;
+      margin: 4px 20px 0;
+      box-shadow: var(--shadow);
+      animation: fadeUp .45s ease both;
+    }
+    .preview-header {
+      display:flex; align-items:center; gap:12px; margin-bottom:14px;
+    }
+    .preview-logo {
+      width:46px; height:46px; border-radius:12px;
+      display:flex; align-items:center; justify-content:center;
+      font-size:1.5rem; flex-shrink:0;
+    }
+    .preview-title { font-size:1.1rem; font-weight:900; color:var(--ink); margin-bottom:2px; }
+    .preview-sub   { font-size:.7rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; }
+    .preview-desc  { font-size:.86rem; line-height:1.6; color:var(--ink-mid); margin-bottom:14px; }
+    .mini-dialog { display:flex; flex-direction:column; gap:8px; margin-bottom:16px; }
+    .mini-msg { display:flex; gap:8px; align-items:flex-start; }
+    .mini-avatar { width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0;margin-top:1px; }
+    .mini-bubble { padding:8px 12px; border-radius:10px; font-size:.78rem; line-height:1.5; }
+    .mini-bubble.ai { background:var(--teal-50); border:1px solid var(--border-light); border-radius:3px 10px 10px 10px; }
+    .mini-bubble.t  { background:#f0fdf9; border:1px solid #a7f3d0; border-radius:10px 3px 10px 10px; }
+
+    .preview-chips { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:16px; }
+    .p-chip { padding:3px 11px; border-radius:16px; font-size:.67rem; font-weight:800; }
+    .chip-free   { background:rgba(5,150,105,.10); color:#065f46; border:1px solid rgba(5,150,105,.22); }
+    .chip-paid   { background:rgba(245,158,11,.10); color:#92400e; border:1px solid rgba(245,158,11,.22); }
+    .chip-ru     { background:rgba(8,145,178,.10);  color:#0c4a6e; border:1px solid rgba(8,145,178,.22); }
+    .chip-web    { background:rgba(13,148,136,.10); color:#134e4a; border:1px solid rgba(13,148,136,.22); }
+
+    .prompt-box {
+      background:#f0fdfc; border:1px solid var(--border); border-radius:11px;
+      padding:12px 15px; margin-bottom:16px;
+    }
+    .prompt-label { font-size:.65rem;font-weight:800;color:var(--teal-600);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;display:flex;align-items:center;gap:5px; }
+    .prompt-text  { font-family:'JetBrains Mono',monospace;font-size:.76rem;color:var(--ink-mid);line-height:1.6; }
+
+    .open-link {
+      display:inline-flex; align-items:center; gap:7px;
+      background:linear-gradient(135deg, var(--teal-600), #0891b2);
+      color:white; text-decoration:none;
+      padding:10px 22px; border-radius:16px;
+      font-size:.83rem; font-weight:700;
+      box-shadow:0 4px 18px rgba(13,148,136,.24);
+      transition:all .2s;
+    }
+    .open-link:hover { transform:translateY(-2px); box-shadow:0 8px 26px rgba(13,148,136,.36); }
+
+    .gloss-btn {
+      position:fixed; bottom:24px; right:24px;
+      background:linear-gradient(135deg, var(--teal-600), #0891b2);
+      color:white; border:none; border-radius:50%;
+      width:52px;height:52px; font-size:1.3rem;
+      cursor:pointer; box-shadow:0 4px 18px rgba(13,148,136,.35);
+      transition:all .2s; z-index:200;
+      display:flex;align-items:center;justify-content:center;
+    }
+    .gloss-btn:hover { transform:scale(1.1); box-shadow:0 8px 26px rgba(13,148,136,.48); }
+    .gloss-panel {
+      position:fixed; bottom:88px; right:24px;
+      width:310px; max-height:400px; overflow-y:auto;
+      background:white; border:1px solid var(--border);
+      border-radius:16px; padding:18px;
+      box-shadow:0 12px 40px rgba(13,148,136,.16);
+      z-index:199; display:none;
+    }
+    .gloss-panel.open { display:block; animation:fadeUp .25s ease both; }
+    .gloss-panel h3 { font-size:.8rem;font-weight:800;color:var(--teal-600);text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px; }
+    .gloss-item { margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--border-light); }
+    .gloss-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+    .gloss-term { font-size:.8rem;font-weight:800;color:#92400e;margin-bottom:3px; }
+    .gloss-def  { font-size:.72rem;color:var(--muted);line-height:1.5; }
+
+    @keyframes fadeDown { from{opacity:0;transform:translateY(-18px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes fadeUp   { from{opacity:0;transform:translateY(14px)}  to{opacity:1;transform:translateY(0)} }
+    @keyframes msgIn    { from{opacity:0;transform:translateY(8px) scale(.97)} to{opacity:1;transform:translateY(0) scale(1)} }
+    @keyframes blink    { 0%,100%{opacity:1} 50%{opacity:.3} }
+    @keyframes cardIn   { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+    .bento-card { animation:cardIn .5s ease both; }
+    .bento-card:nth-child(1)  { animation-delay:0.03s; }
+    .bento-card:nth-child(2)  { animation-delay:0.06s; }
+    .bento-card:nth-child(3)  { animation-delay:0.09s; }
+    .bento-card:nth-child(4)  { animation-delay:0.12s; }
+    .bento-card:nth-child(5)  { animation-delay:0.15s; }
+    .bento-card:nth-child(6)  { animation-delay:0.18s; }
+    .bento-card:nth-child(7)  { animation-delay:0.21s; }
+    .bento-card:nth-child(8)  { animation-delay:0.24s; }
+    .bento-card:nth-child(9)  { animation-delay:0.27s; }
+    .bento-card:nth-child(10) { animation-delay:0.30s; }
+    .bento-card:nth-child(11) { animation-delay:0.33s; }
+    .bento-card:nth-child(12) { animation-delay:0.36s; }
+    .bento-card:nth-child(13) { animation-delay:0.39s; }
+    .bento-card:nth-child(14) { animation-delay:0.42s; }
+    .bento-card:nth-child(15) { animation-delay:0.45s; }
+    .bento-card:nth-child(16) { animation-delay:0.48s; }
+
+    ::-webkit-scrollbar{width:5px}
+    ::-webkit-scrollbar-track{background:var(--teal-50)}
+    ::-webkit-scrollbar-thumb{background:var(--border);border-radius:10px}
+
+    @media(max-width:860px){
+      .bento{grid-template-columns:repeat(2,1fr);}
+      .card-wide{grid-column:span 2;}
+    }
+    @media(max-width:540px){
+      .bento{grid-template-columns:1fr;}
+      .card-wide{grid-column:span 1;}
+      .gloss-panel{width:calc(100vw - 48px);}
+    }
+    .my-icon { color: #0891b2; }
+    .progress-wrap { display: none; }
+
+    .toast {
+      position: fixed;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1f1f1f;
+      color: white;
+      padding: 12px 28px;
+      border-radius: 30px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      z-index: 300;
+      animation: fadeUp 0.25s ease both;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    @media (max-width: 600px) { .toast { white-space: normal; max-width: 90%; } }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+  SCREEN 0 – LANDING / BENTO (только Аудио)
+════════════════════════════════════════════ -->
+<div class="screen active" id="screenLanding">
+<div class="landing">
+
+  <div class="hero">
+    <div class="hero-badge"><span><i class="fa-solid fa-network-wired"></i></span> НейроДиалог · ИИ-тренажёр</div>
+    <h1>ИИ-инструменты<br>для учителя – в формате диалога</h1>
+    <p>Выбери тему – и ИИ-ассистент проведёт тебя по нужному сервису: покажет пример, даст промпт и объяснит каждый шаг.</p>
+    <a class="hero-cta" href="#bento" onclick="document.getElementById('bento').scrollIntoView({behavior:'smooth'})">
+     <i class="fa-solid fa-rocket rocket-icon"></i> Выбрать тему и начать
+    </a>
+  </div>
+
+  <div class="bento" id="bento">
+
+    <!-- 1. АНИМАЦИИ (на первом месте) -->
+    <div class="bento-card card-indigo" onclick="showDemoToast()">
+      <div class="card-icon"><i class="fa-solid fa-spinner my-icon"></i></div>
+      <div class="card-title">Анимации <span class="demo-chip-red-small">ДЕМО⛔</span></div>
+      <div class="card-desc">Создавай интерактивные анимации биологических, химических и географических процессов с помощью DeepSeek или Алиса AI.</div>
+      <div class="card-examples">
+        <span class="card-example-chip">DeepSeek · Алиса</span>
+        <span class="card-example-chip">Интерактив</span>
+      </div>
+      <div class="card-arrow">→</div>
+    </div>
+
+    <!-- 2. АУДИО – С ЯРКО-ЖЁЛТОЙ ПУЛЬСИРУЮЩЕЙ ПОДСВЕТКОЙ (как Менделеев) НА ВТОРОМ МЕСТЕ -->
+    <div class="bento-card card-wide card-teal card-highlight" onclick="openDialog('audio')">
+      <div class="card-icon"><i class="fa-solid fa-headphones my-icon"></i></div>
+      <div class="card-title">Аудио <span class="demo-chip-red">ДОСТУПНО</span></div>
+      <div class="card-desc">Озвучивание учебных материалов. Превращай текст в качественную речь с помощью ИИ – бесплатно и за минуты.</div>
+      <div class="card-examples">
+        <span class="card-example-chip">Text-to-Speech / синтез речи</span>
+        <span class="card-example-chip">Озвучка слайдов</span>
+      </div>
+      <div class="card-arrow">→</div>
+    </div>
+
+    <!-- 3. ВИДЕО -->
+    <div class="bento-card card-rose" onclick="showDemoToast()">
+      <div class="card-icon"><i class="fa-solid fa-video my-icon"></i></div>
+      <div class="card-title">Видео <span class="demo-chip-red-small">ДЕМО⛔</span></div>
+      <div class="card-desc">Генерация учебных видео с помощью ИИ: создавай анимированные объяснения, визуализации процессов и видеоролики для уроков.</div>
+      <div class="card-examples">
+        <span class="card-example-chip">Hailuo AI</span>
+        <span class="card-example-chip">Kling AI</span>
+        <span class="card-example-chip">Анимация</span>
+      </div>
+      <div class="card-arrow">→</div>
+    </div>
+
+    <!-- 4. ВИЗУАЛИЗАЦИЯ -->
+    <div class="bento-card card-pink" onclick="showDemoToast()">
+      <div class="card-icon"><i class="fa-solid fa-image my-icon"></i></div>
+      <div class="card-title">Визуализация <span class="demo-chip-red-small">ДЕМО⛔</span></div>
+      <div class="card-desc">Генерация учебных иллюстраций с помощью ИИ. Создавай уникальные картинки для уроков по описанию на русском языке.</div>
+      <div class="card-examples">
+        <span class="card-example-chip">Qwen AI</span>
+        <span class="card-example-chip">Canva AI</span>
+      </div>
+      <div class="card-arrow">→</div>
+    </div>
+
+    <!-- 5. ДИАГРАММЫ И ГРАФИКИ -->
+    <div class="bento-card card-cyan" onclick="showDemoToast()">
+      <div class="card-icon"><i class="fa-solid fa-chart-column my-icon"></i></div>
+      <div class="card-title">Диаграммы и графики <span class="demo-chip-red-small">ДЕМО⛔</span></div>
+      <div class="card-desc">Загрузи Excel-файл с данными – ИИ построит диаграммы, интерпретирует и объяснит данные классу. Flourish. Datawrapper.</div>
+      <div class="card-examples">
+        <span class="card-example-chip">Excel-данные</span>
+        <span class="card-example-chip">Chartist.js</span>
+        <span class="card-example-chip">Интерпретация</span>
+      </div>
+      <div class="card-arrow">→</div>
+    </div>
+
+    <!-- 6. ДИАЛОГИ -->
+    <div class="bento-card card-purple" onclick="showDemoToast()">
+      <div class="card-icon"><i class="fa-solid fa-comments my-icon"></i></div>
+      <div class="card-title">Диалоги <span class="demo-chip-red-small">ДЕМО⛔</span></div>
+      <div class="card-desc">Общайся с ИИ-персонажами, создавай диалоги для уроков, ролевые игры и живые обсуждения с нейросетью.</div>
+      <div class="card-examples">
+        <span class="card-example-chip">Character.AI</span>
+        <span class="card-example-chip">Ролевые игры</span>
+        <span class="card-example-chip">Диалоги</span>
+      </div>
+      <div class="card-arrow">→</div>
+    </div>
+
+    <!-- 7. ИГРЫ -->
+    <div class="bento-card card-orange" onclick="showDemoToast()">
+      <div class="card-icon"><i class="fa-solid fa-dice my-icon"></i></div>
+      <div class="card-title">Игры <span class="demo-chip-red-small">ДЕМО⛔</span></div>
+      <div class="card-desc">Создавай HTML-игры для класса с ИИ: викторины, квесты, тренажёры без знания программирования.</div>
+      <div class="card-examples">
+        <span class="card-example-chip">DeepSeek</span>
+        <span class="card-example-chip">HTML-игры</span>
+      </div>
+      <div class="card-arrow">→</div>
+    </div>
+
+    <!-- 8. ИДЕНТИФИКАЦИЯ -->
+    <div class="bento-card card-teal" onclick="showDemoToast()">
+      <div class="card-icon"><i class="fa-solid fa-magnifying-glass my-icon"></i></div>
+      <div class="card-title">Идентификация объектов <span class="demo-chip-red-small">ДЕМО⛔</span></div>
+      <div class="card-desc">Распознавание растений, минералов, объектов по фото – ИИ определяет и объясняет.</div>
+      <div class="card-examples">
+        <span class="card-example-chip">Фото → название</span>
+      </div>
+      <div class="card-arrow">→</div>
+    </div>
+
+    <!-- 9. ИНФОГРАФИКА -->
+    <div class="bento-card card-tall card-featured" onclick="showDemoToast()">
+      <div class="card-icon"><i class="fa-solid fa-chart-pie"></i></div>
+      <div class="card-title">Инфографика <span class="demo-chip-red-small">ДЕМО⛔</span></div>
+      <div class="card-desc">Образовательные инфографики и ментальные карты за минуты. ИИ сам предложит структуру, иконки и дизайн по описанию темы.</div>
+      <div class="card-examples">
+        <span class="card-example-chip">Ментальные карты</span>
+        <span class="card-example-chip">Схемы</span>
+        <span class="card-example-chip">Lovart AI</span>
+        <span class="card-example-chip">VisualGPT</span>
+      </div>
+      <div class="card-arrow">→</div>
+    </div>
+
+    <!-- 10. КИМ -->
+    <div class="bento-card card-wide card-green" onclick="showDemoToast()">
+      <div class="card-icon"><i class="fa-solid fa-list-check my-icon"></i></div>
+      <div class="card-title">Контрольно-измерительные материалы <span class="demo-chip-red-small">ДЕМО⛔</span></div>
+      <div class="card-desc">Тесты, задания, вопросы по любой теме – ИИ создаёт контрольно-измерительные материалы по параграфу учебника за секунды. С примерами по биологии, географии и химии.</div>
+      <div class="card-examples">
+        <span class="card-example-chip">Любая тема</span>
+      </div>
+      <div class="card-arrow">→</div>
+    </div>
+
+    <!-- 11. МОДЕЛИРОВАНИЕ -->
+    <div class="bento-card card-indigo" onclick="showDemoToast()">
+      <div class="card-icon"><i class="fa-solid fa-cube my-icon"></i></div>
+      <div class="card-title">Моделирование <span class="demo-chip-red-small">ДЕМО⛔</span></div>
+      <div class="card-desc">Создание 3D-моделей молекул, клеток, геологических объектов для наглядного показа на уроке.</div>
+      <div class="card-examples">
+        <span class="card-example-chip">Молекулы</span>
+        <span class="card-example-chip">3D-просмотр</span>
+      </div>
+      <div class="card-arrow">→</div>
+    </div>
+
+    <!-- 12. СТАТЬИ -->
+    <div class="bento-card card-wide card-cyan" onclick="showDemoToast()">
+      <div class="card-icon"><i class="fa-solid fa-file-lines my-icon"></i></div>
+      <div class="card-title">Статьи <span class="demo-chip-red-small">ДЕМО⛔</span></div>
+      <div class="card-desc">Поиск научных статей и публикаций с помощью Perplexity и Semantic Scholar. Быстрый обзор исследований.</div>
+      <div class="card-examples">
+        <span class="card-example-chip">Perplexity</span>
+        <span class="card-example-chip">Semantic Scholar</span>
+      </div>
+      <div class="card-arrow">→</div>
+    </div>
+
+    <!-- 13. ПРЕЗЕНТАЦИИ -->
+    <div class="bento-card card-wide card-yellow" onclick="showDemoToast()">
+      <div class="card-icon"><i class="fa-solid fa-display my-icon"></i></div>
+      <div class="card-title">Презентации <span class="demo-chip-red-small">ДЕМО⛔</span></div>
+      <div class="card-desc">Создавай слайды с ИИ за 30 секунд: Gamma.app, Canva AI, Beautiful.ai.</div>
+      <div class="card-examples">
+        <span class="card-example-chip">Gamma.app</span>
+        <span class="card-example-chip">Canva AI</span>
+      </div>
+      <div class="card-arrow">→</div>
+    </div>
+
+    <!-- 14. ПЛАН-КОНСПЕКТ -->
+    <div class="bento-card card-wide card-green" onclick="showDemoToast()">
+      <div class="card-icon"><i class="fa-solid fa-list-ul my-icon"></i></div>
+      <div class="card-title">План-конспект урока <span class="demo-chip-red-small">ДЕМО⛔</span></div>
+      <div class="card-desc">Генерируй готовый план-конспект урока. Любая тема.</div>
+      <div class="card-examples">
+        <span class="card-example-chip">Фотосинтез</span>
+        <span class="card-example-chip">Magicschool AI</span>
+      </div>
+      <div class="card-arrow">→</div>
+    </div>
+
+    <!-- 15. ТЕКСТ -->
+    <div class="bento-card card-wide card-pink" onclick="showDemoToast()">
+      <div class="card-icon"><i class="fa-solid fa-highlighter my-icon"></i></div>
+      <div class="card-title">Текст <span class="demo-chip-red-small">ДЕМО⛔</span></div>
+      <div class="card-desc">Адаптируй научные тексты под уровень класса, создавай аннотации, объяснения, краткие пересказы.</div>
+      <div class="card-examples">
+        <span class="card-example-chip">Адаптация</span>
+        <span class="card-example-chip">Аннотации</span>
+        <span class="card-example-chip">Пересказ</span>
+      </div>
+      <div class="card-arrow">→</div>
+    </div>
+
+    <!-- 16. РАБОЧИЕ ЛИСТЫ -->
+    <div class="bento-card card-purple" onclick="showDemoToast()">
+      <div class="card-icon"><i class="fa-solid fa-pen-to-square my-icon"></i></div>
+      <div class="card-title">Рабочие листы <span class="demo-chip-red-small">ДЕМО⛔</span></div>
+      <div class="card-desc">Генерация заданий, кроссвордов, упражнений по любой теме за минуты.</div>
+      <div class="card-examples">
+        <span class="card-example-chip">To-teach.ai</span>
+        <span class="card-example-chip">TeachShare</span>
+        <span class="card-example-chip">Интерактив</span>
+      </div>
+      <div class="card-arrow">→</div>
+    </div>
+
+    <!-- 17. ЭКСПРЕСС-АНАЛИЗАТОР -->
+    <div class="bento-card card-red" onclick="showDemoToast()">
+      <div class="card-icon"><i class="fa-solid fa-bolt my-icon"></i></div>
+      <div class="card-title">Экспресс-анализ <span class="demo-chip-red-small">ДЕМО⛔</span></div>
+      <div class="card-desc">Проверка текста на оригинальность и качество. ИИ даёт мгновенную обратную связь.</div>
+      <div class="card-examples">
+        <span class="card-example-chip">Антиплагиат</span>
+        <span class="card-example-chip">Разбор ошибок</span>
+      </div>
+      <div class="card-arrow">→</div>
+    </div>
+
+  </div><!-- /bento -->
+</div><!-- /landing -->
+<a href="../index.html" class="back-btn">Назад</a>
+</div><!-- /screenLanding -->
+
+
+<!-- ═══════════════════════════════════════════
+  SCREEN 1 – DIALOG (только Аудио)
+════════════════════════════════════════════ -->
+<div class="screen" id="screenDialog">
+<div class="dialog-screen">
+
+  <div class="dialog-header">
+    <button class="back-btn-small" onclick="goHome()">← Все темы</button>
+    <div class="dialog-topic-badge">
+      <span class="dialog-topic-icon" id="topicIcon"></span>
+      <span id="topicTitle"></span>
+    </div>
+  </div>
+
+  <div class="chat-win">
+    <div class="chat-topbar">
+      <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+      <span class="topbar-title">НейроДиалог · ИИ-ассистент</span>
+      <span class="topbar-live">онлайн</span>
+    </div>
+    <div class="chat-msgs" id="chatMsgs"></div>
+    <div class="choices"  id="choices"></div>
+    <div class="nav-bottom" id="navBottom"></div>
+  </div>
+
+</div>
+</div><!-- /screenDialog -->
+
+
+<!-- GLOSSARY -->
+<button class="gloss-btn" onclick="toggleGloss()" title="Словарь терминов">📖</button>
+<div class="gloss-panel" id="glossPanel">
+  <h3>📖 Словарь ИИ-терминов</h3>
+  <div class="gloss-item"><div class="gloss-term">Промпт (Prompt)</div><div class="gloss-def">Запрос или инструкция, которую вы даёте ИИ. Чем точнее промпт – тем лучше результат.</div></div>
+  <div class="gloss-item"><div class="gloss-term">Генеративный ИИ</div><div class="gloss-def">ИИ, создающий новый контент: тексты, изображения, аудио, видео – на основе обученных нейросетей.</div></div>
+  <div class="gloss-item"><div class="gloss-term">LLM</div><div class="gloss-def">Large Language Model – большая языковая модель. Основа ChatGPT, Claude, Gemini и других ИИ-ассистентов.</div></div>
+  <div class="gloss-item"><div class="gloss-term">TTS (Text-to-Speech)</div><div class="gloss-def">Синтез речи – преобразование текста в устную речь. Используется для озвучки учебных материалов.</div></div>
+  <div class="gloss-item"><div class="gloss-term">Диффузионная модель</div><div class="gloss-def">Тип нейросети для генерации изображений (DALL·E, Midjourney). Создаёт картинки из текстового описания.</div></div>
+  <div class="gloss-item"><div class="gloss-term">Мультимодальность</div><div class="gloss-def">Способность ИИ работать с текстом, изображениями, аудио и видео одновременно.</div></div>
+  <div class="gloss-item"><div class="gloss-term">КИМ</div><div class="gloss-def">Контрольно-измерительные материалы – тесты, задания, вопросы для проверки знаний учащихся.</div></div>
+  <div class="gloss-item"><div class="gloss-term">RAG</div><div class="gloss-def">Retrieval-Augmented Generation – ИИ перед ответом ищет информацию в базе документов. Повышает точность.</div></div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+//  DIALOG DATA (только Аудио)
+// ═══════════════════════════════════════════════
+const topics = {
+audio: {
+  icon: '🎧', title: 'Аудиоконтент',
+  tree: {
+    start: {
+      ai: 'Привет! Рад помочь с созданием аудиоматериалов. Что именно нужно сделать?',
+      teacher: 'Озвучить слайды для презентации',
+      ai2: 'Отлично! Я знаю как это сделать! Для синтеза речи есть несколько вариантов. Что для тебя важнее?',
+      choices: [
+        { text: 'Бесплатно и быстро', icon: '🎙', next: 'result_tts_free' },
+        { text: 'Качественный голос с настройками', icon: '🎙', next: 'result_elevenlabs' }
+      ]
+    },
+    result_tts_free: { preview: 'tts_free' },
+    result_elevenlabs: { preview: 'elevenlabs' }
+  }
+},
+};
+
+// ═══════════════════════════════════════════════
+//  PREVIEWS (только для Аудио)
+// ═══════════════════════════════════════════════
+const previews = {
+  tts_free:{ title:'TTS Online – Бесплатно', 
+  logo:'🗣', logoBg:'#e6e6e6', chips:['chip-web','chip-free','chip-ru'], 
+  labels:['Веб','Бесплатно','Русский'], 
+  desc:'Самый быстрый способ озвучить учебный текст.', 
+  link:'pages/audio3.html', linkLabel:'Открыть пример', 
+  how:'pages/audio.html', howLabel:'Как это сделать' },
+  elevenlabs:{ title:'ElevenLabs – Профессиональный голос', 
+  logo:'🗣', 
+  logoBg:'#e6e6e6', chips:['chip-web','chip-paid','chip-ru'], 
+  labels:['Веб','10 000 символов/мес бесплатно','Русский'], 
+  desc:'Отличное качество синтеза речи. Позволяет генерировать голос по выбору пользователя.', 
+  link:'pages/audio4.html', linkLabel:'Открыть пример', how:'pages/audio2.html', 
+  howLabel:'Как это сделать' },
+};
+
+// ═══════════════════════════════════════════════
+//  ENGINE
+// ═══════════════════════════════════════════════
+let currentTopic = null;
+
+function openDialog(topicId) {
+  if (topicId !== 'audio') { showDemoToast(); return; }
+  currentTopic = topicId;
+  const topic = topics[topicId];
+  if (!topic) return;
+
+  document.getElementById('topicIcon').textContent  = topic.icon;
+  document.getElementById('topicTitle').textContent = topic.title;
+  document.getElementById('chatMsgs').innerHTML    = '';
+  document.getElementById('choices').innerHTML     = '';
+  document.getElementById('navBottom').innerHTML   = '';
+
+  showScreen('screenDialog');
+  window.scrollTo({top:0, behavior:'smooth'});
+
+  const node = topic.tree['start'];
+  if (node.ai) addAI(node.ai);
+  if (node.teacher) addTeacher(node.teacher);
+  if (node.ai2) addAI(node.ai2);
+  if (node.teacher2) addTeacher(node.teacher2);
+  if (node.ai3) addAI(node.ai3);
+  renderChoices(node.choices, topicId);
+}
+
+function goHome() {
+  showScreen('screenLanding');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function addAI(text) {
+  const msgs = document.getElementById('chatMsgs');
+  const div = document.createElement('div');
+  div.className = 'msg';
+  div.innerHTML = `<div class="avatar ai"><i class="fa-solid fa-robot" style="color:#000;"></i></div><div class="msg-body"><div class="msg-name ai">ИИ-ассистент</div><div class="bubble ai">${text}</div></div>`;
+  msgs.appendChild(div);
+  scrollChat();
+}
+
+function addTeacher(text) {
+  const msgs = document.getElementById('chatMsgs');
+  const div = document.createElement('div');
+  div.className = 'msg';
+  div.innerHTML = `<div class="avatar teacher"><i class="fa-solid fa-face-meh"></i></div><div class="msg-body"><div class="msg-name teacher">Учитель</div><div class="bubble teacher">${text}</div></div>`;
+  msgs.appendChild(div);
+  scrollChat();
+}
+
+function renderChoices(choices, topicId) {
+  const area = document.getElementById('choices');
+  area.innerHTML = '';
+  choices.forEach(c => {
+    const btn = document.createElement('button');
+    btn.className = 'choice';
+    btn.innerHTML = `<span class="choice-ico">${c.icon}</span><span>${c.text}</span><span class="choice-arrow">→</span>`;
+    btn.onclick = () => pickChoice(c, topicId || currentTopic);
+    area.appendChild(btn);
+  });
+}
+
+function pickChoice(choice, topicId) {
+  addTeacher(choice.text);
+  document.getElementById('choices').innerHTML = '';
+
+  const tid = topicId || currentTopic;
+  const topic = topics[tid];
+  const node  = topic.tree[choice.next];
+  if (!node) return;
+
+  if (node.ai) addAI(node.ai);
+  if (node.preview) {
+    showPreview(node.preview);
+    showRestartBtn();
+  } else if (node.choices) {
+    renderChoices(node.choices, tid);
+  } else {
+    showRestartBtn();
+  }
+}
+
+function showPreview(previewId) {
+  const p = previews[previewId];
+  if (!p) { showRestartBtn(); return; }
+
+  const msgs = document.getElementById('chatMsgs');
+  const card = document.createElement('div');
+  card.className = 'preview-card';
+
+  const chipsHtml = p.chips.map((c,i) => `<span class="p-chip ${c}">${p.labels[i]}</span>`).join('');
+  const promptHtml = p.prompt ? `<div class="prompt-box"><div class="prompt-label">⌨️ Готовый промпт – скопируй и используй</div><div class="prompt-text">${p.prompt.replace(/\n/g,'<br>')}</div></div>` : '';
+  let linksHtml = `<a href="${p.link}" target="_blank" class="open-link"> ${p.linkLabel}</a>`;
+  if (p.how) linksHtml += ` <a href="${p.how}" target="_blank" class="open-link" style="background:#cc0099;"> ${p.howLabel}</a>`;
+
+  card.innerHTML = `
+    <div class="preview-header">
+      <div class="preview-logo" style="background:${p.logoBg}">${p.logo}</div>
+      <div><div class="preview-title">${p.title}</div><div class="preview-sub"></div></div>
+    </div>
+    <div class="preview-desc">${p.desc}</div>
+    <div class="preview-chips">${chipsHtml}</div>
+    ${promptHtml}
+    <div style="display: flex; gap: 10px; flex-wrap: wrap;">${linksHtml}</div>
+  `;
+
+  msgs.appendChild(card);
+  scrollChat();
+  showRestartBtn();
+}
+
+function showRestartBtn() {
+  const nav = document.getElementById('navBottom');
+  nav.innerHTML = `<button class="nav-btn" onclick="openDialog(currentTopic)">↻ Начать заново</button><button class="nav-btn" onclick="goHome()">← Все темы</button>`;
+}
+
+function scrollChat() {
+  setTimeout(() => {
+    const msgs = document.getElementById('chatMsgs');
+    msgs.scrollTop = msgs.scrollHeight;
+    window.scrollTo({top:document.body.scrollHeight, behavior:'smooth'});
+  }, 80);
+}
+
+function toggleGloss() {
+  document.getElementById('glossPanel').classList.toggle('open');
+}
+
+// ═══════════════════════════════════════════════
+//  DEMO TOAST (красный на бирюзовом фоне как в образце)
+// ═══════════════════════════════════════════════
+function showDemoToast() {
+  const existing = document.querySelector('.toast');
+  if (existing) existing.remove();
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.style.background = '#0d9488';
+  toast.style.color = '#fafafa';
+  toast.style.border = '2px solid #ff1744';
+  toast.style.fontWeight = '700';
+  toast.textContent = '⛔ Вы используете ДЕМО-версию. За подробностями обращайтесь к разработчикам';
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 3000);
+}
+</script>
+</body>
+</html>

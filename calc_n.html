@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Расписание — учебная нагрузка (СанПиН РБ)</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;700;800&family=Raleway:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --t50:#f0fdfc; --t100:#ccfbf7; --t200:#99f6ee; --t300:#5eead4;
+    --t400:#2dd4bf; --t500:#14b8a6; --t600:#0d9488; --t700:#0f766e; --t800:#115e59;
+    --bg:#f0fdfc; --border:#99f6ee; --text:#134e4a; --muted:#5eada6;
+    --shadow:0 4px 20px rgba(20,184,166,0.12);
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Raleway',sans-serif;background:var(--bg);color:var(--text);padding-bottom:60px;}
+
+  .hero{background:linear-gradient(135deg,#0f766e,#14b8a6);padding:24px;}
+  .hero-inner{max-width:1300px;margin:0 auto;}
+  .hero h1{font-family:'Unbounded',sans-serif;font-size:clamp(18px,3vw,26px);color:#fff;margin-bottom:16px;}
+  .hero-controls{display:flex;flex-wrap:wrap;gap:10px;}
+  .ctrl-pill{background:rgba(255,255,255,0.18);padding:7px 14px;border-radius:16px;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:#fff;}
+  .ctrl-pill select{background:#fff;border:none;padding:5px 10px;border-radius:16px;font-family:'Raleway',sans-serif;font-size:13px;font-weight:600;color:var(--t800);outline:none;cursor:pointer;}
+
+  .app{max-width:1300px;margin:0 auto;padding:18px 16px;}
+
+  .toolbar{background:#fff;border-radius:16px;padding:12px 16px;margin-bottom:16px;box-shadow:var(--shadow);border:1px solid var(--border);display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+  .btn{padding:9px 16px;border:none;border-radius:16px;font-family:'Raleway',sans-serif;font-size:12.5px;font-weight:700;cursor:pointer;background:linear-gradient(135deg,var(--t500),var(--t600));color:#fff;transition:transform .15s;}
+  .btn:hover{transform:translateY(-1px);}
+  .btn-outline{background:#fff;color:var(--t700);border:1.5px solid var(--t300);}
+  .tip{font-size:11.5px;color:var(--muted);font-style:italic;padding:4px 12px;background:var(--t50);border-radius:16px;border:1px solid var(--t200);}
+
+  .week-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px;}
+  @media (max-width:900px){.week-grid{grid-template-columns:repeat(2,1fr);}}
+  @media (max-width:560px){.week-grid{grid-template-columns:1fr;}}
+
+  .day-card{background:#fff;border-radius:16px;box-shadow:var(--shadow);overflow:hidden;solid #22c55e;}
+  .day-card.warning-day{border-left-color:#f59e0b;}
+  .day-card.critical-day{border-left-color:#ef4444;}
+
+  .day-header{background:linear-gradient(135deg,var(--t600),var(--t500));color:#fff;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;}
+  .day-card.critical-day .day-header{background:linear-gradient(135deg,#991b1b,#ef4444);}
+  .day-card.warning-day .day-header{background:linear-gradient(135deg,#92400e,#f59e0b);}
+  .day-header span:first-child{font-family:'Unbounded',sans-serif;font-size:12px;font-weight:700;text-transform:uppercase;}
+  .day-badge{background:rgba(255,255,255,0.22);padding:3px 9px;border-radius:16px;font-size:11px;font-weight:700;}
+
+  .lessons-list{padding:10px 10px 2px;min-height:60px;}
+
+  .lesson-item{background:var(--t50);border:1px solid var(--t200);border-left:4px solid var(--t400);border-radius:12px;padding:7px 8px;margin-bottom:7px;display:flex;flex-wrap:wrap;align-items:center;gap:5px;}
+  .lesson-item.hard-lesson{border-left-color:#f59e0b;background:#fffbeb;border-color:#fde68a;}
+
+  .lesson-select{flex:2;min-width:120px;background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:5px 8px;font-size:11.5px;font-family:'Raleway',sans-serif;font-weight:600;color:var(--text);outline:none;}
+  .time-input{width:82px;border:1.5px solid var(--border);border-radius:16px;padding:5px 7px;font-size:11px;font-family:'Raleway',sans-serif;background:#fff;outline:none;color:var(--text);}
+  .end-time-label{font-size:11px;color:var(--muted);font-weight:600;}
+  .lesson-points{font-family:'Unbounded',sans-serif;font-weight:700;background:var(--t100);color:var(--t800);padding:2px 9px;border-radius:16px;font-size:10px;}
+  .hard-lesson .lesson-points{background:#fef3c7;color:#92400e;}
+  .del-lesson{background:none;border:none;font-size:16px;cursor:pointer;color:#fca5a5;font-weight:bold;margin-left:auto;line-height:1;padding:2px 4px;}
+  .del-lesson:hover{color:#ef4444;}
+
+  .add-lesson-btn{background:var(--t50);border:1.5px dashed var(--t300);border-radius:12px;padding:7px;text-align:center;font-size:12px;font-weight:600;color:var(--t600);cursor:pointer;margin:6px 10px 10px;}
+  .add-lesson-btn:hover{background:var(--t100);}
+
+  .stats-panel{background:#fff;border-radius:16px;padding:16px 18px;box-shadow:var(--shadow);border:1px solid var(--border);}
+  .stats-title{font-family:'Unbounded',sans-serif;font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;}
+
+  .chart-bar-container{display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap;justify-content:space-around;margin:14px 0;}
+  .chart-day{text-align:center;width:52px;}
+  .bar{background:linear-gradient(0deg,var(--t600),var(--t400));width:36px;margin:0 auto;border-radius:10px 10px 4px 4px;}
+  .bar.max-bar{background:linear-gradient(0deg,#b91c1c,#ef4444);}
+  .day-label{margin-top:6px;font-weight:700;font-size:11px;color:var(--t700);}
+  .points-value{font-size:10px;font-weight:700;color:var(--muted);}
+
+  .recommend{background:var(--t50);padding:12px 14px;border-radius:12px;margin-top:12px;font-size:13px;border-left:4px solid var(--t400);line-height:1.6;}
+  .err-text{color:#b91c1c;font-weight:600;}
+   .demo-badge {
+            display: inline-block;
+            background: #ff9800;
+            color: #fff;
+            font-size: 0.55rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 30px;
+            margin-left: 8px;
+            vertical-align: middle;
+            letter-spacing: 0.3px;
+        }
+
+ 
+  @media (max-width: 600px) {
+    .demo-ribbon {
+      font-size: 10px;
+      padding: 6px 35px;
+      top: 12px;
+      right: -25px;
+    }
+  }
+
+  @media print{
+    .toolbar,.hero-controls{display:none !important;}
+    .day-card{break-inside:avoid;}
+    .week-grid{display:block;}
+    .day-card{margin-bottom:12px;}
+    .demo-ribbon{display:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<!-- Жёлтая фигура "Демо версия" -->
+
+
+<div class="hero">
+  <div class="hero-inner">
+    <h1>⌨ Калькулятор учебной нагрузки<span class="demo-badge">DEMO</span></h1>
+    <div class="hero-controls">
+      <div class="ctrl-pill">Класс: <select id="globalGrade"></select></div>
+      <div class="ctrl-pill" id="profileBox" style="display:none;">Профиль: <select id="profileSelect"></select></div>
+    </div>
+  </div>
+</div>
+
+<div class="app">
+
+  <div class="toolbar">
+    <button class="btn btn-outline" id="resetWeekBtn">⟳Очистить неделю</button>
+    <button class="btn" id="printBtn">🖨Печать</button>
+    <span class="tip">⬤ Сложные предметы (3 балла) лучше ставить 1–3-м уроком</span>
+  </div>
+
+  <div class="week-grid" id="weekGrid"></div>
+
+  <div class="stats-panel" id="statsPanel">
+    <div class="stats-title">Нагрузка по дням</div>
+    <div id="chartArea"></div>
+    <div id="recommendArea" class="recommend"></div>
+  </div>
+
+</div>
+
+<script>
+  // ====================== СПРАВОЧНИКИ ======================
+  const SUBJECTS_BY_CLASS = {
+    5: ["Белорусский язык","Русский язык","Литература","Иностранный язык","Математика","Биология","География","История Беларуси","Всемирная история","Информатика","Человек и мир","ИЗО","Музыка","Трудовое обучение","Физкультура"],
+    6: ["Белорусский язык","Русский язык","Литература","Иностранный язык","Математика","Биология","География","История Беларуси","Всемирная история","Информатика","ИЗО","Музыка","Трудовое обучение","Физкультура"],
+    7: ["Белорусский язык","Русский язык","Литература","Иностранный язык","Математика","Биология","География","История Беларуси","Всемирная история","Обществоведение","Информатика","Трудовое обучение","Физкультура"],
+    8: ["Белорусский язык","Русский язык","Литература","Иностранный язык","Алгебра","Геометрия","Биология","География","История Беларуси","Всемирная история","Обществоведение","Физика","Химия","Информатика","Трудовое обучение","Физкультура"],
+    9: ["Белорусский язык","Русский язык","Литература","Иностранный язык","Алгебра","Геометрия","Биология","География","История Беларуси","Всемирная история","Обществоведение","Физика","Химия","Информатика","Трудовое обучение","Физкультура"],
+    10:["Белорусский язык","Русский язык","Литература","Иностранный язык","Алгебра","Геометрия","Биология","География","История Беларуси","Всемирная история","Обществоведение","Физика","Химия","Информатика","Физкультура"],
+    11:["Белорусский язык","Русский язык","Литература","Иностранный язык","Алгебра","Геометрия","Биология","География","История Беларуси","Всемирная история","Обществоведение","Физика","Химия","Информатика","Физкультура"]
+  };
+  const PROFILE_SUBJECTS = {
+    "Физ-мат": ["Алгебра","Геометрия","Физика","Информатика"],
+    "Гуманитарный": ["История Беларуси","Всемирная история","Обществоведение","Иностранный язык","Литература"],
+    "Хим-био": ["Химия","Биология","Физика","Математика"],
+    "Базовый": []
+  };
+  const DIFFICULTY_POINTS = {
+    "Алгебра":3,"Геометрия":3,"Математика":3,"Физика":3,"Химия":3,
+    "Белорусский язык":2,"Русский язык":2,"Литература":2,"Иностранный язык":2,
+    "Биология":2,"География":2,"История Беларуси":2,"Всемирная история":2,
+    "Обществоведение":2,"Информатика":2,"Человек и мир":1,"ИЗО":1,"Музыка":1,
+    "Трудовое обучение":1,"Физкультура":1
+  };
+  const MAX_POINTS_BY_CLASS = {5:12,6:13,7:14,8:15,9:16,10:17,11:18};
+  const MAX_LESSONS_BY_CLASS = {5:5,6:6,7:6,8:6,9:6,10:7,11:7};
+  const DAYS = [
+    { id:"mon", name:"Понедельник", short:"Пн" },
+    { id:"tue", name:"Вторник", short:"Вт" },
+    { id:"wed", name:"Среда", short:"Ср" },
+    { id:"thu", name:"Четверг", short:"Чт" },
+    { id:"fri", name:"Пятница", short:"Пт" },
+    { id:"sat", name:"Суббота", short:"Сб" }
+  ];
+
+  // ====================== ДАННЫЕ ======================
+  let weekSchedule = JSON.parse(localStorage.getItem("simpleSchedule")) || {};
+  let currentGrade = parseInt(localStorage.getItem("simpleGrade") || "9");
+  let currentProfile = localStorage.getItem("simpleProfile") || "Базовый";
+
+  function initEmptyWeek() {
+    DAYS.forEach(d => { if (!weekSchedule[d.id]) weekSchedule[d.id] = []; });
+  }
+  initEmptyWeek();
+
+  function persist() {
+    localStorage.setItem("simpleSchedule", JSON.stringify(weekSchedule));
+    localStorage.setItem("simpleGrade", currentGrade);
+    localStorage.setItem("simpleProfile", currentProfile);
+  }
+
+  function getSubjectOptions(grade) {
+    let subs = [...(SUBJECTS_BY_CLASS[grade] || SUBJECTS_BY_CLASS[9])];
+    if ((grade === 10 || grade === 11) && currentProfile !== "Базовый" && PROFILE_SUBJECTS[currentProfile]) {
+      subs = [...new Set([...subs, ...PROFILE_SUBJECTS[currentProfile]])];
+    }
+    return subs.map(s => `<option value="${s}">${s}</option>`).join("");
+  }
+  function getSubjectPoints(subj){ return DIFFICULTY_POINTS[subj] || 1; }
+  function isHardSubject(subj){ return DIFFICULTY_POINTS[subj] === 3; }
+  function getMaxLessons(){ return MAX_LESSONS_BY_CLASS[currentGrade] || 6; }
+  function getMaxPoints(){ return MAX_POINTS_BY_CLASS[currentGrade] || 18; }
+
+  // ====================== АВТОРАСЧЁТ ВРЕМЕНИ ======================
+  const LESSON_DURATION = 45; // минут
+  const BREAK_MIN = 10;       // минут
+
+  function addMinutes(timeStr, mins) {
+    let [h, m] = (timeStr || "08:30").split(":").map(Number);
+    let total = ((h * 60 + m + mins) % 1440 + 1440) % 1440;
+    const hh = String(Math.floor(total / 60)).padStart(2, "0");
+    const mm = String(total % 60).padStart(2, "0");
+    return `${hh}:${mm}`;
+  }
+
+  // Пересчитывает время начала всех уроков после fromIndex, отталкиваясь от урока fromIndex
+  function recalcDayTimes(dayId, fromIndex) {
+    const lessons = weekSchedule[dayId] || [];
+    for (let i = fromIndex + 1; i < lessons.length; i++) {
+      lessons[i].start = addMinutes(lessons[i - 1].start, LESSON_DURATION + BREAK_MIN);
+    }
+  }
+
+  // ====================== РЕНДЕР ======================
+  function renderDayCard(dayObj, grade) {
+    const dayId = dayObj.id;
+    const lessons = weekSchedule[dayId] || [];
+    const dayPoints = lessons.reduce((s,l)=>s+getSubjectPoints(l.subject),0);
+    const maxLessons = getMaxLessons();
+    const maxPoints = getMaxPoints();
+
+    let statusClass = "good-day";
+    if (dayPoints > maxPoints || lessons.length > maxLessons) statusClass = "critical-day";
+    else if (dayPoints > maxPoints - 3 || lessons.length === maxLessons) statusClass = "warning-day";
+
+    const card = document.createElement("div");
+    card.className = `day-card ${statusClass}`;
+    card.dataset.day = dayId;
+
+    const header = document.createElement("div");
+    header.className = "day-header";
+    header.innerHTML = `<span>${dayObj.name}</span><span class="day-badge">${dayPoints} б. | ${lessons.length}/${maxLessons} ур.</span>`;
+
+    const list = document.createElement("div");
+    list.className = "lessons-list";
+    list.id = `lessons-${dayId}`;
+
+    lessons.forEach((lesson, idx) => {
+      const row = document.createElement("div");
+      row.className = `lesson-item ${isHardSubject(lesson.subject) ? 'hard-lesson' : ''}`;
+
+      const sel = document.createElement("select");
+      sel.className = "lesson-select";
+      sel.innerHTML = getSubjectOptions(grade);
+      sel.value = lesson.subject;
+
+      if (!lesson.start) lesson.start = idx === 0 ? "08:30" : addMinutes(lessons[idx-1].start, LESSON_DURATION + BREAK_MIN);
+
+      const startInp = document.createElement("input");
+      startInp.type = "time"; startInp.className = "time-input";
+      startInp.value = lesson.start;
+
+      const endLabel = document.createElement("span");
+      endLabel.className = "end-time-label";
+      endLabel.innerText = `– ${addMinutes(lesson.start, LESSON_DURATION)}`;
+
+      const pts = document.createElement("span");
+      pts.className = "lesson-points";
+      pts.innerText = `${getSubjectPoints(lesson.subject)} б.`;
+
+      const delBtn = document.createElement("button");
+      delBtn.innerText = "✕";
+      delBtn.className = "del-lesson";
+      delBtn.title = "Удалить урок";
+
+      sel.addEventListener("change", () => {
+        lesson.subject = sel.value;
+        pts.innerText = `${getSubjectPoints(lesson.subject)} б.`;
+        row.classList.toggle("hard-lesson", isHardSubject(lesson.subject));
+        persist();
+        renderFullWeek();
+      });
+      startInp.addEventListener("change", () => {
+        lesson.start = startInp.value;
+        recalcDayTimes(dayId, idx);
+        persist();
+        renderFullWeek();
+      });
+      delBtn.addEventListener("click", () => {
+        weekSchedule[dayId].splice(idx,1);
+        recalcDayTimes(dayId, idx - 1);
+        persist();
+        renderFullWeek();
+      });
+
+      row.append(sel, startInp, endLabel, pts, delBtn);
+      list.appendChild(row);
+    });
+
+    const addBtn = document.createElement("div");
+    addBtn.className = "add-lesson-btn";
+    addBtn.innerText = "+ Добавить урок";
+    addBtn.addEventListener("click", () => {
+      const prev = lessons[lessons.length - 1];
+      const start = prev ? addMinutes(prev.start, LESSON_DURATION + BREAK_MIN) : "08:30";
+      weekSchedule[dayId].push({ subject: (SUBJECTS_BY_CLASS[grade] || SUBJECTS_BY_CLASS[9])[0], start });
+      persist();
+      renderFullWeek();
+    });
+
+    card.append(header, list, addBtn);
+    return card;
+  }
+
+  function renderFullWeek() {
+    const grade = parseInt(document.getElementById("globalGrade").value);
+    currentGrade = grade;
+    persist();
+    const grid = document.getElementById("weekGrid");
+    grid.innerHTML = "";
+    DAYS.forEach(day => grid.appendChild(renderDayCard(day, grade)));
+    renderStats();
+  }
+
+  function renderStats() {
+    const maxAllowed = getMaxPoints();
+    const maxLessonsAllowed = getMaxLessons();
+    let dayStats = DAYS.map(day => {
+      const lessons = weekSchedule[day.id] || [];
+      const points = lessons.reduce((s,l)=>s+getSubjectPoints(l.subject),0);
+      return { day: day.name, short: day.short, id: day.id, points, lessons, count: lessons.length };
+    });
+
+    const maxDay = dayStats.reduce((m,d)=> d.points > m.points ? d : m, dayStats[0]);
+    const minDay = dayStats.reduce((m,d)=> d.points < m.points ? d : m, dayStats[0]);
+    const maxOverall = Math.max(...dayStats.map(d=>d.points), 5);
+
+    const chartHTML = `<div class="chart-bar-container">
+      ${dayStats.map(s => `
+        <div class="chart-day">
+          <div class="bar ${s.points > maxAllowed ? 'max-bar' : ''}" style="height:${Math.max(20,(s.points/maxOverall)*80)}px;"></div>
+          <div class="day-label">${s.short}</div>
+          <div class="points-value">${s.points} / ${maxAllowed}</div>
+        </div>`).join('')}
+    </div>`;
+
+    let warn = "";
+    if (maxDay.points > maxAllowed) {
+      warn = `<span class="err-text">❗ Превышение нормы: ${maxDay.day} — ${maxDay.points} б. при лимите ${maxAllowed}.</span><br>`;
+    }
+
+    let hardLate = [];
+    dayStats.forEach(d => {
+      d.lessons.forEach((l, idx) => {
+        if (isHardSubject(l.subject) && idx >= 3) {
+          hardLate.push(`${d.day}: «${l.subject}» ${idx+1}-м уроком`);
+        }
+      });
+    });
+
+    let rec = "";
+    if (hardLate.length) rec += `Сложные предметы поздно в расписании: ${hardLate.slice(0,4).join("; ")}.<br>`;
+    if (maxDay.points - minDay.points > 7) {
+      rec += `Большой разброс нагрузки: тяжелее всего ${maxDay.day} (${maxDay.points} б.), легче всего ${minDay.day} (${minDay.points} б.).`;
+    } else if (!hardLate.length && maxDay.points <= maxAllowed) {
+      rec = `Нагрузка распределена в пределах нормы СанПиН.`;
+    }
+
+    let lessonWarn = "";
+    const overLessons = dayStats.filter(d => d.count > maxLessonsAllowed);
+    if (overLessons.length) {
+      lessonWarn = `<br>⚠️ Превышение количества уроков: ${overLessons.map(d=>`${d.day} (${d.count})`).join(", ")}. Норма — ${maxLessonsAllowed} в день.`;
+    }
+
+    document.getElementById("chartArea").innerHTML = chartHTML + `<div style="font-size:12.5px;margin-top:6px;">Самый сложный день: ${maxDay.day} (${maxDay.points} б.) · Самый лёгкий: ${minDay.day} (${minDay.points} б.)</div>${warn}`;
+    document.getElementById("recommendArea").innerHTML = `<strong>Совет:</strong><br>${rec || "Заполните расписание, чтобы увидеть рекомендации."}${lessonWarn}`;
+  }
+
+  // ====================== ПРОФИЛИ ======================
+  function updateProfileUI() {
+    const box = document.getElementById("profileBox");
+    if (currentGrade === 10 || currentGrade === 11) {
+      box.style.display = "flex";
+      const sel = document.getElementById("profileSelect");
+      sel.innerHTML = ["Базовый","Физ-мат","Гуманитарный","Хим-био"].map(p => `<option value="${p}" ${p===currentProfile?'selected':''}>${p}</option>`).join("");
+    } else {
+      box.style.display = "none";
+    }
+  }
+
+  function initGradeSelect() {
+    const sel = document.getElementById("globalGrade");
+    sel.innerHTML = "";
+    for (let i=5;i<=11;i++) {
+      const opt = document.createElement("option");
+      opt.value = i; opt.textContent = `${i} класс`;
+      if (i === currentGrade) opt.selected = true;
+      sel.appendChild(opt);
+    }
+  }
+
+  // ====================== СОБЫТИЯ ======================
+  document.getElementById("globalGrade").addEventListener("change", (e) => {
+    currentGrade = parseInt(e.target.value);
+    persist();
+    updateProfileUI();
+    renderFullWeek();
+  });
+  document.getElementById("profileSelect")?.addEventListener("change", (e) => {
+    currentProfile = e.target.value;
+    persist();
+    renderFullWeek();
+  });
+  document.getElementById("resetWeekBtn").addEventListener("click", () => {
+    if (confirm("Очистить расписание на всю неделю?")) {
+      weekSchedule = {};
+      initEmptyWeek();
+      persist();
+      renderFullWeek();
+    }
+  });
+  document.getElementById("printBtn").addEventListener("click", () => window.print());
+
+  // ====================== ЗАПУСК ======================
+  initGradeSelect();
+  updateProfileUI();
+  renderFullWeek();
+</script>
+</body>
+</html>

@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Калькулятор среднего балла | Клавиатура 1–10</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      user-select: none;
+    }
+
+    body {
+      font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #b7e0e5 0%, #6ab0ba 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .calculator {
+      max-width: 550px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      padding: 32px 24px 40px;
+      box-shadow: 0 25px 45px rgba(0, 80, 80, 0.25);
+      border: 1px solid rgba(0, 168, 181, 0.4);
+    }
+
+    h1 {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.7rem;
+      color: #007582;
+      margin-bottom: 8px;
+      font-weight: 700;
+      padding-left: 16px;
+      border-left: 5px solid #00a8b5;
+    }
+
+    h1::before {
+      content: "⌨";
+      font-size: 1.8rem;
+    }
+
+    .sub {
+      color: #2c7a7a;
+      margin-bottom: 28px;
+      font-size: 0.85rem;
+      padding-left: 22px;
+      opacity: 0.8;
+    }
+
+    /* Список введённых оценок */
+    .grades-list {
+      background: #eefafc;
+      border-radius: 16px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      min-height: 85px;
+      max-height: 140px;
+      overflow-y: auto;
+      border: 1px solid #d1e9ed;
+    }
+
+    .grades-title {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #5f9ea8;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    .grades-bubbles {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .grade-bubble {
+      background: white;
+      border-radius: 12px;
+      padding: 8px 16px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #007582;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      border: 1px solid #c2dfe3;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .grade-bubble button {
+      background: none;
+      border: none;
+      font-size: 1rem;
+      cursor: pointer;
+      color: #95b7bc;
+      padding: 0 4px;
+      transition: 0.15s;
+      border-radius: 12px;
+    }
+
+    .grade-bubble button:hover {
+      color: #d94f4f;
+      transform: scale(1.1);
+    }
+
+    .empty-grades {
+      color: #9fcbd1;
+      font-size: 0.85rem;
+      padding: 8px 0;
+    }
+
+    /* Клавиатура с цифрами 1–10 */
+    .keyboard {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    .key-btn {
+      background: white;
+      border: none;
+      border-radius: 12px;
+      padding: 18px 0;
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #007582;
+      cursor: pointer;
+      transition: all 0.1s ease;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+      border: 1px solid #cae2e6;
+    }
+
+    .key-btn:active {
+      transform: scale(0.96);
+      background: #d9f0f3;
+    }
+
+    /* Кнопки действий */
+    .action-buttons {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    .btn-clear, .btn-undo {
+      flex: 1;
+      background: transparent;
+      border: 1.5px solid #00a8b5;
+      color: #007582;
+      font-weight: 600;
+      padding: 12px 12px;
+      cursor: pointer;
+      transition: 0.2s;
+      font-size: 0.95rem;
+    }
+
+    .btn-clear:hover, .btn-undo:hover {
+      background: #e2f5f7;
+      border-color: #008c96;
+    }
+
+    /* Результат */
+    .result-panel {
+      background: linear-gradient(110deg, #ffffff 0%, #f6fdfe 100%);
+      border-radius: 12px;
+      padding: 22px 20px;
+      text-align: center;
+      border: 1px solid #b3dfe4;
+    }
+
+    .average-number {
+      font-size: 4rem;
+      font-weight: 800;
+      line-height: 1;
+      background: linear-gradient(135deg, #006f7a, #00a8b5);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .average-label {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: #2f7b84;
+      margin-top: 6px;
+      font-weight: 600;
+    }
+
+    .grade-tag {
+      margin-top: 12px;
+      font-size: 0.9rem;
+      background: #deeff2;
+      display: inline-block;
+      padding: 6px 20px;
+      border-radius: 12px;
+      color: #00616b;
+      font-weight: 500;
+    }
+
+    .stats {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px dashed #cae2e6;
+    }
+
+    .stat-item {
+      flex: 1;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #007582;
+    }
+
+    .stat-label {
+      font-size: 0.7rem;
+      color: #5f9ea8;
+    }
+
+    footer {
+      margin-top: 20px;
+      font-size: 0.7rem;
+      text-align: center;
+      color: #5a9ca5;
+    }
+
+    @media (max-width: 480px) {
+      .calculator {
+        padding: 22px 16px 32px;
+      }
+      .key-btn {
+        padding: 14px 0;
+        font-size: 1.3rem;
+      }
+      .average-number {
+        font-size: 2.8rem;
+      }
+      .grade-bubble {
+        padding: 5px 12px;
+        font-size: 0.95rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="calculator">
+  <h1>Средний балл</h1>
+  <div class="sub">Нажимайте на оценки — среднее считается автоматически</div>
+
+  <!-- Список введённых оценок -->
+  <div class="grades-list">
+    <div class="grades-title">Введённые оценки</div>
+    <div id="gradesContainer" class="grades-bubbles">
+      <div class="empty-grades">— пока нет оценок —</div>
+    </div>
+  </div>
+
+  <!-- Клавиатура 1–10 -->
+  <div class="keyboard" id="keyboard">
+    <!-- кнопки 1-10 будут добавлены через js -->
+  </div>
+
+  <!-- Кнопки действий -->
+  <div class="action-buttons">
+    <button class="btn-undo" id="undoBtn">↩ Отменить</button>
+    <button class="btn-clear" id="clearBtn">🗑 Очистить всё</button>
+  </div>
+
+  <!-- Результат -->
+  <div class="result-panel">
+    <div class="average-number" id="avgValue">0.00</div>
+    <div class="average-label">Средний балл</div>
+    <div class="grade-tag" id="gradeCategory">—</div>
+    <div class="stats">
+      <div class="stat-item">
+        <div class="stat-value" id="countValue">0</div>
+        <div class="stat-label">оценок</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="sumValue">0</div>
+        <div class="stat-label">сумма</div>
+      </div>
+    </div>
+  </div>
+  <footer>Оценки от 1 до 10 • нажмите на оценку, чтобы удалить</footer>
+
+
+  <style>
+  .back-btn-fixed {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  padding: 10px 22px;
+  background: #1bb8b3; /* бирюзовая */
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  border-radius: 10px;
+  text-decoration: none;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  transition: background .15s, transform .1s;
+}
+
+.back-btn-fixed:hover {
+  background: #17a5a0;
+  transform: translateY(-2px);
+}
+
+</style>
+</div>
+ <a href="index.html" class="back-btn-fixed">Назад</a>
+<script>
+  (function() {
+    // Массив оценок
+    let grades = [];
+    
+    // DOM элементы
+    const gradesContainer = document.getElementById('gradesContainer');
+    const avgSpan = document.getElementById('avgValue');
+    const categorySpan = document.getElementById('gradeCategory');
+    const countSpan = document.getElementById('countValue');
+    const sumSpan = document.getElementById('sumValue');
+    const undoBtn = document.getElementById('undoBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const keyboard = document.getElementById('keyboard');
+    
+    // Сохранение в localStorage
+    function saveToLocal() {
+      localStorage.setItem('gradesKeyboard', JSON.stringify(grades));
+    }
+    
+    // Загрузка из localStorage
+    function loadFromLocal() {
+      const saved = localStorage.getItem('gradesKeyboard');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed)) {
+            grades = parsed;
+          }
+        } catch(e) {}
+      }
+      // Начальный пример — пустой список, но можно добавить демо
+      if (!grades.length) {
+        grades = [];
+      }
+    }
+    
+    // Пересчёт среднего и обновление всех данных
+    function recalculateAndUpdate() {
+      const count = grades.length;
+      if (count === 0) {
+        avgSpan.innerText = '0.00';
+        categorySpan.innerText = '—';
+        countSpan.innerText = '0';
+        sumSpan.innerText = '0';
+        return;
+      }
+      
+      let sum = 0;
+      for (let g of grades) {
+        sum += g;
+      }
+      const average = sum / count;
+      
+      avgSpan.innerText = average.toFixed(2);
+      countSpan.innerText = count;
+      sumSpan.innerText = sum;
+      
+      // Категория
+      if (average >= 8.5) categorySpan.innerText = 'Отлично! Высокий уровень';
+      else if (average >= 6.5) categorySpan.innerText = 'Хорошо, можно улучшать';
+      else if (average >= 4.5) categorySpan.innerText = 'Удовлетворительно, стоит подтянуть';
+      else if (average >= 3.0) categorySpan.innerText = 'Низкий балл, нужна помощь';
+      else categorySpan.innerText = 'Требуется внимание';
+      
+      saveToLocal();
+    }
+    
+    // Отрисовка списка оценок (пузырьки)
+    function renderGradesList() {
+      if (!gradesContainer) return;
+      
+      if (grades.length === 0) {
+        gradesContainer.innerHTML = '<div class="empty-grades">— пока нет оценок —</div>';
+        return;
+      }
+      
+      let html = '';
+      grades.forEach((grade, idx) => {
+        html += `
+          <div class="grade-bubble" data-index="${idx}">
+            ${grade}
+            <button class="remove-grade" data-index="${idx}" title="Удалить">✖</button>
+          </div>
+        `;
+      });
+      gradesContainer.innerHTML = html;
+      
+      // Навешиваем обработчики на кнопки удаления внутри пузырьков
+      document.querySelectorAll('.remove-grade').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const index = parseInt(btn.getAttribute('data-index'));
+          if (!isNaN(index) && index >= 0 && index < grades.length) {
+            grades.splice(index, 1);
+            renderGradesList();
+            recalculateAndUpdate();
+          }
+        });
+      });
+    }
+    
+    // Добавление оценки
+    function addGrade(value) {
+      const num = parseInt(value);
+      if (isNaN(num)) return;
+      if (num >= 1 && num <= 10) {
+        grades.push(num);
+        renderGradesList();
+        recalculateAndUpdate();
+      }
+    }
+    
+    // Отмена последней оценки
+    function undoLast() {
+      if (grades.length > 0) {
+        grades.pop();
+        renderGradesList();
+        recalculateAndUpdate();
+      }
+    }
+    
+    // Полная очистка
+    function clearAll() {
+      if (grades.length > 0 && confirm('Удалить все оценки?')) {
+        grades = [];
+        renderGradesList();
+        recalculateAndUpdate();
+      } else if (grades.length === 0) {
+        // просто ничего не делаем
+      }
+    }
+    
+    // Создание кнопок клавиатуры 1–10
+    function buildKeyboard() {
+      keyboard.innerHTML = '';
+      for (let i = 1; i <= 10; i++) {
+        const btn = document.createElement('button');
+        btn.className = 'key-btn';
+        btn.textContent = i;
+        btn.addEventListener('click', () => addGrade(i));
+        keyboard.appendChild(btn);
+      }
+    }
+    
+    // Инициализация
+    function init() {
+      loadFromLocal();
+      renderGradesList();
+      recalculateAndUpdate();
+      buildKeyboard();
+      
+      undoBtn.addEventListener('click', undoLast);
+      clearBtn.addEventListener('click', clearAll);
+    }
+    
+    init();
+  })();
+</script>
+</body>
+</html>

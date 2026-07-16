@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Генератор плана-конспекта | Межпредметные связи</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+      background: #f0fafa;
+      min-height: 100vh;
+      color: #1a3b3f;
+    }
+    .topbar {
+      display: flex;
+      align-items: center;
+      padding: 12px 24px;
+      background: #fff;
+      border-bottom: 1.5px solid #cbe5e8;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.03);
+    }
+    .back {
+      text-decoration: none;
+      color: #0d7377;
+      font-weight: 700;
+      font-size: 14px;
+      padding: 7px 16px;
+      border: 1.5px solid #0d7377;
+      border-radius: 16px;
+      transition: 0.2s;
+    }
+    .back:hover {
+      background: #0d7377;
+      color: #fff;
+    }
+    .bar-title {
+      flex: 1;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 700;
+      color: #0d7377;
+    }
+    .main {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 28px 20px 80px;
+    }
+    h1 {
+      font-size: 36px;
+      color: #0d7377;
+      text-align: center;
+      margin-bottom: 6px;
+    }
+    .sub {
+      text-align: center;
+      color: #5f9ea0;
+      font-size: 14px;
+      margin-bottom: 28px;
+    }
+    .card, .res-wrap {
+      background: #fff;
+      border: 1px solid #d4e7e9;
+      border-radius: 16px;
+      padding: 24px 28px;
+      margin-bottom: 20px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.03);
+    }
+    .lbl {
+      display: block;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #2b8f94;
+      margin-bottom: 6px;
+    }
+    input, select {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1.5px solid #d0e5e8;
+      border-radius: 16px;
+      font-size: 14px;
+      background: #fefefe;
+      transition: 0.2s;
+      outline: none;
+    }
+    input:focus, select:focus {
+      border-color: #0d7377;
+      box-shadow: 0 0 0 2px rgba(13,115,119,0.1);
+    }
+    .row {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+    .row .field {
+      flex: 1;
+      min-width: 140px;
+    }
+    .field {
+      margin-bottom: 18px;
+    }
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 10px 0 8px;
+    }
+    .chip {
+      padding: 7px 18px;
+      border-radius: 16px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1.5px solid #cce3e5;
+      background: #f9fefe;
+      color: #2f7b80;
+      transition: 0.15s;
+    }
+    .chip.on {
+      background: #0d7377;
+      border-color: #0d7377;
+      color: white;
+    }
+    .btn {
+      width: 100%;
+      padding: 14px;
+      background: #0d7377;
+      color: white;
+      border: none;
+      border-radius: 16px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s;
+      margin-top: 10px;
+    }
+    .btn:hover {
+      background: #14a8ad;
+      transform: scale(0.98);
+    }
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .err {
+      background: #fff0f0;
+      border-left: 5px solid #e07c7c;
+      border-radius: 16px;
+      padding: 14px 20px;
+      color: #9b2e2e;
+      font-size: 13px;
+      display: none;
+      margin-bottom: 20px;
+    }
+    .res-wrap {
+      display: none;
+      padding: 0;
+      overflow: hidden;
+    }
+    .res-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      background: #eef7f7;
+      border-bottom: 1px solid #d4e7e9;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .res-lbl {
+      font-weight: 800;
+      color: #0d7377;
+      font-size: 13px;
+      letter-spacing: 0.5px;
+    }
+    .btn-group {
+      display: flex;
+      gap: 12px;
+    }
+    .cbtn {
+      background: #0d7377;
+      border: none;
+      padding: 7px 22px;
+      border-radius: 16px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .cbtn:hover {
+      background: #0a5e61;
+      transform: scale(0.97);
+    }
+    .status {
+      padding: 20px 24px;
+      color: #5f9ea0;
+      font-size: 14px;
+      background: #f9fefd;
+      display: none;
+      border-bottom: 1px solid #e4f0f0;
+    }
+    .res-body {
+      padding: 28px;
+      font-size: 14.5px;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      background: white;
+      max-height: 65vh;
+      overflow-y: auto;
+    }
+    .res-foot {
+      padding: 14px 24px;
+      border-top: 1px solid #e4f0f0;
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .back-btn-fixed {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      padding: 10px 22px;
+      background: #1bb8b3;
+      color: #fff;
+      font-weight: 700;
+      font-size: 14px;
+      border-radius: 10px;
+      text-decoration: none;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      transition: background .15s, transform .1s;
+    }
+    .back-btn-fixed:hover {
+      background: #17a5a0;
+      transform: translateY(-2px);
+    }
+    .demo-banner {
+      background: #fff8d6;
+      border: 1px solid #e6c94a;
+      border-left: 4px solid #e6c94a;
+      border-radius: 16px;
+      padding: 14px 20px;
+      margin-bottom: 20px;
+    }
+    .demo-banner-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: #7a5c00;
+      margin-bottom: 4px;
+    }
+    .demo-banner-text {
+      font-size: 13px;
+      color: #8a6d00;
+      line-height: 1.5;
+    }
+    .demo-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 800;
+      color: #7a5c00;
+      background: #fff3b0;
+      border: 1px solid #e6c94a;
+      border-radius: 999px;
+      padding: 3px 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      vertical-align: middle;
+      margin-left: 8px;
+    }
+    @media (max-width: 600px) {
+      .main { padding: 16px; }
+      .card, .res-wrap { padding: 18px; }
+      .res-head { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <div style="width: 80px;"></div>
+</div>
+
+<div class="main">
+  <h1>Генератор планов-конспектов уроков <span class="demo-badge">ДЕМО-ВЕРСИЯ</span></h1>
+  <p class="sub">Программа Республики Беларусь · 45 минут</p>
+
+  <div class="demo-banner">
+    <div class="demo-banner-title">⚠️ Это демо‑версия</div>
+    <div class="demo-banner-text">Здесь показан заранее подготовленный пример плана-конспекта – без реального обращения к ИИ. В полной версии план генерируется автоматически по любой теме, предмету и классу.</div>
+	        <span class="api-hint">⚡работает без ключа, качество ответов  <strong>ниже</strong></span>
+
+  </div>
+
+  <div class="card">
+    <hr style="margin: 14px 0; border-color:#e0edef;">
+
+    <div class="lbl">Тип урока</div>
+    <div class="chips" id="typeChips">
+      <div class="chip" data-type="new">Изучение нового</div>
+      <div class="chip" data-type="combined">Комбинированный</div>
+      <div class="chip" data-type="consolidation">Закрепление</div>
+      <div class="chip" data-type="generalization">Обобщение</div>
+      <div class="chip" data-type="control">Контроль знаний</div>
+    </div>
+
+    <hr style="margin: 14px 0; border-color:#e0edef;">
+
+    <div class="row">
+      <div class="field">
+        <label class="lbl">Предмет</label>
+        <select id="subjectSelect">
+          <option value="Биология">Биология</option>
+          <option value="География">География</option>
+          <option value="Химия">Химия</option>
+          <option value="Человек и мир">Человек и мир</option>
+        </select>
+      </div>
+      <div class="field">
+        <label class="lbl">Класс</label>
+        <select id="classSelect">
+          <option value="6">6 класс</option><option value="7">7 класс</option><option value="8">8 класс</option>
+          <option value="9">9 класс</option><option value="10">10 класс</option><option value="11">11 класс</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="lbl">Параграф / тема (выберите из списка)</label>
+      <select id="topicSelect">
+        <option value="">-- выберите параграф --</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label class="lbl">Или введите тему вручную</label>
+      <input type="text" id="manualTopic" placeholder="Например: Фотосинтез, строение клетки, климат Евразии...">
+    </div>
+
+    <button class="btn" id="generateBtn">Сгенерировать план-конспект</button>
+  </div>
+
+  <div class="err" id="errorBlock"></div>
+
+  <div class="res-wrap" id="resultWrap">
+    <div class="res-head">
+      <span class="res-lbl">План-конспект урока (45 мин)</span>
+      <div class="btn-group">
+        <button class="cbtn" id="copyBtnTop">Копировать</button>
+        <button class="cbtn" id="wordExportBtn">Сохранить в doc</button>
+      </div>
+    </div>
+    <div class="status" id="statusMsg">Готовим демо план-конспект...</div>
+    <div class="res-body" id="resultBody"></div>
+    <div class="res-foot">
+      <button class="cbtn" id="copyBtnBottom">Копировать текст</button>
+      <button class="cbtn" id="wordExportBtn2">Сохранить в doc</button>
+    </div>
+  </div>
+  <a href="index.html" class="back-btn-fixed">Назад</a>
+</div>
+
+<script>
+// ДЕМО-ВЕРСИЯ: реальный ИИ не вызывается, API-ключ не требуется.
+
+// ------------------------ БАЗА ПАРАГРАФОВ -----------------------------
+const topicDatabase = {
+  "Биология": {
+    6: ["§ 1 Живые организмы"]
+  },
+  "География": {
+    6: ["§ 1 Стороны горизонта"]
+  },
+  "Химия": {
+    7: ["§ 1 Химия - наука о веществах"]
+  },
+  "Человек и мир": {
+    5: ["§ 1 Природа Земли и человек"]
+  }
+};
+
+// Глобальные переменные
+let selectedType = "new";
+
+// Функция обновления списка параграфов
+function updateTopicSelect() {
+  const subject = document.getElementById("subjectSelect").value;
+  const classVal = document.getElementById("classSelect").value;
+  const topicSelect = document.getElementById("topicSelect");
+  const db = topicDatabase[subject]?.[classVal] || [];
+  
+  topicSelect.innerHTML = '<option value="">-- выберите параграф --</option>';
+  if (db.length === 0) {
+    topicSelect.innerHTML += '<option disabled>Нет данных, введите вручную</option>';
+  } else {
+    db.forEach(topic => {
+      const option = document.createElement("option");
+      option.value = topic;
+      option.textContent = topic;
+      topicSelect.appendChild(option);
+    });
+  }
+}
+
+// Синхронизация выбора темы с ручным вводом
+function syncTopic() {
+  const selectTopic = document.getElementById("topicSelect").value;
+  const manual = document.getElementById("manualTopic");
+  if (selectTopic) {
+    manual.value = selectTopic;
+  }
+}
+
+// Обработчики
+document.getElementById("subjectSelect").addEventListener("change", () => { 
+  updateTopicSelect(); 
+  syncTopic(); 
+});
+document.getElementById("classSelect").addEventListener("change", () => { 
+  updateTopicSelect(); 
+  syncTopic(); 
+});
+document.getElementById("topicSelect").addEventListener("change", syncTopic);
+
+document.querySelectorAll("#typeChips .chip").forEach(chip => {
+  chip.addEventListener("click", () => {
+    document.querySelectorAll("#typeChips .chip").forEach(c => c.classList.remove("on"));
+    chip.classList.add("on");
+    selectedType = chip.dataset.type;
+  });
+});
+document.querySelector("#typeChips .chip").classList.add("on");
+
+// ══════════════════════════════════════════════════════════
+//  ДЕМО-ДАННЫЕ – заранее подготовленные готовые планы-конспекты.
+//  В демо-версии реальный запрос к ИИ не выполняется: при нажатии
+//  «Сгенерировать план-конспект» подставляется готовая заготовка,
+//  в которую вписываются выбранные тема / предмет / класс.
+// ══════════════════════════════════════════════════════════
+const DEMO_PLANS = {
+  new: (topic, subject, grade) => `Цель урока: создать условия для формирования у учащихся представления о теме «${topic}», для восприятия, осмысления и первичного запоминания новых знаний и способов деятельности.
+
+Задачи урока:
+Образовательные:
+– сформировать представление учащихся о ключевых понятиях по теме «${topic}»;
+– обеспечить усвоение основных фактов и связей по изучаемому материалу;
+– организовать применение новых знаний в стандартной ситуации.
+
+Развивающие:
+– развивать умение анализировать, сравнивать и делать выводы на материале темы «${topic}»;
+– способствовать развитию познавательного интереса учащихся к предмету «${subject}»;
+– формировать умение работать с текстом учебника, схемами и таблицами.
+
+Воспитательные:
+– формировать научную картину мира учащихся;
+– воспитывать ответственное отношение к учебному труду.
+
+Тип урока: урок изучения и первичного закрепления новых знаний и способов деятельности.
+Форма проведения: фронтальная, с элементами групповой работы.
+Методы: словесные (беседа, объяснение), наглядные (демонстрация схем), практические (выполнение заданий).
+Методические приёмы: постановка проблемного вопроса, составление опорного конспекта, работа с текстом учебника.
+Учебно-методическое обеспечение: учебное пособие «${subject}», ${grade} класс (e-padruchnik.adu.by), тема «${topic}».
+
+Ход урока
+
+1. Организационный этап (2 минуты)
+учитель приветствует учащихся, проверяет готовность класса к уроку, настраивает на продуктивную работу.
+
+2. Подготовка учащихся к работе на основном этапе (5 минут)
+учитель задаёт вопросы для актуализации знаний: что вам уже известно по теме «${topic}»? учитель формулирует проблемный вопрос, подводящий к теме урока, и поясняет, зачем эта тема важна для дальнейшего изучения предмета «${subject}».
+
+3. Формирование новых понятий и способов деятельности (18 минут)
+учитель объясняет новый материал по теме «${topic}», опираясь на текст параграфа, демонстрирует схему на доске, приводит конкретные примеры. Учащиеся ведут записи в тетради, отвечают на уточняющие вопросы учителя.
+
+4. Первичная проверка понимания изученного (7 минут)
+учитель предлагает учащимся короткие устные задания и вопросы по теме «${topic}», проверяет понимание ключевых понятий через фронтальный опрос.
+
+5. Закрепление знаний и способов деятельности (7 минут)
+учитель организует практическую работу в парах: учащиеся выполняют задание по теме «${topic}», применяя новый способ действия в типовой ситуации.
+
+6. Обобщение и систематизация знаний (3 минуты)
+учитель предлагает выделить главное из изученного материала, вместе с классом составляет краткую опорную схему по теме «${topic}».
+
+7. Информирование о домашнем задании (2 минуты)
+учитель называет параграф и страницы учебника, поясняет порядок выполнения задания, обращает внимание на трудные моменты.
+
+8. Подведение итогов и рефлексия (1 минута)
+учитель предлагает учащимся сформулировать, что нового они узнали на уроке, проводит короткую рефлексию, благодарит класс за работу.`,
+
+  combined: (topic, subject, grade) => `Цель урока: организовать деятельность учащихся по восприятию, осмыслению и первичному запоминанию знаний и способов деятельности; обеспечить закрепление, обобщение и систематизацию знаний и умений по теме «${topic}».
+
+Задачи урока:
+Образовательные:
+– сформировать представление о ключевых понятиях по теме «${topic}»;
+– раскрыть сущность изучаемых понятий;
+– обеспечить первичное закрепление знаний и способов деятельности по теме «${topic}».
+
+Развивающие:
+– развивать умение анализировать и сравнивать материал по теме «${topic}»;
+– формировать умение устанавливать причинно-следственные связи;
+– способствовать развитию познавательного интереса учащихся к предмету «${subject}».
+
+Воспитательные:
+– формировать научную картину мира через применение полученных знаний;
+– создать условия для развития коммуникативных компетенций учащихся.
+
+Тип урока: комбинированный урок.
+Форма проведения: фронтальная, индивидуальная и групповая.
+Методы: словесные (объяснение, беседа), наглядные (демонстрация, схема), практические (упражнения, задания).
+Методические приёмы: устный опрос, составление опорной схемы, работа в парах.
+Учебно-методическое обеспечение: учебное пособие «${subject}», ${grade} класс (e-padruchnik.adu.by), тема «${topic}».
+
+Структура урока
+
+1. Организационный этап (2 минуты)
+учитель приветствует учащихся, проверяет готовность класса, настраивает на работу.
+
+2. Проверка домашнего задания (6 минут)
+учитель проводит выборочную устную проверку по предыдущей теме, разбирает типичные ошибки, уточняет ключевые моменты.
+
+3. Подготовка учащихся к работе на основном этапе (4 минуты)
+учитель актуализирует знания, необходимые для темы «${topic}», формулирует мотивационный вопрос: зачем нам нужно изучить эту тему?
+
+4. Формирование новых понятий и способов деятельности (12 минут)
+учитель объясняет новый материал по теме «${topic}», демонстрирует схему, приводит конкретные примеры из повседневной жизни.
+
+5. Первичная проверка понимания изученного (5 минут)
+учитель задаёт короткие вопросы и мини-задания по теме «${topic}» для проверки усвоения ключевых понятий.
+
+6. Закрепление знаний и способов деятельности (6 минут)
+учитель организует практическую работу в парах, где учащиеся применяют новый способ действия в типовой ситуации по теме «${topic}».
+
+7. Обобщение и систематизация знаний и способов деятельности (4 минуты)
+учитель вместе с классом выделяет главное, составляет краткую обобщающую схему по теме «${topic}», связывает новый материал с ранее изученным.
+
+8. Контроль и самоконтроль знаний (3 минуты)
+учитель предлагает короткое тестовое задание по теме «${topic}», организует взаимопроверку в парах.
+
+9. Информирование о домашнем задании (2 минуты)
+учитель называет параграф и страницы учебника, поясняет порядок выполнения задания.
+
+10. Подведение итогов и рефлексия (1 минута)
+учитель предлагает учащимся оценить свою работу на уроке, проводит короткую рефлексию, благодарит класс.`,
+
+  consolidation: (topic, subject, grade) => `Цель урока: создать условия для закрепления знаний и способов деятельности учащихся и самостоятельного применения ими знаний по теме «${topic}».
+
+Задачи урока:
+Образовательные:
+– закрепить знания учащихся по теме «${topic}»;
+– закрепить умения применять изученный материал на практике;
+– обеспечить применение знаний в типовых и новых ситуациях.
+
+Развивающие:
+– продолжить формирование умений анализировать материал по теме «${topic}»;
+– создать условия для развития умений устанавливать причинно-следственные связи;
+– способствовать развитию познавательного интереса учащихся к предмету «${subject}».
+
+Воспитательные:
+– продолжить формирование научной картины мира через применение знаний;
+– создать условия для формирования коммуникативных компетенций учащихся.
+
+Тип урока: урок закрепления знаний и способов деятельности и комплексного применения знаний и способов деятельности.
+Форма проведения: индивидуальная и групповая.
+Методы: словесные (объяснение, беседа), наглядные (демонстрация, схема), практические (упражнения, задания).
+Методические приёмы: работа по образцу, задания повышенной сложности, взаимопроверка.
+Учебно-методическое обеспечение: учебное пособие «${subject}», ${grade} класс (e-padruchnik.adu.by), тема «${topic}».
+
+Структура урока
+
+1. Организационный этап (2 минуты)
+учитель приветствует учащихся, проверяет готовность класса, настраивает на продуктивную работу.
+
+2. Проверка домашнего задания (6 минут)
+учитель анализирует выполнение домашнего задания по теме «${topic}», разбирает типичные ошибки, уточняет ключевые моменты.
+
+3. Подготовка учащихся к работе на основном этапе (4 минуты)
+учитель актуализирует знания по теме «${topic}», формулирует мотивационный вопрос, объясняет цель урока.
+
+4. Закрепление знаний и способов деятельности (10 минут)
+учитель предлагает учащимся выполнить задания по образцу на материале темы «${topic}», работает с примерами и схемами.
+
+5. Комплексное применение знаний и способов деятельности (10 минут)
+учитель организует работу в парах: учащиеся выполняют задания повышенной сложности по теме «${topic}», применяя знания в новой ситуации.
+
+6. Контроль и самоконтроль знаний (5 минут)
+учитель проводит короткую проверочную работу по теме «${topic}», организует взаимопроверку по критериям.
+
+7. Коррекция знаний (3 минуты)
+учитель разбирает типичные ошибки, уточняет трудные понятия, поясняет алгоритмы действий.
+
+8. Информирование о домашнем задании (3 минуты)
+учитель называет параграф и страницы учебника, поясняет порядок выполнения задания, обращает внимание на дифференциацию.
+
+9. Подведение итогов и рефлексии (2 минуты)
+учитель предлагает учащимся оценить, что они закрепили на уроке, проводит рефлексию, благодарит класс за работу.`,
+
+  generalization: (topic, subject, grade) => `Цель урока: организовать деятельность учащихся по обобщению и систематизации знаний и способов деятельности по теме «${topic}».
+
+Задачи урока:
+Образовательные:
+– обобщить знания учащихся по теме «${topic}»;
+– систематизировать способы деятельности, связанные с изучаемым материалом;
+– обеспечить целостное понимание ключевых понятий по теме «${topic}».
+
+Развивающие:
+– развивать умение анализировать и сравнивать материал по теме «${topic}»;
+– формировать умение устанавливать причинно-следственные связи;
+– способствовать развитию познавательного интереса учащихся к предмету «${subject}».
+
+Воспитательные:
+– формировать научную картину мира через применение знаний;
+– создать условия для формирования коммуникативных компетенций учащихся.
+
+Тип урока: урок обобщения и систематизации знаний и способов деятельности.
+Форма проведения: фронтальная, с элементами групповой работы.
+Методы: словесные (беседа, объяснение), наглядные (схемы, таблицы), практические (упражнения, задания).
+Методические приёмы: составление обобщающей таблицы, задания на классификацию и сравнение.
+Учебно-методическое обеспечение: учебное пособие «${subject}», ${grade} класс (e-padruchnik.adu.by), тема «${topic}».
+
+Структура урока
+
+1. Организационный этап (2 минуты)
+учитель приветствует учащихся, проверяет готовность класса, настраивает на работу.
+
+2. Проверка домашнего задания (5 минут)
+учитель анализирует выполнение домашнего задания, разбирает типичные ошибки, уточняет ключевые моменты по теме «${topic}».
+
+3. Подготовка учащихся к работе на основном этапе (4 минуты)
+учитель актуализирует знания по теме «${topic}», формулирует проблемный вопрос, объясняет, зачем нужно обобщить материал.
+
+4. Обобщение и систематизация знаний и способов деятельности (22 минуты)
+учитель организует работу с обобщающей таблицей по теме «${topic}», предлагает задания на классификацию и сравнение, проводит обсуждение ключевых понятий и способов действий.
+
+5. Информирование о домашнем задании (3 минуты)
+учитель называет параграф и страницы учебника для повторения, поясняет порядок выполнения задания.
+
+6. Подведение итогов и рефлексии (9 минут)
+учитель предлагает учащимся сформулировать, что они обобщили и систематизировали на уроке, проводит рефлексию, связывает материал с дальнейшим обучением, благодарит класс за работу.`,
+
+  control: (topic, subject, grade) => `Цель урока: обеспечить проверку и оценку знаний и способов деятельности учащихся; организовать деятельность по коррекции знаний и способов деятельности по теме «${topic}».
+
+Задачи урока:
+Образовательные:
+– проверить уровень усвоения знаний учащихся по теме «${topic}»;
+– оценить сформированность способов деятельности по изучаемому материалу;
+– выявить пробелы и затруднения учащихся.
+
+Развивающие:
+– развивать умение анализировать собственные ошибки;
+– формировать навыки самоконтроля и самооценки;
+– способствовать развитию логического мышления через выполнение заданий по теме «${topic}».
+
+Воспитательные:
+– формировать ответственное отношение к результатам учебной деятельности;
+– создать условия для развития коммуникативных компетенций при обсуждении результатов.
+
+Тип урока: урок проверки и оценки знаний и способов деятельности и коррекции знаний и способов деятельности.
+Форма проведения: индивидуальная, с элементами взаимопроверки.
+Методы: словесные (инструктаж, беседа), практические (выполнение заданий), наглядные (схемы, таблицы).
+Методические приёмы: тестовые задания, мини-контрольная работа, разбор ошибок.
+Учебно-методическое обеспечение: учебное пособие «${subject}», ${grade} класс (e-padruchnik.adu.by), тема «${topic}».
+
+Структура урока
+
+1. Организационный этап (2 минуты)
+учитель приветствует учащихся, проверяет готовность класса, настраивает на самостоятельную работу.
+
+2. Проверка домашнего задания (5 минут)
+учитель проводит выборочную проверку домашнего задания, анализирует типичные ошибки, уточняет ключевые моменты по теме «${topic}».
+
+3. Подготовка учащихся к работе на основном этапе (4 минуты)
+учитель актуализирует знания по теме «${topic}», объясняет цель проверочной работы и критерии оценивания.
+
+4. Комплексное применение знаний и способов деятельности (10 минут)
+учитель предлагает учащимся выполнить задания разного уровня сложности по теме «${topic}», работая с текстами, схемами и практическими примерами.
+
+5. Контроль и самоконтроль знаний и способов деятельности (12 минут)
+учитель проводит мини-контрольную работу по теме «${topic}», организует взаимопроверку и самооценку по заданным критериям.
+
+6. Коррекция знаний и способов деятельности (7 минут)
+учитель разбирает допущенные ошибки, поясняет трудные моменты, предлагает корректирующие упражнения по теме «${topic}».
+
+7. Подведение итогов и рефлексии (5 минут)
+учитель подводит итоги проверочной работы: что удалось, что требует доработки, организует эмоциональную рефлексию и связывает материал с дальнейшим обучением.`
+};
+
+// Генерация (демо)
+const generateBtn = document.getElementById("generateBtn");
+const resultWrap = document.getElementById("resultWrap");
+const resultBody = document.getElementById("resultBody");
+const statusDiv = document.getElementById("statusMsg");
+const errorBlock = document.getElementById("errorBlock");
+
+async function generate() {
+  errorBlock.style.display = "none";
+  const subject = document.getElementById("subjectSelect").value;
+  const grade = document.getElementById("classSelect").value;
+  let topic = document.getElementById("manualTopic").value.trim();
+
+  if (!topic) {
+    errorBlock.innerText = "Введите или выберите тему урока.";
+    errorBlock.style.display = "block";
+    return;
+  }
+
+  generateBtn.disabled = true;
+  generateBtn.textContent = "Генерация...";
+  resultWrap.style.display = "block";
+  statusDiv.style.display = "block";
+  statusDiv.textContent = "Готовим демо план-конспект...";
+  resultBody.textContent = "";
+
+  // ДЕМО: реального обращения к ИИ нет – просто имитируем задержку
+  // генерации и показываем заранее подготовленный пример конспекта.
+  await new Promise(resolve => setTimeout(resolve, 900));
+
+  try {
+    const generated = DEMO_PLANS[selectedType](topic, subject, grade);
+    statusDiv.style.display = "none";
+    resultBody.textContent = generated;
+  } catch (err) {
+    statusDiv.style.display = "none";
+    errorBlock.innerText = "Не удалось загрузить демо-пример: " + err.message;
+    errorBlock.style.display = "block";
+  } finally {
+    generateBtn.disabled = false;
+    generateBtn.textContent = "Сгенерировать план-конспект";
+  }
+}
+
+function copyText() {
+  const text = resultBody.innerText;
+  if (!text) return;
+  navigator.clipboard.writeText(text);
+  alert("Текст скопирован в буфер");
+}
+
+// Сохранение в Word (без заголовка и даты, мета-информация по центру)
+function saveToWord() {
+  const content = document.getElementById("resultBody").innerText;
+  if (!content) {
+    alert("Нет сгенерированного конспекта. Сначала создайте план.");
+    return;
+  }
+
+  const subject = document.getElementById("subjectSelect").value;
+  const grade = document.getElementById("classSelect").value;
+  const topic = document.getElementById("manualTopic").value.trim() || "План-конспект";
+  
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/&/g, '&amp;')
+              .replace(/</g, '&lt;')
+              .replace(/>/g, '&gt;')
+              .replace(/"/g, '&quot;');
+  }
+  
+  function processTextForWord(text) {
+    let paragraphs = text.split(/\r?\n/);
+    let result = '';
+    
+    for (let i = 0; i < paragraphs.length; i++) {
+      let line = paragraphs[i];
+      let trimmed = line.trim();
+      
+      if (trimmed === '') {
+        result += '<p> </p>';
+        continue;
+      }
+      
+      const isHeading = trimmed.match(/^\d+\.\s+[А-Я]/) || 
+                        trimmed.match(/^(Тема|Тип урока|Цель|Задачи|Этап|Структура|Организационный|Подведение|Физкультминутка|Домашнее задание|Рефлексия)/i);
+      
+      if (isHeading) {
+        result += '<b>' + escapeHtml(trimmed) + '</b>';
+      } else if (trimmed.match(/^[•\-*]\s/) || trimmed.match(/^\d+[.)]\s/)) {
+        result += '<div style="margin-left:1.27cm;">' + escapeHtml(trimmed) + '</div>';
+      } else {
+        result += '<p>' + escapeHtml(trimmed) + '</p>';
+      }
+    }
+    return result;
+  }
+
+  const wordHtml = '<!DOCTYPE html>\n<html>\n<head>\n<meta charset="UTF-8">\n<title>План-конспект урока</title>\n<style>\nbody { margin: 0; padding: 0; background: white; }\n.document { width: 100%; margin: 0 auto; padding: 0; }\n.plan-content { font-family: \'Times New Roman\', Times, serif; font-size: 14pt; line-height: 1; text-align: justify; margin: 0; padding: 0; }\n.plan-content p { margin: 0; padding: 0; text-indent: 1.27cm; line-height: 1; text-align: justify; }\n.plan-content b { font-weight: bold; text-indent: 0; display: block; margin-top: 6pt; margin-bottom: 2pt; }\n.meta { font-family: \'Times New Roman\', Times, serif; font-size: 14pt; text-align: center; margin-bottom: 12pt; text-indent: 0; }\nhr { margin: 8pt 0; border: 0.5px solid #ccc; }\n</style>\n</head>\n<body>\n<div class="document">\n<div class="plan-content">\n<div class="meta">\n<b>Предмет:</b> ' + escapeHtml(subject) + '<br>\n<b>Класс:</b> ' + escapeHtml(grade) + '<br>\n<b>Тема:</b> ' + escapeHtml(topic) + '\n</div>\n<hr>\n' + processTextForWord(content) + '\n</div>\n</div>\n</body>\n</html>';
+
+  const blob = new Blob([wordHtml], { type: 'application/msword' });
+  const link = document.createElement('a');
+  const fileName = subject + '_' + grade + '_' + topic.replace(/[\\/:*?"<>|]/g, '_').substring(0, 50) + '.doc';
+  link.href = URL.createObjectURL(blob);
+  link.download = fileName;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(link.href);
+}
+
+// Обработчики
+generateBtn.addEventListener("click", generate);
+document.getElementById("copyBtnTop").addEventListener("click", copyText);
+document.getElementById("copyBtnBottom").addEventListener("click", copyText);
+document.getElementById("wordExportBtn").addEventListener("click", saveToWord);
+document.getElementById("wordExportBtn2").addEventListener("click", saveToWord);
+
+// Инициализация
+updateTopicSelect();
+syncTopic();
+</script>
+</body>
+</html>

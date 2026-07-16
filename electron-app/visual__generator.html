@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Генератор визуальных опор</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;800&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    :root {
+      --bg:#e8f7f7; --surface:#f0fbfb; --surface2:#d4f0f0; --border:#a8dada;
+      --accent:#0e9e9e; --accent2:#007a7a; --text:#0d3535; --muted:#4a8080;
+      --radius:12px; --shadow:0 2px 16px rgba(14,158,158,0.10);
+    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Golos Text',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+    .header{background:linear-gradient(135deg,#0a4f4f 0%,#0d6b6b 60%,#0a8080 100%);border-bottom:2px solid var(--accent);padding:14px 24px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 12px rgba(14,158,158,0.2);}
+    .header-logo{width:38px;height:38px;background:linear-gradient(135deg,#2dd4bf,#0e9e9e);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
+    .header-title{font-family:'Unbounded',sans-serif;font-size:2rem;font-weight:800;letter-spacing:-0.5px;color:#e0fafa;}
+    .header-sub{font-size:0.68rem;color:#7ecfcf;margin-top:1px;}
+    .header-badge{margin-left:auto;background:rgba(45,212,191,0.18);border:1px solid rgba(45,212,191,0.45);color:#2dd4bf;font-size:0.65rem;font-weight:600;padding:4px 10px;border-radius:999px;white-space:nowrap;}
+
+    .container{max-width:1420px;margin:0 auto;padding:18px 18px 50px;}
+    .grid{display:grid;grid-template-columns:390px 1fr;gap:18px;align-items:start;}
+    @media(max-width:1100px){.grid{grid-template-columns:1fr;}}
+
+    .panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);}
+    .panel-header{padding:11px 15px;border-bottom:1px solid var(--border);font-family:'Unbounded',sans-serif;font-size:0.68rem;font-weight:600;letter-spacing:0.5px;color:var(--muted);text-transform:uppercase;display:flex;align-items:center;gap:8px;background:linear-gradient(90deg,var(--surface2),var(--surface));}
+    .panel-body{padding:14px;}
+
+    .demo-banner{background:#fff8d6;border:1px solid #e6c94a;border-left:4px solid #e6c94a;border-radius:10px;padding:11px 13px;margin-bottom:13px;}
+    .demo-banner-title{font-size:0.78rem;font-weight:700;color:#7a5c00;margin-bottom:4px;}
+    .demo-banner-text{font-size:0.72rem;color:#8a6d00;line-height:1.5;}
+    .api-section{background:rgba(14,158,158,0.06);border:1px solid rgba(14,158,158,0.22);border-radius:10px;padding:11px 13px;margin-bottom:13px;}
+    .api-label{font-size:0.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:5px;display:flex;align-items:center;gap:5px;}
+    .api-input-wrap{display:flex;gap:6px;align-items:center;}
+    .api-input{flex:1;background:#f7fdfd;border:1px solid var(--border);border-radius:8px;padding:8px 11px;font-size:0.8rem;font-family:'Golos Text',sans-serif;color:var(--text);outline:none;transition:border-color 0.15s;}
+    .api-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(14,158,158,0.12);}
+    .api-input::placeholder{color:#9ababa;}
+    .api-toggle{background:none;border:1px solid var(--border);border-radius:6px;padding:7px 9px;cursor:pointer;font-size:0.75rem;color:var(--muted);transition:all 0.15s;white-space:nowrap;}
+    .api-toggle:hover{border-color:var(--accent);color:var(--text);}
+    .api-hint{font-size:0.68rem;color:var(--muted);margin-top:4px;}
+    .api-hint a{color:var(--accent);text-decoration:none;}
+
+    .field{margin-bottom:11px;}
+    .field label{display:block;font-size:0.68rem;font-weight:600;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:0.3px;}
+    .subject-tabs{display:flex;gap:5px;flex-wrap:wrap;}
+    .stab{flex:1;min-width:70px;padding:8px 3px;border:1px solid var(--border);background:transparent;border-radius:8px;cursor:pointer;font-family:'Golos Text',sans-serif;font-size:0.72rem;font-weight:600;color:var(--muted);transition:all 0.15s;display:flex;flex-direction:column;align-items:center;gap:2px;}
+    .stab .si{font-size:1.1rem;}
+    .stab:hover{border-color:var(--accent);color:var(--text);background:var(--surface2);}
+    .stab.active-bio{background:rgba(14,158,158,0.12);border-color:#0e9e9e;color:#0e9e9e;}
+    .stab.active-chem{background:rgba(217,119,6,0.10);border-color:#d97706;color:#d97706;}
+    .stab.active-geo{background:rgba(37,99,235,0.10);border-color:#2563eb;color:#2563eb;}
+    .stab.active-him{background:rgba(124,58,237,0.10);border-color:#7c3aed;color:#7c3aed;}
+    select{width:100%;background:#f7fdfd;border:1px solid var(--border);border-radius:8px;padding:8px 11px;font-size:0.82rem;font-family:'Golos Text',sans-serif;color:var(--text);transition:border-color 0.15s;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%234a8080' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 11px center;background-color:#f7fdfd;padding-right:30px;}
+    select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(14,158,158,0.12);}
+
+    .type-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:5px;}
+    .tbtn{padding:8px 3px;border:1px solid var(--border);background:transparent;border-radius:8px;cursor:pointer;font-family:'Golos Text',sans-serif;font-size:0.68rem;font-weight:600;color:var(--muted);transition:all 0.15s;display:flex;flex-direction:column;align-items:center;gap:3px;}
+    .tbtn .si{font-size:1.1rem;}
+    .tbtn:hover{border-color:var(--accent);color:var(--text);background:var(--surface2);}
+    .tbtn.active{background:rgba(14,158,158,0.12);border-color:#0e9e9e;color:#0e9e9e;}
+
+    .btn-generate{width:100%;padding:11px;background:linear-gradient(135deg,#0e9e9e,#007a7a);border:none;border-radius:8px;font-family:'Unbounded',sans-serif;font-size:0.76rem;font-weight:600;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity 0.15s,transform 0.1s;box-shadow:0 4px 18px rgba(14,158,158,0.35);margin-top:12px;}
+    .btn-generate:hover{opacity:0.9;transform:translateY(-1px);}
+    .btn-generate:disabled{opacity:0.45;cursor:not-allowed;transform:none;}
+
+    .result-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);min-height:500px;box-shadow:var(--shadow);}
+    .result-header{padding:10px 15px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;background:linear-gradient(90deg,var(--surface2),var(--surface));flex-wrap:wrap;gap:8px;}
+    .result-tabs{display:flex;gap:6px;align-items:center;}
+    .rtab{padding:5px 12px;border-radius:6px;font-size:0.72rem;font-weight:600;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--muted);transition:all 0.15s;font-family:'Golos Text',sans-serif;}
+    .rtab.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+    .rtab:hover:not(.active){border-color:var(--accent);color:var(--text);}
+    .result-meta{font-family:'Unbounded',sans-serif;font-size:0.65rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;}
+    .result-meta span{color:var(--accent);font-weight:700;}
+    .result-actions{display:flex;gap:6px;align-items:center;}
+    .png-btn{padding:7px 15px;border-radius:7px;font-size:0.74rem;font-weight:600;cursor:pointer;transition:all 0.15s;border:none;background:linear-gradient(135deg,#0e9e9e,#007a7a);color:#fff;box-shadow:0 2px 8px rgba(14,158,158,0.3);font-family:'Golos Text',sans-serif;}
+    .png-btn:hover{opacity:0.88;transform:translateY(-1px);}
+    .png-btn:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
+    .result-body{padding:20px;min-height:450px;}
+
+    .viewer-wrap{width:100%;height:520px;border:1px solid var(--border);border-radius:8px;background:#fff;overflow:hidden;}
+    .viewer-wrap iframe{width:100%;height:100%;border:none;}
+
+    .placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;height:400px;text-align:center;gap:12px;}
+    .placeholder-icon{font-size:3rem;opacity:0.2;}
+    .placeholder-text{color:var(--muted);font-size:0.85rem;max-width:300px;line-height:1.5;}
+    .loading{display:flex;flex-direction:column;align-items:center;justify-content:center;height:400px;gap:14px;}
+    .spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;}
+    @keyframes spin{to{transform:rotate(360deg);}}
+    .loading-text{color:var(--muted);font-size:0.82rem;}
+    .error-box{background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.25);border-radius:8px;padding:13px 15px;color:#b91c1c;font-size:0.82rem;line-height:1.5;}
+    .info-box{background:rgba(14,158,158,0.07);border:1px solid rgba(14,158,158,0.22);border-radius:8px;padding:9px 13px;color:var(--muted);font-size:0.72rem;line-height:1.5;margin-top:11px;}
+
+    .mindmap-svg-wrap{width:100%;display:flex;justify-content:center;}
+    .mindmap-svg-wrap svg{max-width:100%;overflow:visible;}
+    .mindmap-legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;}
+    .legend-item{display:flex;align-items:flex-start;gap:7px;flex:1;min-width:175px;max-width:275px;}
+    .legend-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-top:3px;}
+    .legend-text{font-size:0.74rem;line-height:1.4;color:var(--text);}
+    .legend-label{font-weight:700;}
+    .legend-desc{color:var(--muted);}
+
+    .vs-table{width:100%;border-collapse:collapse;font-size:0.84rem;}
+    .vs-table th{background:rgba(14,158,158,0.12);border:1px solid var(--border);padding:8px 11px;text-align:left;font-weight:700;color:var(--accent);font-size:0.75rem;text-transform:uppercase;}
+    .vs-table td{border:1px solid var(--border);padding:8px 11px;vertical-align:top;line-height:1.45;color:var(--text);}
+    .vs-table tr:nth-child(odd) td{background:rgba(14,158,158,0.04);}
+    .vs-table .key-term{font-weight:700;color:var(--accent2);}
+    .vs-table .detail{color:var(--muted);font-size:0.78rem;}
+    .table-title{font-family:'Unbounded',sans-serif;font-size:0.85rem;font-weight:700;color:var(--accent2);margin-bottom:11px;padding-bottom:7px;border-bottom:2px solid var(--border);}
+    .table-note{color:var(--muted);font-size:0.71rem;margin-top:9px;line-height:1.5;}
+
+    .scheme-wrap{display:flex;flex-direction:column;gap:9px;}
+    .scheme-center{background:linear-gradient(135deg,rgba(14,158,158,0.12),rgba(45,212,191,0.12));border:2px solid rgba(14,158,158,0.4);border-radius:10px;padding:13px 17px;text-align:center;}
+    .scheme-center-label{font-family:'Unbounded',sans-serif;font-size:0.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;}
+    .scheme-center-title{font-size:1.05rem;font-weight:700;color:var(--accent2);}
+    .scheme-arrow{text-align:center;color:var(--muted);font-size:1.1rem;}
+    .scheme-items{display:flex;flex-wrap:wrap;gap:8px;}
+    .scheme-item{flex:1;min-width:190px;background:#f0fbfb;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:8px;padding:10px 12px;}
+    .scheme-item-num{font-family:'Unbounded',sans-serif;font-size:0.62rem;font-weight:700;color:var(--accent);margin-bottom:3px;}
+    .scheme-item-title{font-weight:700;margin-bottom:3px;font-size:0.86rem;color:var(--text);}
+    .scheme-item-body{color:var(--muted);font-size:0.78rem;line-height:1.4;}
+
+    .shatov-wrap{background:#fffef5;border:2px solid #d4c560;border-radius:12px;padding:18px;font-family:'Golos Text',Arial,sans-serif;}
+    .shatov-header{text-align:center;margin-bottom:16px;border-bottom:2px dashed #c9b940;padding-bottom:10px;}
+    .shatov-title{font-weight:800;font-size:1.05rem;color:#2d2400;letter-spacing:0.3px;}
+    .shatov-sub{font-size:0.72rem;color:#7a6a00;margin-top:3px;}
+    .shatov-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:10px;}
+    .shatov-block{border:2px solid #c8b400;border-radius:8px;padding:9px 10px;background:#fff;position:relative;min-height:70px;}
+    .shatov-block-num{position:absolute;top:-10px;left:8px;background:#d4c560;color:#2d2400;font-weight:800;font-size:0.65rem;padding:1px 7px;border-radius:10px;font-family:'Unbounded',sans-serif;}
+    .shatov-block-signal{font-size:1.5rem;display:block;text-align:center;margin:8px 0 4px;}
+    .shatov-block-key{font-weight:800;font-size:0.78rem;color:#2d2400;text-align:center;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.3px;}
+    .shatov-block-facts{list-style:none;padding:0;}
+    .shatov-block-facts li{font-size:0.72rem;color:#3d3200;line-height:1.35;padding:1px 0;}
+    .shatov-block-facts li::before{content:"▸ ";color:#b8a000;}
+    .shatov-arrows{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin:10px 0;padding:8px;background:rgba(212,197,96,0.1);border-radius:8px;border:1px dashed #c9b940;}
+    .shatov-arrow-item{font-size:0.7rem;color:#5a4e00;background:#fffac0;border:1px solid #c9b940;border-radius:20px;padding:3px 9px;white-space:nowrap;}
+    .shatov-footer{text-align:center;margin-top:12px;font-size:0.68rem;color:#8a7800;border-top:1px dashed #c9b940;padding-top:8px;}
+
+    .history-list{display:flex;flex-direction:column;gap:6px;margin-top:4px;}
+    .history-item{background:#f7fdfd;border:1px solid var(--border);border-radius:8px;padding:8px 12px;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;justify-content:space-between;gap:8px;}
+    .history-item:hover{border-color:var(--accent);background:var(--surface2);}
+    .history-item-info{font-size:0.75rem;color:var(--text);flex:1;min-width:0;}
+    .history-item-meta{font-size:0.65rem;color:var(--muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .history-item-type{font-size:0.75rem;background:rgba(14,158,158,0.1);border:1px solid rgba(14,158,158,0.3);color:var(--accent);padding:2px 7px;border-radius:10px;white-space:nowrap;font-weight:600;}
+    .history-empty{color:var(--muted);font-size:0.8rem;padding:20px;text-align:center;}
+    
+    .back-btn-fixed {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  padding: 10px 22px;
+  background: #1bb8b3; /* бирюзовая */
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  border-radius: 10px;
+  text-decoration: none;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  transition: background .15s, transform .1s;
+}
+
+.back-btn-fixed:hover {
+  background: #17a5a0;
+  transform: translateY(-2px);
+}
+  </style>
+</head>
+<body>
+
+<header class="header">
+  
+  <div>
+    <div class="header-title">Генератор визуальных опор</div>
+    <div class="header-sub">Биология · Химия · География · Человек и мир</div>
+  </div>
+  <div class="header-badge">ДЕМО-ВЕРСИЯ</div>
+</header>
+
+<div class="container">
+  <div class="grid">
+
+    <!-- ЛЕВАЯ ПАНЕЛЬ -->
+    <div>
+      <div class="panel">
+        <div class="panel-header">⚙ Настройки урока</div>
+        <div class="panel-body">
+
+          <!-- API КЛЮЧ для Gen API -->
+          <div class="demo-banner">
+            <div class="demo-banner-title">⚠️ Это демо‑версия</div>
+            <div class="demo-banner-text">Здесь показаны заранее подготовленные примеры визуальных опор — без реального обращения к ИИ. В полной версии опоры генерируются автоматически по любому параграфу.</div>
+          </div>
+
+          <!-- ПРЕДМЕТ -->
+          <div class="field">
+            <label>Предмет</label>
+            <div class="subject-tabs">
+              <button class="stab active-bio" onclick="setSubject('biology',this)"><span class="si">❀</span>Биология</button>
+              <button class="stab" onclick="setSubject('chemistry',this)"><span class="si">⌬</span>Химия</button>
+              <button class="stab" onclick="setSubject('geography',this)"><span class="si">🏞</span>География</button>
+              <button class="stab" onclick="setSubject('him',this)"><span class="si">☘︎</span>Человек и мир</button>
+            </div>
+          </div>
+
+          <!-- КЛАСС -->
+          <div class="field">
+            <label>Класс</label>
+            <select id="gradeSelect" onchange="updateTopics()">
+              <option value="">— выберите класс —</option>
+            </select>
+          </div>
+
+          <!-- ПАРАГРАФ -->
+          <div class="field">
+            <label>Параграф учебника</label>
+            <select id="topicSelect">
+              <option value="">— сначала выберите класс —</option>
+            </select>
+          </div>
+
+          <!-- ТИП ОПОРЫ -->
+          <div class="field">
+            <label>Тип визуальной опоры</label>
+            <div class="type-grid">
+              <button class="tbtn active" onclick="setType('shatov',this)"><span class="si">🕸</span>Опорная схема</button>
+              <button class="tbtn" onclick="setType('table',this)"><span class="si">⊞</span>Таблица</button>
+              <button class="tbtn" onclick="setType('scheme',this)"><span class="si">🖧</span>Схема</button>
+            </div>
+          </div>
+
+          <button class="btn-generate" id="genBtn" onclick="generate()">
+            <span id="btnIcon">⚡︎</span><span id="btnText">Сгенерировать опору</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- История -->
+      <div class="panel" style="margin-top:14px;">
+        <div class="panel-header">⏲ История опор</div>
+        <div class="panel-body" style="padding:10px;">
+          <div id="historyList" class="history-list">
+            <div class="history-empty">Сгенерированные опоры появятся здесь</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ПРАВАЯ ПАНЕЛЬ -->
+    <div class="result-panel">
+      <div class="result-header">
+        <div style="display:flex;flex-direction:column;gap:3px;min-width:0;flex:1;">
+          <div class="result-meta" id="resultMeta">Визуальная опора · <span>не сгенерирована</span></div>
+        </div>
+        <div class="result-tabs">
+          <button class="rtab active" id="tab-result" onclick="switchTab('result')">🕸 Опора</button>
+          <button class="rtab" id="tab-viewer" onclick="switchTab('viewer')">Учебник</button>
+        </div>
+        <div class="result-actions">
+          <button class="png-btn" id="pngBtn" onclick="savePNG()" disabled>Сохранить PNG</button>
+        </div>
+      </div>
+      <div class="result-body" id="resultBody">
+        <div class="placeholder">
+          <div class="placeholder-icon">📋</div>
+          <div class="placeholder-text">Выберите предмет, класс и параграф — демо-версия покажет пример визуальной опоры.</div>
+        </div>
+      </div>
+      <div style="display:none;" id="viewerBody">
+        <div class="viewer-wrap">
+          <iframe id="bookFrame" src="" title="Учебник e-padruchnik.adu.by"></iframe>
+        </div>
+        <p style="font-size:0.7rem;color:var(--muted);padding:8px 16px;">🔗 Источник: <a href="https://e-padruchnik.adu.by" target="_blank" style="color:var(--accent);">e-padruchnik.adu.by</a></p>
+      </div>
+    </div>
+
+  </div>
+ <a href="../generators.html" class="back-btn-fixed">Назад</a>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════
+//  ДЕМО-ВЕРСИЯ: реальный ИИ не вызывается.
+//  Ниже — заранее подготовленные примеры результатов.
+// ══════════════════════════════════════════════════════════
+
+// ══════════════════════════════════════════════════════════
+//  СОСТОЯНИЕ
+// ══════════════════════════════════════════════════════════
+let currentSubject = 'biology';
+let currentType    = 'shatov';
+let lastHTML       = '';
+let lastTopic      = '';
+let history        = [];
+
+// ══════════════════════════════════════════════════════════
+//  УЧЕБНИКИ (описания)
+// ══════════════════════════════════════════════════════════
+const TEXTBOOKS = {
+  biology: {
+    6: "Лисов Н.Д. Биология: учебник для 6 кл. — Мн.: Народная асвета, 2021.",
+    7: "Лисов Н.Д. Биология: уч. пособие для 7 кл. — Мн.: Народная асвета, 2022.",
+    8: "Бедарик И.Г. и др. Биология: уч. пособие для 8 кл.",
+    9: "Борисов О.Л. и др. Биология: учебник для 9 кл.",
+    10: "Маглыш С.С. и др. Биология: уч. пособие для 10 кл.",
+    11: "Дашков М.Л. и др. Биология: уч. пособие для 11 кл."
+  },
+  chemistry: {
+    7: "Шиманович И.Е. и др. Химия: уч. пособие для 7 кл. — Мн.: Народная асвета, 2023.",
+    8: "Шиманович И.Е. и др. Химия: уч. пособие для 8 кл.",
+    9: "Шиманович И.Е. и др. Химия: уч. пособие для 9 кл.",
+    10: "Колевич Т.А., Матулис В.Э. Химия: уч. пособие для 10 кл.",
+    11: "Мычко Д.И., Прохоревич К.Н. Химия: уч. пособие для 11 кл."
+  },
+  geography: {
+    6: "Кольмакова Е.Г., Пикулик В.В. Физическая география: уч. пособие для 6 кл.",
+    7: "Кольмакова Е.Г. и др. Материки и океаны: уч. пособие для 7 кл.",
+    8: "Лопух П.С. и др. Страны и народы: уч. пособие для 8 кл.",
+    9: "Брилевский М.Н., Климович А.В. География Беларуси: уч. пособие для 9 кл.",
+    10: "Антипова Е.А., Гузова О.Н. Соц.-экон. география мира: уч. пособие для 10 кл.",
+    11: "Витченко А.Н. и др. Глобальные проблемы: уч. пособие для 11 кл."
+  },
+  him: {
+    5: "Кольмакова Е.Г. и др. Человек и мир: учебник для 5 кл."
+  }
+};
+
+// ══════════════════════════════════════════════════════════
+//  СОДЕРЖАНИЕ УЧЕБНИКОВ (сокращённо)
+// ══════════════════════════════════════════════════════════
+const CURRICULUM = {
+  biology: {
+    grades: [6,7,8,9,10,11],
+    topics: {
+      6: ["§ 1 «Живые организмы»"],
+      7: ["§ 1 «Бактерии – древнейшие организмы на Земле»"],
+      8: ["§ 1 «Царство Животные»"],
+      9: ["§ 1 «Клетка — структурная единица организма»"],
+      10: ["§ 1 «Общие свойства живых организмов»"],
+      11: ["§ 1 «Содержание химических элементов в организме. Макро‑ и микроэлементы»"]
+    }
+  },
+  chemistry: {
+    grades: [7,8,9,10,11],
+    topics: {
+      7: ["§ 1 «Химия — наука о веществах»"],
+      8: ["§ 1 «Атом, химический элемент, молекула. Простые и сложные вещества»"],
+      9: ["§ 1 «Основные классы неорганических веществ»"],
+      10: ["§ 1 «Строение атома. Состояние электрона в атоме. Атомная орбиталь»"],
+      11: ["§ 1 «Химия. Вещество, химический элемент, атом»"]
+    }
+  },
+  geography: {
+    grades: [6,7,8,9,10,11],
+    topics: {
+      6: ["§ 1 «Стороны горизонта. Компас. Азимут»"],
+      7: ["§ 1 «Теория литосферных плит. Платформы и складчатые пояса»"],
+      8: ["§ 1 «Социально‑экономическая география. Объект и предмет изучения»"],
+      9: ["§ 1 «Географическое положение»"],
+      10: ["§ 1 «Социально‑экономическая география мира, предмет и задачи в обеспечении устойчивого развития»"],
+      11: ["§ 1 «Геоэкологические функции литосферы»"]
+    }
+  },
+  him: {
+    grades: [5],
+    topics: {
+      5: ["§ 1 «Природа Земли и человек»"]
+    }
+  }
+};
+
+// ══════════════════════════════════════════════════════════
+//  ИНИЦИАЛИЗАЦИЯ
+// ══════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  updateGrades();
+});
+
+function showToast(msg, type) {
+  const toast = document.createElement('div');
+  toast.textContent = msg;
+  toast.style.cssText = `position:fixed;bottom:80px;right:20px;background:${type==='success'?'#0e9e9e':type==='error'?'#ef4444':'#4a8080'};color:#fff;padding:10px 18px;border-radius:8px;z-index:10000;box-shadow:0 2px 10px rgba(0,0,0,0.2);animation:fadeOut 2s ease forwards;`;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 2000);
+}
+
+function setSubject(sub, btn) {
+  currentSubject = sub;
+  document.querySelectorAll('.stab').forEach(b => {
+    b.className = 'stab';
+  });
+  const cls = {biology:'bio',chemistry:'chem',geography:'geo',him:'him'}[sub];
+  btn.classList.add('active-' + cls);
+  updateGrades();
+}
+
+function setType(type, btn) {
+  currentType = type;
+  document.querySelectorAll('.tbtn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function updateGrades() {
+  const gs = document.getElementById('gradeSelect');
+  gs.innerHTML = '<option value="">— выберите класс —</option>';
+  (CURRICULUM[currentSubject]?.grades || []).forEach(g => {
+    gs.innerHTML += `<option value="${g}">${g} класс</option>`;
+  });
+  document.getElementById('topicSelect').innerHTML = '<option value="">— сначала выберите класс —</option>';
+}
+
+function updateTopics() {
+  const grade = parseInt(document.getElementById('gradeSelect').value);
+  const ts = document.getElementById('topicSelect');
+  if (!grade) { ts.innerHTML = '<option value="">— сначала выберите класс —</option>'; return; }
+  const topics = CURRICULUM[currentSubject]?.topics[grade] || [];
+  ts.innerHTML = '<option value="">— выберите параграф —</option>';
+  topics.forEach(t => { ts.innerHTML += `<option value="${t}">${t}</option>`; });
+}
+
+function switchTab(tab) {
+  document.getElementById('tab-result').classList.toggle('active', tab==='result');
+  document.getElementById('tab-viewer').classList.toggle('active', tab==='viewer');
+  document.getElementById('resultBody').style.display = tab==='result' ? '' : 'none';
+  document.getElementById('viewerBody').style.display = tab==='viewer' ? '' : 'none';
+  if (tab==='viewer') {
+    const fr = document.getElementById('bookFrame');
+    if (!fr.src || fr.src === window.location.href) {
+      fr.src = 'https://e-padruchnik.adu.by/';
+    }
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+//  ГЕНЕРАЦИЯ — работает в браузере и в EXE
+// ══════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════
+//  ДЕМО-ДАННЫЕ — заранее подготовленные примеры результатов.
+//  В демо-версии реальный запрос к ИИ не выполняется: при нажатии
+//  «Сгенерировать» просто показывается готовая заготовка ниже.
+// ══════════════════════════════════════════════════════════
+const DEMO_DATA = {
+  biology: {
+    shatov: {
+      title: 'Живые организмы',
+      subtitle: 'Признаки живого и отличие живой природы от неживой',
+      blocks: [
+        { num:'01', signal:'🍽', key:'ПИТАНИЕ', facts:['Организм получает вещества и энергию из окружающей среды','Автотрофы создают органику сами, гетеротрофы — питаются готовой'] },
+        { num:'02', signal:'💨', key:'ДЫХАНИЕ', facts:['Газообмен с окружающей средой','Освобождение энергии из питательных веществ'] },
+        { num:'03', signal:'🌱', key:'РОСТ И РАЗВИТИЕ', facts:['Увеличение размеров и массы тела','Последовательные изменения в течение жизни'] },
+        { num:'04', signal:'👶', key:'РАЗМНОЖЕНИЕ', facts:['Воспроизведение себе подобных','Обеспечивает непрерывность жизни'] },
+        { num:'05', signal:'⚡', key:'РАЗДРАЖИМОСТЬ', facts:['Реакция организма на изменения среды','Основа приспособления к условиям обитания'] }
+      ],
+      connections: ['Питание ⟶ Энергия ⟶ Рост', 'Раздражимость ⟶ Приспособление к среде']
+    },
+    table: {
+      title: '📊 Признаки живых организмов',
+      columns: ['Признак','Определение','Пример'],
+      rows: [
+        ['Питание','Получение веществ и энергии из среды','Растение поглощает свет и воду'],
+        ['Дыхание','Газообмен и высвобождение энергии','Животное вдыхает кислород'],
+        ['Рост','Увеличение размеров тела','Проросток превращается в дерево'],
+        ['Размножение','Образование новых особей','Птица откладывает яйца'],
+        ['Раздражимость','Реакция на изменения среды','Растение тянется к свету']
+      ],
+      note: 'Все перечисленные признаки в совокупности отличают живые организмы от объектов неживой природы.'
+    },
+    scheme: {
+      center: 'Живые организмы',
+      centerEmoji: '🌿',
+      items: [
+        { num:'01', emoji:'🧫', title:'Клеточное строение', body:'Все живые организмы состоят из клеток' },
+        { num:'02', emoji:'🔄', title:'Обмен веществ', body:'Постоянный обмен веществом и энергией со средой' },
+        { num:'03', emoji:'👶', title:'Размножение', body:'Способность воспроизводить себе подобных' },
+        { num:'04', emoji:'🧬', title:'Наследственность', body:'Передача признаков потомкам' }
+      ]
+    }
+  },
+  chemistry: {
+    shatov: {
+      title: 'Химия — наука о веществах',
+      subtitle: 'Что изучает химия и чем вещества отличаются друг от друга',
+      blocks: [
+        { num:'01', signal:'⚗️', key:'ВЕЩЕСТВО', facts:['То, из чего состоят физические тела','Обладает определёнными свойствами'] },
+        { num:'02', signal:'🔬', key:'СВОЙСТВА ВЕЩЕСТВ', facts:['Физические: цвет, запах, плотность, температура плавления','Химические: способность вступать в реакции'] },
+        { num:'03', signal:'🧪', key:'ЧИСТЫЕ ВЕЩЕСТВА И СМЕСИ', facts:['Чистое вещество имеет постоянный состав','Смесь состоит из двух и более веществ'] },
+        { num:'04', signal:'🔥', key:'ХИМИЧЕСКИЕ ЯВЛЕНИЯ', facts:['Превращение одних веществ в другие','Сопровождаются выделением тепла, газа, осадка'] }
+      ],
+      connections: ['Свойства ⟶ Применение вещества', 'Смесь ⟶ Разделение на чистые вещества']
+    },
+    table: {
+      title: '📊 Вещества и их свойства',
+      columns: ['Понятие','Определение','Пример'],
+      rows: [
+        ['Вещество','То, из чего состоит физическое тело','Вода, железо, кислород'],
+        ['Физическое свойство','Свойство, не связанное с превращением вещества','Цвет, плотность, температура кипения'],
+        ['Химическое свойство','Способность вступать в химические реакции','Горючесть, взаимодействие с кислотами'],
+        ['Смесь','Состоит из двух и более веществ','Воздух, морская вода'],
+        ['Химическое явление','Превращение одних веществ в другие','Горение, ржавление']
+      ],
+      note: 'Химия изучает вещества, их состав, строение, свойства и превращения друг в друга.'
+    },
+    scheme: {
+      center: 'Химия как наука',
+      centerEmoji: '⚗️',
+      items: [
+        { num:'01', emoji:'🧱', title:'Состав веществ', body:'Из каких частиц состоит вещество' },
+        { num:'02', emoji:'📏', title:'Свойства веществ', body:'Физические и химические характеристики' },
+        { num:'03', emoji:'🔥', title:'Превращения веществ', body:'Химические реакции и их признаки' },
+        { num:'04', emoji:'🏭', title:'Применение химии', body:'Использование веществ в быту и промышленности' }
+      ]
+    }
+  },
+  geography: {
+    shatov: {
+      title: 'Стороны горизонта. Компас. Азимут',
+      subtitle: 'Как определить направление на местности',
+      blocks: [
+        { num:'01', signal:'🧭', key:'СТОРОНЫ ГОРИЗОНТА', facts:['Основные: север, юг, запад, восток','Промежуточные: северо-восток, юго-запад и др.'] },
+        { num:'02', signal:'🧲', key:'КОМПАС', facts:['Прибор для определения сторон горизонта','Стрелка всегда указывает на север'] },
+        { num:'03', signal:'📐', key:'АЗИМУТ', facts:['Угол между направлением на север и на объект','Измеряется по часовой стрелке от 0° до 360°'] },
+        { num:'04', signal:'☀️', key:'ОРИЕНТИРОВАНИЕ БЕЗ КОМПАСА', facts:['По Солнцу, звёздам, местным признакам','По мху на стволах деревьев'] }
+      ],
+      connections: ['Компас ⟶ Определение сторон горизонта', 'Азимут ⟶ Точное направление движения']
+    },
+    table: {
+      title: '📊 Ориентирование на местности',
+      columns: ['Понятие','Определение','Пример'],
+      rows: [
+        ['Стороны горизонта','Направления на местности относительно наблюдателя','Север, юг, запад, восток'],
+        ['Компас','Прибор с намагниченной стрелкой','Указывает направление на север'],
+        ['Азимут','Угол от направления на север до объекта','Азимут на дерево — 45°'],
+        ['Ориентир','Заметный объект на местности','Отдельно стоящее дерево, вышка']
+      ],
+      note: 'Умение определять стороны горизонта и азимут необходимо для ориентирования на местности.'
+    },
+    scheme: {
+      center: 'Ориентирование',
+      centerEmoji: '🧭',
+      items: [
+        { num:'01', emoji:'🧭', title:'Стороны горизонта', body:'Север, юг, запад, восток и промежуточные' },
+        { num:'02', emoji:'🧲', title:'Компас', body:'Прибор для определения направления' },
+        { num:'03', emoji:'📐', title:'Азимут', body:'Угол направления на объект от севера' },
+        { num:'04', emoji:'🌲', title:'Местные признаки', body:'Ориентирование по природным объектам' }
+      ]
+    }
+  },
+  him: {
+    shatov: {
+      title: 'Природа Земли и человек',
+      subtitle: 'Как человек связан с окружающей его природой',
+      blocks: [
+        { num:'01', signal:'🌍', key:'ПРИРОДА', facts:['Всё, что окружает человека и не создано его руками','Живая и неживая природа взаимосвязаны'] },
+        { num:'02', signal:'👤', key:'ЧЕЛОВЕК И ПРИРОДА', facts:['Человек — часть природы','Человек использует природные ресурсы для жизни'] },
+        { num:'03', signal:'🔬', key:'ИЗУЧЕНИЕ ПРИРОДЫ', facts:['Наблюдение, опыт, эксперимент','Помогают понять законы природы'] },
+        { num:'04', signal:'🛡', key:'ОХРАНА ПРИРОДЫ', facts:['Бережное отношение к окружающей среде','Забота о будущих поколениях'] }
+      ],
+      connections: ['Человек ⟶ Использует ⟶ Природные ресурсы', 'Изучение природы ⟶ Охрана природы']
+    },
+    table: {
+      title: '📊 Человек и природа',
+      columns: ['Понятие','Определение','Пример'],
+      rows: [
+        ['Природа','Всё, что окружает человека и существует независимо от него','Леса, реки, горы, животные'],
+        ['Живая природа','Объекты, которым свойственны признаки жизни','Растения, животные, человек'],
+        ['Неживая природа','Объекты без признаков жизни','Камни, вода, воздух'],
+        ['Охрана природы','Меры по сохранению окружающей среды','Заповедники, посадка деревьев']
+      ],
+      note: 'Человек тесно связан с природой: зависит от неё и одновременно влияет на неё своей деятельностью.'
+    },
+    scheme: {
+      center: 'Природа и человек',
+      centerEmoji: '🌍',
+      items: [
+        { num:'01', emoji:'🌳', title:'Живая природа', body:'Растения, животные, человек' },
+        { num:'02', emoji:'🪨', title:'Неживая природа', body:'Горные породы, вода, воздух' },
+        { num:'03', emoji:'🔬', title:'Изучение природы', body:'Наблюдения и опыты' },
+        { num:'04', emoji:'🛡', title:'Охрана природы', body:'Бережное отношение к среде обитания' }
+      ]
+    }
+  }
+};
+
+function getDemoResult(subject, type) {
+  const bank = DEMO_DATA[subject] || DEMO_DATA.biology;
+  return bank[type] || bank.shatov;
+}
+
+async function generate() {
+  const grade = parseInt(document.getElementById('gradeSelect').value);
+  const topic = document.getElementById('topicSelect').value;
+
+  if (!grade) { showError('Выберите класс.'); return; }
+  if (!topic) { showError('Выберите параграф.'); return; }
+
+  const subLabel = {biology:'Биология',chemistry:'Химия',geography:'География',him:'Человек и мир'}[currentSubject];
+  lastTopic = topic;
+
+  document.getElementById('resultMeta').innerHTML = `${subLabel} · ${grade} кл. · <span>${topic.substring(0,50)}</span>`;
+  document.getElementById('pngBtn').disabled = true;
+  setLoading(true); setGenBtn(true);
+  switchTab('result');
+
+  // ДЕМО: реального обращения к ИИ нет — просто имитируем задержку
+  // генерации и показываем заранее подготовленный пример результата.
+  await new Promise(resolve => setTimeout(resolve, 900));
+
+  try {
+    const parsed = getDemoResult(currentSubject, currentType);
+    renderResult(parsed);
+    document.getElementById('pngBtn').disabled = false;
+    addToHistory(subLabel, grade, topic, currentType);
+  } catch(err) {
+    console.error('Demo generation error:', err);
+    showError('Не удалось загрузить демо-пример.');
+  } finally { setLoading(false); setGenBtn(false); }
+}
+
+
+// ══════════════════════════════════════════════════════════
+//  РЕНДЕРИНГ (без изменений)
+// ══════════════════════════════════════════════════════════
+function renderResult(data) {
+  let html = currentType==='shatov'  ? renderShatov(data)
+           : currentType==='mindmap' ? renderMindmap(data)
+           : currentType==='table'   ? renderTable(data)
+           : renderScheme(data);
+  lastHTML = html;
+  document.getElementById('resultBody').innerHTML = html;
+}
+
+function escH(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function escX(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function renderShatov(data) {
+  const title = data.title || 'Опорный конспект';
+  const subtitle = data.subtitle || '';
+  const blocks = data.blocks || [];
+  const conns = data.connections || [];
+
+  let html = `<div class="shatov-wrap">
+    <div class="shatov-header">
+      <div class="shatov-title">📋 ${escH(title)}</div>
+      ${subtitle ? `<div class="shatov-sub">${escH(subtitle)}</div>` : ''}
+    </div>
+    <div class="shatov-grid">`;
+
+  blocks.forEach(b => {
+    const facts = (b.facts||[]).map(f => `<li>${escH(f)}</li>`).join('');
+    html += `<div class="shatov-block">
+      <div class="shatov-block-num">${escH(b.num||'')}</div>
+      <span class="shatov-block-signal">${b.signal||'◆'}</span>
+      <div class="shatov-block-key">${escH(b.key||'')}</div>
+      <ul class="shatov-block-facts">${facts}</ul>
+    </div>`;
+  });
+
+  html += '</div>';
+  if (conns.length) {
+    html += '<div class="shatov-arrows">';
+    conns.forEach(c => { html += `<span class="shatov-arrow-item">⟶ ${escH(c)}</span>`; });
+    html += '</div>';
+  }
+  html += `<div class="shatov-footer">📖 На основе учебника</div></div>`;
+  return html;
+}
+
+function renderMindmap(data) {
+  const center = data.center||'Тема', branches = data.branches||[], n = branches.length;
+  if (!n) return '<div class="error-box">Нет данных.</div>';
+  const W=760,H=500,cx=W/2,cy=H/2,R=165,step=(2*Math.PI)/n;
+
+  let svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:490px;overflow:visible;">`;
+  branches.forEach((b,i) => { const a=-Math.PI/2+i*step,nx=cx+R*Math.cos(a),ny=cy+R*Math.sin(a); svg+=`<line x1="${cx}" y1="${cy}" x2="${nx}" y2="${ny}" stroke="${b.color||'#0e9e9e'}" stroke-width="2" stroke-opacity="0.45" stroke-dasharray="5 3"/>`; });
+  svg+=`<circle cx="${cx}" cy="${cy}" r="50" fill="url(#cg)" stroke="#0e9e9e" stroke-width="2.5"/>`;
+  svg+=`<text x="${cx}" y="${cy+5}" text-anchor="middle" font-family="Golos Text,Arial,sans-serif" font-weight="700" font-size="12" fill="#fff">${escX(center)}</text>`;
+  branches.forEach((b,i) => {
+    const a=-Math.PI/2+i*step,nx=cx+R*Math.cos(a),ny=cy+R*Math.sin(a),c=b.color||'#0e9e9e';
+    const label = b.label||'';
+    svg+=`<rect x="${nx-60}" y="${ny-12}" width="120" height="24" rx="6" fill="${c}22" stroke="${c}" stroke-width="1.5"/>`;
+    svg+=`<text x="${nx}" y="${ny+4}" text-anchor="middle" font-family="Golos Text,Arial,sans-serif" font-weight="700" font-size="10" fill="${c}">${escX(label)}</text>`;
+  });
+  svg+='</svg>';
+  return `<div class="mindmap-svg-wrap">${svg}</div>`;
+}
+
+function renderTable(data) {
+  const cols=data.columns||[], rows=data.rows||[], title=data.title||'', note=data.note||'';
+  let html='';
+  if (title) html+=`<div class="table-title">📊 ${escH(title)}</div>`;
+  html+=`<div style="overflow-x:auto;"><table class="vs-table"><thead><tr>`;
+  cols.forEach(c=>{html+=`<th>${escH(c)}</th>`;});
+  html+=`</thead><tbody>`;
+  rows.forEach(row=>{ html+='<tr>'; row.forEach((cell,ci)=>{ html+=ci===0?`<td><span class="key-term">${escH(cell)}</span></td>`:`<td>${escH(cell)}</td>`; }); html+='</tr>'; });
+  html+=`</tbody></table></div>`;
+  if (note) html+=`<p class="table-note">💡 ${escH(note)}</p>`;
+  return html;
+}
+
+function renderScheme(data) {
+  const center=data.center||'Тема',ce=data.centerEmoji||'📌',items=data.items||[];
+  let html=`<div class="scheme-wrap"><div class="scheme-center"><div class="scheme-center-label">Главное понятие</div><div class="scheme-center-title">${ce} ${escH(center)}</div></div><div class="scheme-arrow">↓</div><div class="scheme-items">`;
+  items.forEach(item=>{ html+=`<div class="scheme-item"><div class="scheme-item-num">${escH(item.num||'—')}</div><div class="scheme-item-title">${item.emoji||'▸'} ${escH(item.title||'')}</div><div class="scheme-item-body">${escH(item.body||'')}</div></div>`; });
+  html+=`</div></div>`;
+  return html;
+}
+
+// ══════════════════════════════════════════════════════════
+//  ИСТОРИЯ И PNG
+// ══════════════════════════════════════════════════════════
+function addToHistory(subject, grade, topic, type) {
+  const item = { subject, grade, topic, type, html: lastHTML, time: new Date().toLocaleTimeString('ru') };
+  history.unshift(item);
+  if (history.length > 10) history.pop();
+  renderHistory();
+}
+
+function renderHistory() {
+  const el = document.getElementById('historyList');
+  if (!history.length) { el.innerHTML = '<div class="history-empty">Сгенерированные опоры появятся здесь</div>'; return; }
+  const icons = {shatov:'📋',mindmap:'🧠',table:'📊',scheme:'🔗'};
+  const labels = {shatov:'Опорная схема',mindmap:'И-карта',table:'Таблица',scheme:'Схема'};
+  el.innerHTML = history.map((h,i) => `
+    <div class="history-item" onclick="loadFromHistory(${i})">
+      <div class="history-item-info">
+        <div>${escH(h.topic.substring(0,45))}</div>
+        <div class="history-item-meta">${escH(h.subject)} · ${h.grade} кл. · ${h.time}</div>
+      </div>
+      <div class="history-item-type">${icons[h.type]||'📄'} ${labels[h.type]||h.type}</div>
+    </div>`).join('');
+}
+
+function loadFromHistory(idx) {
+  const h = history[idx];
+  lastHTML = h.html;
+  lastTopic = h.topic;
+  document.getElementById('resultMeta').innerHTML = `${escH(h.subject)} · ${h.grade} кл. · <span>${escH(h.topic.substring(0,50))}</span>`;
+  document.getElementById('resultBody').innerHTML = h.html;
+  document.getElementById('pngBtn').disabled = false;
+  switchTab('result');
+}
+
+async function savePNG() {
+  if (!lastHTML) { alert('Сначала сгенерируйте опору'); return; }
+  const btn = document.getElementById('pngBtn');
+  btn.disabled=true; btn.textContent='⏳ Создаю…';
+
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'position:fixed;top:-99999px;left:0;width:900px;background:#f0fbfb;padding:24px;z-index:-999;';
+  wrap.innerHTML = `<div style="font-family:Arial,sans-serif;">${lastHTML}</div>`;
+  document.body.appendChild(wrap);
+  await new Promise(r => setTimeout(r, 500));
+
+  try {
+    const canvas = await html2canvas(wrap, { backgroundColor:'#f0fbfb', scale:2, useCORS:true });
+    const safe = (lastTopic||'opora').replace(/[^а-яёА-ЯЁa-zA-Z0-9]/g,'_');
+    const a = document.createElement('a');
+    a.download = safe+'.png'; a.href = canvas.toDataURL('image/png'); a.click();
+  } catch(err) { alert('Ошибка PNG: ' + err.message); }
+  finally { document.body.removeChild(wrap); btn.disabled=false; btn.textContent='🖼️ Сохранить PNG'; }
+}
+
+function showError(msg) {
+  document.getElementById('resultBody').innerHTML = `<div class="error-box">⚠️ ${escH(msg)}</div>`;
+  setGenBtn(false);
+}
+function setLoading(show) {
+  if (show) document.getElementById('resultBody').innerHTML = `<div class="loading"><div class="spinner"></div><div class="loading-text">🤖 ИИ создаёт визуальную опору...</div></div>`;
+}
+function setGenBtn(dis) {
+  const b = document.getElementById('genBtn'); b.disabled=dis;
+  document.getElementById('btnIcon').textContent = dis?'⏳':'⚡';
+  document.getElementById('btnText').textContent  = dis?'Генерирую...':'Сгенерировать опору';
+}
+</script>
+</body>
+</html>

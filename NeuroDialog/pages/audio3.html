@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Слайды с аудио</title>
+
+<style>
+:root {
+  --teal-50:  #f0fdfc;
+  --teal-100: #ccfbf1;
+  --teal-200: #99f6e4;
+  --teal-300: #5eead4;
+  --teal-400: #2dd4bf;
+  --teal-500: #14b8a6;
+  --teal-600: #0d9488;
+  --teal-700: #0f766e;
+  --teal-800: #115e59;
+  --teal-900: #134e4a;
+}
+
+body {
+    font-family: 'Nunito', Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background: #edfafa;
+    min-height: 100vh;
+}
+
+/* Карточка */
+.slide-card {
+    background: white;
+    padding: 28px 24px;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(13,148,136,0.10);
+    max-width: 720px;
+    margin: 0 auto;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: 0.5s;
+    border: 1px solid #cef2ef;
+}
+
+.slide-card.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.slide-card h3 {
+    font-family: 'Raleway', sans-serif;
+    font-size: 1.6rem;
+    color: var(--teal-700);
+    margin-bottom: 4px;
+}
+.slide-card .sub {
+    color: var(--teal-600);
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 16px;
+}
+.slide-card img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px;
+    margin: 12px 0;
+}
+.slide-card p {
+    color: #1f4f4a;
+    line-height: 1.6;
+}
+
+/* Специальный класс для уменьшения изображений кристаллической решётки */
+.slide-card img.crystal-img {
+    max-width: 55%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Кнопки */
+.back-btn {
+    background: var(--teal-600);
+    color: white;
+    border: none;
+    padding: 10px 22px;
+    border-radius: 16px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: 0.2s;
+    margin: 10px 0 20px 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Raleway', sans-serif;
+}
+.back-btn:hover {
+    background: var(--teal-700);
+    transform: translateY(-2px);
+}
+
+.nav-btn {
+    background: var(--teal-600);
+    color: white;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 16px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    margin: 10px 8px;
+    transition: 0.2s;
+    font-family: 'Raleway', sans-serif;
+}
+.nav-btn:hover {
+    background: var(--teal-700);
+    transform: translateY(-2px);
+}
+
+/* Точки */
+.dots {
+    text-align: center;
+    margin-top: 24px;
+}
+.dot {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    margin: 5px;
+    background: #bbb;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.dot.active {
+    background: var(--teal-600);
+    transform: scale(1.25);
+}
+.dot:hover {
+    background: var(--teal-400);
+}
+
+.hidden {
+    display: none;
+}
+
+.nav-row {
+    text-align: center;
+    margin-top: 20px;
+}
+
+h1 {
+    text-align: center;
+    font-family: 'Raleway', sans-serif;
+    font-weight: 800;
+    font-size: 1.8rem;
+    color: var(--teal-700);
+    margin: 16px 0 24px 0;
+}
+
+/* небольшие дополнения */
+.sub {
+    color: var(--teal-600);
+    font-weight: 600;
+}
+</style>
+</head>
+<body>
+
+<!-- ==================== СЛАЙД 1 ==================== -->
+<div id="slide1" class="slide-card">
+    <h3>КОММЕНСАЛИЗМ</h3>
+    <div class="sub">Нахлебничество</div>
+    <img src="img/kom1.png" width="70%"style="display:block; margin:0 auto; width:600px; height:auto;">
+    <p><strong>Птица</strong> выклёвывает остатки пищи и паразитов из зубов крокодила.</p>
+    <audio id="audio1">
+        <source src="src/kom.mp3" type="audio/mpeg">
+    </audio>
+</div>
+
+<!-- ==================== СЛАЙД 2 ==================== -->
+<div id="slide2" class="slide-card hidden">
+    <h3>ИОННАЯ РЕШЁТКА</h3>
+    <div class="sub">NaCl · CsCl · CaF₂</div>
+   <img src="img/kom4.png" class="crystal-img" style="display:block; margin:0 auto; width:250px; height:auto;">
+    <p>NaCl – координационное число 6</p>
+    <p>CsCl – координационное число 8</p>
+    <p>CaF₂ – высокая симметрия</p>
+
+    <audio id="audio2">
+        <source src="src/kom2.mp3" type="audio/mpeg">
+    </audio>
+</div>
+
+<!-- ==================== СЛАЙД 3 ==================== -->
+<div id="slide3" class="slide-card hidden">
+    <h3>СТРОЕНИЕ ВУЛКАНА</h3>
+    <div class="sub">Схема</div>
+    <img src="img/kom7.png" width="100%">
+    <p>Жерло – канал выхода магмы</p>
+    <p>Очаг – резервуар магмы</p>
+    <p>Кратер – углубление на вершине</p>
+    <p>Боковой кратер – дополнительный канал</p>
+
+    <audio id="audio3">
+        <source src="src/kom3.mp3" type="audio/mpeg">
+    </audio>
+</div>
+
+<!-- Навигация -->
+<div class="nav-row">
+    <button class="nav-btn" onclick="nextSlide()">Далее →</button>
+</div>
+
+<!-- Точки -->
+<div class="dots">
+    <span class="dot active" onclick="goToSlide(1)"></span>
+    <span class="dot" onclick="goToSlide(2)"></span>
+    <span class="dot" onclick="goToSlide(3)"></span>
+</div>
+
+<!-- Кнопка Назад -->
+<button class="back-btn" onclick="goBackWithScroll()">← Назад</button>
+
+<div id="box"></div>
+
+<script>
+// ============ ОСНОВНАЯ ЛОГИКА ============
+
+let current = 1;
+let audioAllowed = false;
+
+// Разрешение на звук после первого клика
+function allowAudio() {
+    if (!audioAllowed) {
+        audioAllowed = true;
+        console.log("Аудио разрешено пользователем");
+    }
+}
+
+// Останавливаем все аудио
+function stopAllAudio() {
+    document.querySelectorAll("audio").forEach(a => {
+        a.pause();
+        a.currentTime = 0;
+    });
+}
+
+// Показ слайда
+function showSlide(n) {
+    stopAllAudio();
+
+    ["slide1","slide2","slide3"].forEach(id => {
+        document.getElementById(id).classList.add("hidden");
+        document.getElementById(id).classList.remove("show");
+    });
+
+    const slide = document.getElementById("slide" + n);
+    slide.classList.remove("hidden");
+
+    setTimeout(() => slide.classList.add("show"), 10);
+
+    document.querySelectorAll(".dot").forEach((d,i)=>{
+        d.classList.toggle("active", i+1 === n);
+    });
+
+    if (audioAllowed) {
+        const audio = document.getElementById("audio" + n);
+        audio.play().catch(()=>{});
+    }
+}
+
+// Переход к следующему слайду
+function nextSlide() {
+    allowAudio();
+    if (current < 3) {
+        current++;
+        showSlide(current);
+    }
+}
+
+// Переход к конкретному слайду (по клику на точку)
+function goToSlide(n) {
+    allowAudio();
+    current = n;
+    showSlide(n);
+}
+
+// Функция для кнопки "Назад" с прокруткой к tts_free
+function goBackWithScroll() {
+    allowAudio();
+    
+    // Сохраняем флаг с ID элемента tts_free
+    localStorage.setItem('scrollToElement', 'tts_free');
+    
+    // Пытаемся вернуться на предыдущую страницу
+    if (document.referrer) {
+        window.history.back();
+    } else {
+        window.location.href = '../index.html';
+    }
+}
+
+// Показываем первый слайд при загрузке
+showSlide(1);
+
+// Автозапуск аудио даже в Chrome
+function forceAutoplay(audio) {
+    audio.muted = true;
+    audio.play().then(() => {
+        setTimeout(() => {
+            audio.muted = false;
+        }, 300);
+    }).catch(err => {
+        console.log("Chrome блокирует автозапуск, пробуем ещё раз");
+        setTimeout(() => forceAutoplay(audio), 300);
+    });
+}
+
+// Запуск для первого слайда
+document.addEventListener("DOMContentLoaded", () => {
+    const audio = document.getElementById("audio1");
+    forceAutoplay(audio);
+});
+</script>
+
+</body>
+</html>

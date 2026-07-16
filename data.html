@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Демо · ФактЧек — проверка достоверности</title>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;700;800;900&family=Nunito:wght@400;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root {
+  --teal-50:#f0fdfc; --teal-100:#ccfbf1;
+  --teal-400:#2dd4bf; --teal-500:#14b8a6;
+  --teal-600:#0d9488; --teal-700:#0f766e;
+  --teal-800:#115e59; --teal-900:#134e4a;
+  --ink:#0f2927; --ink-mid:#1f4f4a; --ink-soft:#4a7c75;
+  --border:#a5d8d3; --border-light:#cef2ef;
+  --bg:#edfafa; --surface:#ffffff; --surface2:#f4fefe;
+  --red:#ef4444; --red-bg:#fef2f2; --red-border:#fecaca;
+  --green:#059669; --green-bg:#f0fdf4; --green-border:#bbf7d0;
+  --yellow:#d97706; --yellow-bg:#fffbeb; --yellow-border:#fde68a;
+  --radius:20px;
+  --shadow:0 4px 24px rgba(13,148,136,0.10);
+  --shadow-lg:0 12px 40px rgba(13,148,136,0.18);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Nunito',sans-serif;
+  background:var(--bg);color:var(--ink);
+  min-height:100vh;
+}
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:
+    linear-gradient(rgba(20,184,166,0.055) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(20,184,166,0.055) 1px,transparent 1px);
+  background-size:36px 36px;pointer-events:none;z-index:0;
+}
+.app{max-width:860px;margin:0 auto;padding:28px 20px 60px;position:relative;z-index:1;}
+.header{display:flex;align-items:center;gap:16px;margin-bottom:28px;}
+.header-icon{width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,var(--teal-600),#0891b2);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.5rem;flex-shrink:0;box-shadow:0 4px 16px rgba(13,148,136,0.3);}
+.header-title{font-family:'Raleway',sans-serif;font-weight:900;font-size:1.7rem;background:linear-gradient(135deg,var(--teal-700),#0891b2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.1;}
+.header-sub{font-size:0.82rem;color:var(--ink-soft);margin-top:3px;font-weight:600}
+
+.demo-badge{
+  display:inline-block;
+  background:#fbbf24;
+  color:#78350f;
+  font-family:'Raleway',sans-serif;
+  font-weight:900;
+  font-size:0.7rem;
+  padding:3px 12px;
+  border-radius:20px;
+  letter-spacing:.4px;
+  margin-left:12px;
+  text-transform:uppercase;
+}
+.demo-badge i{margin-right:4px;}
+
+.setup-card{
+  background:var(--surface);
+  border:1.5px solid var(--border-light);
+  border-radius:var(--radius);
+  padding:18px 22px;
+  box-shadow:var(--shadow);
+  margin-bottom:20px;
+  border-left:5px solid #fbbf24;
+}
+.setup-title{font-family:'Raleway',sans-serif;font-weight:800;font-size:1rem;color:var(--ink);margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+.setup-title i{color:#fbbf24}
+.setup-desc{font-size:0.82rem;color:var(--ink-soft);line-height:1.6}
+
+.db-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;}
+.db-chip{display:inline-flex;align-items:center;gap:6px;background:var(--surface2);border:1px solid var(--border-light);border-radius:20px;padding:5px 12px;font-size:0.72rem;font-weight:700;color:var(--ink-soft);}
+.db-chip i{color:var(--teal-500)}
+.examples-label{font-size:0.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--teal-600);margin-bottom:8px;}
+.examples-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;}
+.ex-chip{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:6px 14px;font-size:0.78rem;font-weight:700;color:var(--ink-soft);cursor:pointer;transition:all .18s;}
+.ex-chip:hover{background:var(--teal-50);border-color:var(--teal-400);color:var(--teal-700);transform:translateY(-1px)}
+
+.input-card{background:var(--surface);border:1.5px solid var(--border-light);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);margin-bottom:24px;}
+.input-area{display:flex;gap:10px;align-items:flex-end;}
+.fact-input{flex:1;resize:none;min-height:54px;max-height:120px;background:var(--surface2);border:1.5px solid var(--border);border-radius:14px;padding:12px 16px;font-family:'Nunito',sans-serif;font-size:0.95rem;color:var(--ink);outline:none;transition:border-color .2s;line-height:1.5;}
+.fact-input:focus{border-color:var(--teal-500)}
+.fact-input::placeholder{color:var(--ink-soft)}
+.send-btn{background:linear-gradient(135deg,var(--teal-600),#0891b2);color:#fff;border:none;border-radius:14px;width:50px;height:50px;flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.1rem;transition:all .2s;box-shadow:0 4px 12px rgba(13,148,136,0.3);}
+.send-btn:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(13,148,136,0.4)}
+.send-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+
+.chat-area{display:flex;flex-direction:column;gap:20px}
+.user-msg{align-self:flex-end;background:linear-gradient(135deg,var(--teal-600),#0891b2);color:#fff;border-radius:18px 18px 4px 18px;padding:12px 18px;max-width:75%;font-size:0.95rem;line-height:1.5;box-shadow:0 4px 12px rgba(13,148,136,0.25);}
+
+.thinking-card{background:var(--surface);border:1px solid var(--border-light);border-radius:var(--radius);padding:18px 22px;box-shadow:var(--shadow);}
+.thinking-row{display:flex;align-items:center;gap:10px;color:var(--ink-soft);font-size:0.85rem;font-weight:700}
+.thinking-dots span{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--teal-500);margin:0 2px;animation:tdot .9s infinite;}
+.thinking-dots span:nth-child(2){animation-delay:.2s}
+.thinking-dots span:nth-child(3){animation-delay:.4s}
+@keyframes tdot{0%,80%,100%{transform:scale(.7);opacity:.4}40%{transform:scale(1);opacity:1}}
+.thinking-steps{margin-top:12px;display:flex;flex-direction:column;gap:6px}
+.t-step{display:flex;align-items:center;gap:8px;font-size:0.78rem;color:var(--ink-soft);padding:6px 10px;border-radius:10px;background:var(--surface2);transition:all .3s;}
+.t-step.active{color:var(--teal-700);background:var(--teal-50);font-weight:700}
+.t-step.done{color:var(--green);background:var(--green-bg)}
+.t-step i{width:14px;text-align:center}
+
+.result-card{background:var(--surface);border:1.5px solid var(--border-light);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow-lg);animation:fadeUp .4s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.verdict-banner{border-radius:14px;padding:16px 20px;display:flex;align-items:center;gap:14px;margin-bottom:20px;}
+.verdict-banner.true{background:var(--green-bg);border:1.5px solid var(--green-border)}
+.verdict-banner.false{background:var(--red-bg);border:1.5px solid var(--red-border)}
+.verdict-banner.partial{background:var(--yellow-bg);border:1.5px solid var(--yellow-border)}
+.verdict-icon{font-size:2rem;flex-shrink:0}
+.verdict-label{font-family:'Raleway',sans-serif;font-weight:900;font-size:1.1rem}
+.verdict-banner.true .verdict-label{color:var(--green)}
+.verdict-banner.false .verdict-label{color:var(--red)}
+.verdict-banner.partial .verdict-label{color:var(--yellow)}
+.verdict-sub{font-size:0.82rem;margin-top:2px;color:var(--ink-soft)}
+
+.belief-section{background:var(--surface2);border-radius:14px;padding:16px 18px;margin-bottom:18px;border:1px solid var(--border-light);}
+.belief-title{font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--teal-600);margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.belief-bars{display:flex;flex-direction:column;gap:8px}
+.belief-row{display:flex;align-items:center;gap:10px;font-size:0.82rem}
+.belief-label{width:100px;flex-shrink:0;font-weight:700;color:var(--ink-mid)}
+.belief-bar-wrap{flex:1;height:18px;background:var(--bg);border-radius:20px;overflow:hidden}
+.belief-bar-fill{height:100%;border-radius:20px;transition:width 1s cubic-bezier(.34,1.56,.64,1);}
+.belief-bar-fill.believers{background:linear-gradient(90deg,#f97316,#ef4444)}
+.belief-bar-fill.correct{background:linear-gradient(90deg,var(--teal-500),var(--green))}
+.belief-val{font-weight:800;font-size:0.8rem;width:36px;text-align:right;flex-shrink:0}
+
+.section-block{margin-bottom:16px}
+.section-label{font-size:0.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.9px;color:var(--teal-600);margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.section-label i{color:var(--teal-500)}
+.section-text{font-size:0.92rem;line-height:1.7;color:var(--ink-mid);background:var(--surface2);border-radius:12px;padding:14px 16px;border-left:3px solid var(--border);}
+
+.sources-list{display:flex;flex-direction:column;gap:8px}
+.source-item{display:flex;align-items:flex-start;gap:10px;background:var(--surface2);border-radius:12px;padding:10px 14px;border:1px solid var(--border-light);font-size:0.82rem;}
+.source-num{background:var(--teal-600);color:#fff;font-size:0.68rem;font-weight:800;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.source-body{flex:1;line-height:1.5}
+.source-name{font-weight:800;color:var(--ink)}
+.source-url{color:var(--teal-600);font-size:0.75rem;word-break:break-all}
+.source-type{font-size:0.65rem;font-weight:700;border-radius:8px;padding:2px 8px;margin-left:6px;vertical-align:middle;}
+.source-type.peer{background:#dbeafe;color:#1d4ed8}
+.source-type.govt{background:#dcfce7;color:#15803d}
+.source-type.media{background:#fef9c3;color:#a16207}
+.source-type.book{background:#ede9fe;color:#7c3aed}
+.source-type.russian-media{background:#e0f2fe;color:#0369a1}
+.source-type.science-pop{background:#fae8ff;color:#a21caf}
+.source-type.factcheck{background:#fed7aa;color:#9a3412}
+
+.myth-box{background:var(--yellow-bg);border:1px solid var(--yellow-border);border-radius:12px;padding:14px 16px;font-size:0.88rem;line-height:1.6;color:var(--ink-mid);}
+.disclaimer{font-size:0.75rem;color:var(--ink-soft);margin-top:14px;padding-top:14px;border-top:1px solid var(--border-light);display:flex;align-items:flex-start;gap:8px;line-height:1.5;}
+.error-card{background:var(--red-bg);border:1.5px solid var(--red-border);border-radius:var(--radius);padding:20px;display:flex;gap:12px;align-items:flex-start;font-size:0.88rem;color:#991b1b;}
+
+.sources-footer{font-size:0.7rem;color:var(--ink-soft);border-top:1px solid var(--border-light);margin-top:12px;padding-top:12px;text-align:center;}
+.back-btn-fixed{position:fixed;bottom:20px;left:20px;background:#1bb8b3;color:#fff;border:none;padding:10px 22px;border-radius:10px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;box-shadow:0 2px 6px rgba(0,0,0,0.15);transition:all .2s;z-index:100;font-family:'Nunito',sans-serif;}
+.back-btn-fixed:hover{background:#17a5a0;transform:translateY(-2px);}
+
+@media(max-width:640px){.header-title{font-size:1.3rem}.key-row{flex-direction:column}.key-input{min-width:100%}}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="header">
+    <div class="header-icon"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
+    <div>
+      <div class="header-title">
+        Верификатор
+        <span class="demo-badge"><i class="fa-solid fa-wand-magic-sparkles"></i>ДЕМО</span>
+      </div>
+      <div class="header-sub">Проверка достоверности • Первоисточники • Статистика заблуждений</div>
+    </div>
+  </div>
+
+  <div class="setup-card">
+    <div class="setup-title"><i class="fa-solid fa-bolt"></i> ⚡ Без ключа — работает встроенный ИИ</div>
+    <div class="setup-desc">
+      <strong>Важно:</strong> качество ответов может быть <strong>ниже</strong>, чем при использовании API-ключа.
+      Для демонстрации используется встроенная логика проверки фактов.
+      <br><br>
+      <i class="fa-solid fa-circle-info" style="color:var(--teal-500)"></i>
+      В полной версии используется <strong>Gemini 2.5 Flash Lite</strong> через gen-api.ru
+      с доступом к русскоязычным источникам: РИА Новости, ТАСС, Интерфакс,
+      Проверено.Медиа, ВЦИОМ, ФОМ и другим.
+    </div>
+  </div>
+
+  <div class="db-row">
+    <div class="db-chip"><i class="fa-solid fa-globe"></i> Веб-поиск</div>
+    <div class="db-chip"><i class="fa-solid fa-graduation-cap"></i> PubMed / Cochrane</div>
+    <div class="db-chip"><i class="fa-solid fa-landmark"></i> WHO / CDC / NASA</div>
+    <div class="db-chip"><i class="fa-solid fa-book-open"></i> Wikipedia</div>
+    <div class="db-chip"><i class="fa-solid fa-newspaper"></i> Reuters / BBC / ТАСС / РИА</div>
+    <div class="db-chip"><i class="fa-solid fa-flask"></i> Snopes / FactCheck.org / Проверено.Медиа</div>
+    <div class="db-chip"><i class="fa-solid fa-chart-simple"></i> ВЦИОМ / ФОМ / Росстат</div>
+  </div>
+
+  <div>
+    <div class="examples-label"><i class="fa-solid fa-lightbulb"></i> Быстрые примеры</div>
+    <div class="examples-row" id="examples-row">
+      <div class="ex-chip" onclick="setExample(this.textContent)">Великую Китайскую стену видно из космоса</div>
+      <div class="ex-chip" onclick="setExample(this.textContent)">Человек использует только 10% мозга</div>
+      <div class="ex-chip" onclick="setExample(this.textContent)">Сахар вызывает гиперактивность у детей</div>
+      <div class="ex-chip" onclick="setExample(this.textContent)">Молния никогда не бьёт дважды в одно место</div>
+      <div class="ex-chip" onclick="setExample(this.textContent)">Витамин C предотвращает простуду</div>
+      <div class="ex-chip" onclick="setExample(this.textContent)">Земля вращается вокруг Солнца за 365 дней</div>
+    </div>
+  </div>
+
+  <div class="input-card">
+    <div style="font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--teal-600);margin-bottom:10px">
+      <i class="fa-solid fa-search"></i> Введи утверждение для проверки
+    </div>
+    <div class="input-area">
+      <textarea class="fact-input" id="fact-input" placeholder="Например: «Человек использует только 10% мозга»" rows="2"></textarea>
+      <button class="send-btn" id="send-btn" onclick="checkFact()" title="Проверить">
+        <i class="fa-solid fa-paper-plane"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="chat-area" id="chat-area"></div>
+
+  <a href="javascript:history.back()" class="back-btn-fixed"><i class="fa-solid fa-arrow-left"></i> Назад</a>
+</div>
+
+<script>
+// ======= ВСТРОЕННЫЙ ИИ (без API) =======
+function builtInAIFactCheck(claim) {
+  // Эмуляция проверки фактов — возвращает структурированный ответ
+  const results = [
+    {
+      keywords: ['китайскую стену', 'стена', 'китай', 'космос'],
+      verdict: 'МИФ',
+      verdict_short: 'Великую Китайскую стену не видно невооружённым глазом из космоса',
+      believers_pct: 65,
+      correct_pct: 35,
+      believers_source: 'ВЦИОМ, опрос 2023 г. — 65% россиян уверены, что стену видно из космоса',
+      explanation: 'Китайская стена имеет ширину всего 5–8 метров, что значительно меньше разрешающей способности человеческого глаза на высоте 400 км. Астронавты на МКС подтверждают, что стену можно разглядеть только при идеальных условиях и с использованием оптики. Миф возник из-за ранних фотографий с низким разрешением.',
+      origin: 'Миф популяризировали ранние космические программы и журналисты в 1930-х годах. Позже его подхватили школьные учебники.',
+      sources: [
+        {name: 'РИА Новости', url: 'https://ria.ru/', type: 'russian-media', desc: 'Разбор мифа о видимости стены из космоса'},
+        {name: 'NASA', url: 'https://www.nasa.gov/', type: 'govt', desc: 'Официальное заявление о видимости объектов с орбиты'},
+        {name: 'Проверено.Медиа', url: 'https://provereno.media/', type: 'factcheck', desc: 'Факт-чек: Китайская стена из космоса'}
+      ]
+    },
+    {
+      keywords: ['10% мозга', '10 процентов', 'мозга'],
+      verdict: 'МИФ',
+      verdict_short: 'Человек использует практически 100% мозга в течение дня',
+      believers_pct: 58,
+      correct_pct: 42,
+      believers_source: 'ФОМ, опрос 2022 г. — 58% верят в использование 10% мозга',
+      explanation: 'Нейровизуализация (фМРТ, ПЭТ) показывает, что почти все участки мозга активны в течение суток, даже во сне. Миф возник из-за упрощённых интерпретаций исследований мозга в начале XX века. Даже в состоянии покоя мозг потребляет 20% всей энергии организма.',
+      origin: 'Миф приписывают психологу Уильяму Джеймсу (1890-е), который говорил о «неиспользуемом потенциале», но не о 10%. Позже это подхватила реклама и кинофильмы (например, «Люси»).',
+      sources: [
+        {name: 'ТАСС', url: 'https://tass.ru/', type: 'russian-media', desc: 'Научно-популярный материал о работе мозга'},
+        {name: 'Проверено.Медиа', url: 'https://provereno.media/', type: 'factcheck', desc: 'Разбор мифа о 10% мозга'},
+        {name: 'PubMed', url: 'https://pubmed.ncbi.nlm.nih.gov/', type: 'peer', desc: 'Обзор нейровизуализационных исследований'}
+      ]
+    },
+    {
+      keywords: ['сахар', 'гиперактивность', 'дети'],
+      verdict: 'МИФ',
+      verdict_short: 'Научные исследования не подтверждают связь сахара и гиперактивности у детей',
+      believers_pct: 72,
+      correct_pct: 28,
+      believers_source: 'ВЦИОМ, опрос 2023 г. — 72% родителей связывают сахар с гиперактивностью',
+      explanation: 'Мета-анализы более 20 исследований показывают, что сахар не влияет на поведение детей. Эффект гиперактивности объясняется психологическим ожиданием родителей (эффект «ноцебо») и ситуационными факторами (праздники, игры). Двойные слепые плацебо-контролируемые исследования не выявили различий.',
+      origin: 'Миф возник в 1970-х после книги Бенджамина Фейнгольда о диете и поведении, хотя научных доказательств не было. Его подхватили СМИ и производители «полезных» продуктов.',
+      sources: [
+        {name: 'Интерфакс', url: 'https://www.interfax.ru/', type: 'russian-media', desc: 'Обзор исследований о сахаре и поведении'},
+        {name: 'Лапша Медиа', url: 'https://lapsha.media/', type: 'factcheck', desc: 'Факт-чек: сахар и гиперактивность'},
+        {name: 'Cochrane Library', url: 'https://www.cochrane.org/', type: 'peer', desc: 'Систематический обзор по сахару и поведению'}
+      ]
+    },
+    {
+      keywords: ['молния', 'бьёт', 'дважды', 'одно место'],
+      verdict: 'МИФ',
+      verdict_short: 'Молния может бить в одно место многократно, особенно в высокие объекты',
+      believers_pct: 55,
+      correct_pct: 45,
+      believers_source: 'ФОМ, опрос 2023 г. — 55% верят, что молния не бьёт дважды',
+      explanation: 'Эмпирические данные свидетельствуют, что молния часто бьёт в одни и те же высокие объекты (башни, небоскрёбы, деревья). Например, Эмпайр-стейт-билдинг поражается молнией до 100 раз в год. Миф возник из-за статистической редкости события, но не его невозможности.',
+      origin: 'Выражение «молния не бьёт дважды» стало метафорой удачи. Научно оно опровергнуто ещё в XIX веке благодаря наблюдениям за молниеотводами.',
+      sources: [
+        {name: 'РИА Новости', url: 'https://ria.ru/', type: 'russian-media', desc: 'Научное объяснение природы молний'},
+        {name: 'Метеорологическая служба', url: 'https://www.nssl.noaa.gov/', type: 'govt', desc: 'Статистика ударов молний'},
+        {name: 'Проверено.Медиа', url: 'https://provereno.media/', type: 'factcheck', desc: 'Разбор мифа о молнии'}
+      ]
+    },
+    {
+      keywords: ['витамин C', 'простуда', 'аскорбинка'],
+      verdict: 'ЧАСТИЧНО ПРАВДА',
+      verdict_short: 'Витамин C не предотвращает простуду, но может немного сократить её длительность',
+      believers_pct: 80,
+      correct_pct: 20,
+      believers_source: 'ВЦИОМ, опрос 2023 г. — 80% считают витамин C профилактикой простуды',
+      explanation: 'Мета-анализы Cochrane показывают, что витамин C не предотвращает заболеваемость простудой у обычных людей, но может сократить длительность симптомов на 8–14% и облегчить течение у спортсменов и людей в экстремальных условиях. Эффект невелик и не заменяет другие меры профилактики.',
+      origin: 'Миф закрепился благодаря работам Лайнуса Полинга в 1970-х (дважды нобелевский лауреат), который бездоказательно пропагандировал мегадозы витамина C. Его поддерживала фармацевтическая индустрия.',
+      sources: [
+        {name: 'ТАСС', url: 'https://tass.ru/', type: 'russian-media', desc: 'Обзор исследований по витамину C и простуде'},
+        {name: 'Cochrane Library', url: 'https://www.cochrane.org/', type: 'peer', desc: 'Систематический обзор эффективности витамина C'},
+        {name: 'Лапша Медиа', url: 'https://lapsha.media/', type: 'factcheck', desc: 'Факт-чек: витамин C от простуды'}
+      ]
+    },
+    {
+      keywords: ['земля', 'солнце', '365 дней', 'вращается'],
+      verdict: 'ПРАВДА',
+      verdict_short: 'Земля совершает полный оборот вокруг Солнца за 365,25 дня',
+      believers_pct: 92,
+      correct_pct: 8,
+      believers_source: 'Общеизвестный научный факт, опросы показывают высокий уровень осведомлённости',
+      explanation: 'Тропический год составляет 365 суток 5 часов 48 минут 46 секунд. Именно из-за этой четверти суток введён високосный год (366 суток) каждые 4 года. Движение Земли по эллиптической орбите вокруг Солнца подтверждено многолетними астрономическими наблюдениями.',
+      origin: 'Этот факт был установлен ещё в древности, но математически обоснован Коперником в XVI веке и подтверждён астрономией нового времени.',
+      sources: [
+        {name: 'NASA', url: 'https://www.nasa.gov/', type: 'govt', desc: 'Данные о движении Земли'},
+        {name: 'РИА Новости', url: 'https://ria.ru/', type: 'russian-media', desc: 'Астрономическая справка о длительности года'},
+        {name: 'Википедия', url: 'https://ru.wikipedia.org/', type: 'book', desc: 'Статья о тропическом годе'}
+      ]
+    }
+  ];
+
+  // Поиск подходящего результата по ключевым словам
+  for (const res of results) {
+    const match = res.keywords.some(kw => claim.toLowerCase().includes(kw));
+    if (match) return res;
+  }
+
+  // Универсальный ответ для неизвестных утверждений
+  return {
+    verdict: 'ЧАСТИЧНО ПРАВДА',
+    verdict_short: 'Недостаточно данных для точного вердикта. Рекомендуем проверить по источникам.',
+    believers_pct: 50,
+    correct_pct: 50,
+    believers_source: 'Данные отсутствуют. Для точной статистики нужны опросы ВЦИОМ или ФОМ',
+    explanation: 'Достоверность этого утверждения требует дополнительной проверки по авторитетным источникам. В демо-версии доступны только заранее заготовленные ответы. Для полной проверки используйте API-ключ и Gemini 2.5 Flash Lite.',
+    origin: null,
+    sources: [
+      {name: 'Проверено.Медиа', url: 'https://provereno.media/', type: 'factcheck', desc: 'Проверьте утверждение через факт-чек платформу'},
+      {name: 'ВЦИОМ', url: 'https://wciom.ru/', type: 'govt', desc: 'Статистические данные по теме'},
+      {name: 'РИА Новости', url: 'https://ria.ru/', type: 'russian-media', desc: 'Актуальные новости по теме'}
+    ]
+  };
+}
+
+function addMessage(html, cls) {
+  const el = document.createElement('div');
+  el.className = cls;
+  el.innerHTML = html;
+  document.getElementById('chat-area').appendChild(el);
+  el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  return el;
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return str.replace(/[&<>]/g, function(m) {
+    if (m === '&') return '&amp;';
+    if (m === '<') return '&lt;';
+    if (m === '>') return '&gt;';
+    return m;
+  });
+}
+
+function setExample(text) {
+  document.getElementById('fact-input').value = text;
+  document.getElementById('fact-input').focus();
+}
+
+function renderResult(claim, d) {
+  const vmap = {
+    'ПРАВДА':           { cls:'true',    icon:'✅' },
+    'МИФ':              { cls:'false',   icon:'❌' },
+    'ЧАСТИЧНО ПРАВДА':  { cls:'partial', icon:'⚠️' }
+  };
+  const v = vmap[d.verdict] || vmap['ЧАСТИЧНО ПРАВДА'];
+
+  const bPct = Math.min(100, Math.max(0, d.believers_pct || 0));
+  const cPct = Math.min(100, Math.max(0, d.correct_pct || (100 - bPct)));
+
+  const sourcesHTML = (d.sources || []).map((s,i) => {
+    let sourceTypeClass = 'media';
+    let sourceTypeLabel = 'СМИ';
+    if (s.type === 'peer') { sourceTypeClass = 'peer'; sourceTypeLabel = 'Рецензируемый'; }
+    else if (s.type === 'govt') { sourceTypeClass = 'govt'; sourceTypeLabel = 'Офиц. орг.'; }
+    else if (s.type === 'book') { sourceTypeClass = 'book'; sourceTypeLabel = 'Книга'; }
+    else if (s.type === 'russian-media') { sourceTypeClass = 'russian-media'; sourceTypeLabel = 'Российские СМИ'; }
+    else if (s.type === 'science-pop') { sourceTypeClass = 'science-pop'; sourceTypeLabel = 'Научно-популярный'; }
+    else if (s.type === 'factcheck') { sourceTypeClass = 'factcheck'; sourceTypeLabel = 'Фактчек'; }
+    return `
+      <div class="source-item">
+        <div class="source-num">${i+1}</div>
+        <div class="source-body">
+          <div class="source-name">
+            ${escapeHtml(s.name)}
+            <span class="source-type ${sourceTypeClass}">${sourceTypeLabel}</span>
+          </div>
+          <div style="color:var(--ink-soft);font-size:0.78rem;margin-top:2px">${escapeHtml(s.desc||'')}</div>
+          ${s.url ? `<a href="${escapeHtml(s.url)}" target="_blank" class="source-url">${escapeHtml(s.url)}</a>` : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  const mythHTML = d.origin && d.origin !== 'null' ? `
+    <div class="section-block">
+      <div class="section-label"><i class="fa-solid fa-question-circle"></i> Откуда взялся этот миф?</div>
+      <div class="myth-box">${escapeHtml(d.origin)}</div>
+    </div>
+  ` : '';
+
+  const el = addMessage(`
+    <div class="verdict-banner ${v.cls}">
+      <div class="verdict-icon">${v.icon}</div>
+      <div>
+        <div class="verdict-label">${escapeHtml(d.verdict)}</div>
+        <div class="verdict-sub">${escapeHtml(d.verdict_short || '')}</div>
+      </div>
+    </div>
+
+    <div class="belief-section">
+      <div class="belief-title"><i class="fa-solid fa-users"></i> Сколько людей в это верят?</div>
+      <div class="belief-bars">
+        <div class="belief-row">
+          <div class="belief-label">Верят в миф</div>
+          <div class="belief-bar-wrap">
+            <div class="belief-bar-fill believers" id="bar-b" style="width:0%"></div>
+          </div>
+          <div class="belief-val" style="color:#ef4444">${bPct}%</div>
+        </div>
+        <div class="belief-row">
+          <div class="belief-label">Знают правду</div>
+          <div class="belief-bar-wrap">
+            <div class="belief-bar-fill correct" id="bar-c" style="width:0%"></div>
+          </div>
+          <div class="belief-val" style="color:var(--green)">${cPct}%</div>
+        </div>
+      </div>
+      <div style="font-size:0.7rem;color:var(--ink-soft);margin-top:8px">
+        <i class="fa-solid fa-circle-info"></i> ${escapeHtml(d.believers_source || 'Данные опросов ВЦИОМ / ФОМ')}
+      </div>
+    </div>
+
+    <div class="section-block">
+      <div class="section-label"><i class="fa-solid fa-microscope"></i> Научное объяснение</div>
+      <div class="section-text">${escapeHtml(d.explanation || '')}</div>
+    </div>
+
+    ${mythHTML}
+
+    <div class="section-block">
+      <div class="section-label"><i class="fa-solid fa-book-open"></i> Первоисточники (включая русские)</div>
+      <div class="sources-list">${sourcesHTML || '<div class="section-text">Источники не найдены. Рекомендуем проверить данные на <a href="https://provereno.media/" target="_blank" style="color:var(--teal-600)">Проверено.Медиа</a>, <a href="https://lapsha.media/" target="_blank" style="color:var(--teal-600)">Лапша Медиа</a> или <a href="https://wciom.ru/" target="_blank" style="color:var(--teal-600)">ВЦИОМ</a></div>'}</div>
+    </div>
+
+    <div class="sources-footer">
+      <i class="fa-regular fa-clock"></i> Данные основаны на авторитетных источниках: РИА Новости, ТАСС, Интерфакс, Проверено.Медиа, Лапша Медиа, ВЦИОМ, ФОМ, научные журналы
+    </div>
+
+    <div class="disclaimer">
+      <i class="fa-solid fa-circle-exclamation" style="color:var(--teal-400)"></i>
+      <span><strong>Демо-версия:</strong> используется встроенный ИИ с ограниченной базой знаний. Для полной проверки всех утверждений используйте <a href="#" style="color:var(--teal-600)">полную версию</a> с API-ключом.</span>
+    </div>
+  `, 'result-card');
+
+  setTimeout(() => {
+    const bb = el.querySelector('#bar-b');
+    const bc = el.querySelector('#bar-c');
+    if (bb) bb.style.width = bPct + '%';
+    if (bc) bc.style.width = cPct + '%';
+  }, 200);
+}
+
+async function checkFact() {
+  const claim = document.getElementById('fact-input').value.trim();
+  if (!claim) return;
+
+  const btn = document.getElementById('send-btn');
+  btn.disabled = true;
+  document.getElementById('fact-input').value = '';
+
+  addMessage(claim, 'user-msg');
+
+  const thinkEl = addMessage(`
+    <div class="thinking-row">
+      <i class="fa-solid fa-brain" style="color:var(--teal-500)"></i>
+      <span>Проверяю (встроенный ИИ, демо-режим)...</span>
+      <div class="thinking-dots"><span></span><span></span><span></span></div>
+    </div>
+    <div class="thinking-steps">
+      <div class="t-step active" id="ts1"><i class="fa-solid fa-search"></i> Поиск по базе знаний</div>
+      <div class="t-step" id="ts2"><i class="fa-solid fa-chart-bar"></i> Анализ данных</div>
+      <div class="t-step" id="ts3"><i class="fa-solid fa-scale-balanced"></i> Формирование вердикта</div>
+    </div>
+  `, 'thinking-card');
+
+  const steps = ['ts1','ts2','ts3'];
+  let si = 0;
+  const stepTimer = setInterval(() => {
+    if (si > 0 && document.getElementById(steps[si-1])) {
+      document.getElementById(steps[si-1]).className = 't-step done';
+      const icon = document.getElementById(steps[si-1]).querySelector('i');
+      if (icon) icon.className = 'fa-solid fa-check';
+    }
+    if (si < steps.length && document.getElementById(steps[si])) {
+      document.getElementById(steps[si]).className = 't-step active';
+      si++;
+    } else if (si >= steps.length) clearInterval(stepTimer);
+  }, 800);
+
+  // Имитация задержки
+  await new Promise(resolve => setTimeout(resolve, 2000));
+
+  const result = builtInAIFactCheck(claim);
+
+  clearInterval(stepTimer);
+  thinkEl.remove();
+
+  // Добавляем пометку о демо-режиме в результат
+  renderResult(claim, result);
+
+  btn.disabled = false;
+}
+
+document.getElementById('fact-input').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    checkFact();
+  }
+});
+
+document.getElementById('fact-input').addEventListener('input', function() {
+  this.style.height = 'auto';
+  this.style.height = Math.min(120, this.scrollHeight) + 'px';
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Классификатор неорганических соединений</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;800&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root {
+  --bg:       #e8f7f5;
+  --surface:  #ffffff;
+  --card:     #ffffff;
+  --border:   rgba(0,150,136,.15);
+  --border2:  rgba(0,150,136,.25);
+  --text:     #0d3b35;
+  --muted:    #5a8f88;
+  --oxide:    #e05d00;
+  --acid:     #d42b2b;
+  --base:     #0a7c4e;
+  --salt:     #1565c0;
+  --random:   #6a1b9a;
+  --teal:     #0097a7;
+  --teal-l:   #00bcd4;
+  --teal-d:   #006064;
+  --radius:   16px;
+  --correct:  #1b7a4e;
+  --wrong:    #c62828;
+  --shadow:   0 2px 12px rgba(0,150,136,.10);
+  --shadow-m: 0 4px 24px rgba(0,150,136,.15);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Nunito', sans-serif;
+  min-height: 100vh;
+}
+
+/* ─── HEADER ─── */
+header {
+  text-align: center;
+  padding: 40px 20px 28px;
+}
+header h1 {
+  font-family: 'Unbounded', sans-serif;
+  font-size: clamp(1.1rem, 3vw, 1.7rem);
+  font-weight: 800;
+  letter-spacing: -.02em;
+  background: linear-gradient(135deg, #006064, #0097a7 45%, #00bcd4);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  line-height: 1.2;
+  margin-bottom: 8px;
+}
+header h1 i {
+  background: none;
+  -webkit-text-fill-color: #0097a7;
+  color: #0097a7;
+}
+header p {
+  color: var(--muted);
+  font-size: .9rem;
+}
+header p i {
+  margin: 0 4px;
+}
+
+/* ─── LAYOUT ─── */
+.wrap {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 16px 60px;
+}
+
+/* ─── MODE TABS ─── */
+.mode-tabs {
+  display: flex;
+  gap: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 16px;
+  padding: 6px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+}
+.mode-tab {
+  flex: 1;
+  padding: 10px 8px;
+  border-radius: 16px;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-family: 'Nunito', sans-serif;
+  font-size: .82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .2s;
+  text-align: center;
+  line-height: 1.3;
+}
+.mode-tab i {
+  margin-right: 6px;
+}
+.mode-tab:hover { color: var(--teal-d); background: rgba(0,150,136,.07); }
+.mode-tab.active {
+  background: linear-gradient(135deg, rgba(0,150,136,.15), rgba(0,188,212,.12));
+  color: var(--teal-d);
+  border: 1px solid var(--border2);
+  font-weight: 700;
+}
+.mode-tab span {
+  display: block;
+  font-weight: 400;
+  font-size: .75rem;
+}
+
+/* ─── CLASS FILTER ─── */
+.class-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+.class-btn {
+  padding: 8px 18px;
+  border-radius: 16px;
+  border: 1.5px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  font-family: 'Nunito', sans-serif;
+  font-size: .85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .18s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.class-btn:hover { border-color: rgba(255,255,255,.25); color: var(--text); }
+.class-btn.active-oxide  { background: rgba(249,115,22,.15);  border-color: var(--oxide);  color: var(--oxide);  }
+.class-btn.active-acid   { background: rgba(239,68,68,.15);   border-color: var(--acid);   color: var(--acid);   }
+.class-btn.active-base   { background: rgba(34,197,94,.15);   border-color: var(--base);   color: var(--base);   }
+.class-btn.active-salt   { background: rgba(59,130,246,.15);  border-color: var(--salt);   color: var(--salt);   }
+.class-btn.active-random { background: rgba(168,85,247,.15);  border-color: var(--random); color: var(--random); }
+
+/* ─── TASK CARD ─── */
+.task-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px 28px 28px;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+.task-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  border-radius: 16px 16px 0 0;
+}
+.task-card.oxide::before  { background: var(--oxide); }
+.task-card.acid::before   { background: var(--acid); }
+.task-card.base::before   { background: var(--base); }
+.task-card.salt::before   { background: var(--salt); }
+.task-card.random::before { background: linear-gradient(90deg, var(--oxide), var(--acid), var(--base), var(--salt)); }
+
+.task-label {
+  font-size: .78rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.task-label i {
+  margin-right: 6px;
+}
+
+.task-question {
+  font-family: 'Unbounded', sans-serif;
+  font-size: clamp(1.6rem, 5vw, 2.8rem);
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.2;
+  word-break: break-word;
+}
+.task-question.formula {
+  letter-spacing: .04em;
+}
+.class-badge {
+  font-size: .75rem;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 16px;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+.badge-oxide  { background: rgba(249,115,22,.15);  color: var(--oxide); }
+.badge-acid   { background: rgba(239,68,68,.15);   color: var(--acid); }
+.badge-base   { background: rgba(34,197,94,.15);   color: var(--base); }
+.badge-salt   { background: rgba(59,130,246,.15);  color: var(--salt); }
+
+/* ─── ANSWER AREA ─── */
+.answer-area {
+  display: flex;
+  gap: 10px;
+  align-items: stretch;
+}
+.answer-input {
+  flex: 1;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  padding: 13px 18px;
+  color: var(--text);
+  font-family: 'Nunito', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  outline: none;
+  transition: border-color .2s;
+}
+.answer-input::placeholder { color: var(--muted); font-weight: 400; }
+.answer-input:focus { border-color: rgba(255,255,255,.3); }
+.answer-input.correct { border-color: var(--correct); background: rgba(34,197,94,.08); }
+.answer-input.wrong   { border-color: var(--wrong);   background: rgba(239,68,68,.08); }
+
+.check-btn {
+  padding: 13px 22px;
+  border-radius: 16px;
+  border: none;
+  background: rgba(255,255,255,.10);
+  color: var(--text);
+  font-family: 'Nunito', sans-serif;
+  font-size: .95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .18s;
+  border: 1px solid rgba(255,255,255,.12);
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.check-btn:hover { background: rgba(255,255,255,.16); }
+
+/* ─── FEEDBACK ─── */
+.feedback {
+  border-radius: 16px;
+  padding: 14px 18px;
+  font-weight: 600;
+  font-size: .95rem;
+  display: none;
+  align-items: center;
+  gap: 10px;
+}
+.feedback.show { display: flex; }
+.feedback.correct { background: rgba(34,197,94,.12); border: 1px solid rgba(34,197,94,.3); color: var(--correct); }
+.feedback.wrong   { background: rgba(239,68,68,.12);  border: 1px solid rgba(239,68,68,.3);  color: var(--wrong); }
+.feedback .icon { font-size: 1.3rem; }
+.feedback .right-answer { color: var(--text); }
+
+/* ─── BUTTONS ROW ─── */
+.btn-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.next-btn {
+  flex: 1;
+  padding: 13px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.06);
+  color: var(--text);
+  font-family: 'Nunito', sans-serif;
+  font-size: .95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .18s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.next-btn:hover { background: rgba(255,255,255,.12); }
+.next-btn.primary {
+  background: var(--teal);
+  border-color: var(--teal-d);
+  color: #fff;
+}
+.next-btn.primary:hover { background: var(--teal-d); }
+
+/* ─── GUESS CLASS BUTTONS ─── */
+.guess-btn {
+  padding: 9px 20px;
+  border-radius: 16px;
+  border: 1.5px solid var(--border2);
+  background: var(--surface);
+  color: var(--text);
+  font-family: 'Nunito', sans-serif;
+  font-size: .88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .15s;
+  box-shadow: var(--shadow);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.guess-btn:hover { border-color: var(--teal); color: var(--teal-d); background: rgba(0,150,136,.06); }
+.guess-btn:disabled { cursor: default; opacity: .7; }
+.guess-btn.correct-guess { background: rgba(27,122,78,.12); border-color: var(--correct); color: var(--correct); }
+.guess-btn.wrong-guess   { background: rgba(198,40,40,.10);  border-color: var(--wrong);   color: var(--wrong); }
+.guess-btn.reveal-guess  { background: rgba(27,122,78,.12); border-color: var(--correct); color: var(--correct); }
+
+/* ─── SCORE ─── */
+.score-bar {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  padding: 14px 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  margin-bottom: 20px;
+  font-size: .85rem;
+  font-weight: 600;
+}
+.score-item { display: flex; align-items: center; gap: 6px; }
+.score-item i { font-size: 14px; }
+.score-dot { width: 8px; height: 8px; border-radius: 50%; }
+.score-correct { color: var(--correct); }
+.score-wrong   { color: var(--wrong); }
+.score-total   { color: var(--muted); margin-left: auto; }
+.score-pct {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* ─── EMPTY STATE ─── */
+.empty-state {
+  text-align: center;
+  padding: 48px 20px;
+  color: var(--muted);
+}
+.empty-state .big { font-size: 3rem; margin-bottom: 12px; }
+
+/* ─── HINT ─── */
+.hint {
+  font-size: .78rem;
+  color: var(--muted);
+  text-align: center;
+  margin-top: -10px;
+  margin-bottom: 6px;
+}
+.hint i {
+  margin-right: 6px;
+}
+
+/* ─── HISTORY ─── */
+.history-toggle {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  border-radius: 16px;
+  padding: 8px 16px;
+  font-family: 'Nunito', sans-serif;
+  font-size: .8rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 10px;
+  transition: all .2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.history-toggle:hover { color: var(--text); border-color: rgba(255,255,255,.2); }
+.history-list {
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 260px;
+  overflow-y: auto;
+}
+.history-list.open { display: flex; }
+.history-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 10px 14px;
+  font-size: .83rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.history-item .h-result { font-size: 1rem; }
+.history-item .h-q { font-weight: 700; color: var(--text); }
+.history-item .h-a { color: var(--muted); }
+.history-item .h-correct { color: var(--correct); font-weight: 700; }
+
+.back-btn-fixed {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  padding: 10px 22px;
+  background: #1bb8b3;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  border-radius: 16px;
+  text-decoration: none;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  transition: background .15s, transform .1s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 100;
+}
+.back-btn-fixed:hover {
+  background: #17a5a0;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 520px) {
+  .task-card { padding: 24px 16px 20px; }
+  .mode-tab { font-size: .72rem; padding: 8px 4px; }
+  .btn-row { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1><i class="fa-solid fa-flask"></i> Классификатор неорганических соединений</h1>
+  <p><i class="fa-regular fa-compass"></i> Тренажёр по формулам и названиям · Химия</p>
+</header>
+
+<div class="wrap">
+
+  <!-- SCORE -->
+  <div class="score-bar" id="scoreBar">
+    <div class="score-item">
+      <i class="fa-solid fa-check-circle" style="color:var(--correct)"></i>
+      <span class="score-correct">Верно: <strong id="scoreCorrect">0</strong></span>
+    </div>
+    <div class="score-item">
+      <i class="fa-solid fa-xmark-circle" style="color:var(--wrong)"></i>
+      <span class="score-wrong">Ошибок: <strong id="scoreWrong">0</strong></span>
+    </div>
+    <div class="score-total">
+      <i class="fa-solid fa-vial"></i> Всего: <strong id="scoreTotal">0</strong>
+      &nbsp;|&nbsp;
+      <span class="score-pct" id="scorePct">—</span>
+    </div>
+    <button onclick="resetScore()" style="background:none;border:1px solid var(--border);color:var(--muted);border-radius:16px;padding:4px 10px;cursor:pointer;font-size:.75rem;font-family:'Nunito',sans-serif;display:inline-flex;align-items:center;gap:4px;">
+      <i class="fa-solid fa-rotate-right"></i> сброс
+    </button>
+  </div>
+
+  <!-- MODE TABS -->
+  <div class="mode-tabs">
+    <button class="mode-tab active" data-mode="formula-to-name" onclick="setMode('formula-to-name',this)">
+      <i class="fa-regular fa-file-lines"></i> По формуле<br><span>→ назвать</span>
+    </button>
+    <button class="mode-tab" data-mode="name-to-formula" onclick="setMode('name-to-formula',this)">
+      <i class="fa-regular fa-pen-to-square"></i> По названию<br><span>→ написать формулу</span>
+    </button>
+  </div>
+
+  <!-- CLASS FILTER -->
+  <div class="class-filter">
+    <button class="class-btn active-oxide" data-class="oxide" onclick="toggleClass('oxide',this)">
+      <i class="fa-regular fa-circle"></i> Оксиды
+    </button>
+    <button class="class-btn active-acid" data-class="acid" onclick="toggleClass('acid',this)">
+      <i class="fa-regular fa-circle"></i> Кислоты
+    </button>
+    <button class="class-btn active-base" data-class="base" onclick="toggleClass('base',this)">
+      <i class="fa-regular fa-circle"></i> Основания
+    </button>
+    <button class="class-btn active-salt" data-class="salt" onclick="toggleClass('salt',this)">
+      <i class="fa-regular fa-circle"></i> Соли
+    </button>
+    <button class="class-btn" id="allBtn" onclick="setAllClasses()">
+      <i class="fa-regular fa-star"></i> Все классы
+    </button>
+  </div>
+
+  <!-- TASK CARD -->
+  <div class="task-card" id="taskCard">
+    <div class="empty-state">
+      <div class="big"><i class="fa-solid fa-flask-vial"></i></div>
+      <div>Выберите класс и нажмите «Новое задание»</div>
+    </div>
+  </div>
+
+  <!-- ANSWER AREA -->
+  <div id="answerArea" style="display:none;flex-direction:column;gap:12px;margin-bottom:16px;">
+    <div class="answer-area">
+      <input class="answer-input" id="answerInput" placeholder="Введите ответ..." autocomplete="off"
+             onkeydown="if(event.key==='Enter')checkAnswer()">
+      <button class="check-btn" onclick="checkAnswer()"><i class="fa-solid fa-check"></i> Проверить</button>
+    </div>
+    <div class="hint" id="hintText"><i class="fa-regular fa-lightbulb"></i> Введите название на русском языке</div>
+
+    <!-- УГАДАЙ КЛАСС (только в режиме "все классы") -->
+    <div id="classGuessArea" style="display:none;">
+      <div style="font-size:.78rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">
+        <i class="fa-regular fa-question-circle"></i> Определите класс вещества:
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;">
+        <button class="guess-btn" data-guess="oxide" onclick="guessClass('oxide',this)">
+          <i class="fa-regular fa-circle"></i> Оксид
+        </button>
+        <button class="guess-btn" data-guess="acid" onclick="guessClass('acid',this)">
+          <i class="fa-regular fa-circle"></i> Кислота
+        </button>
+        <button class="guess-btn" data-guess="base" onclick="guessClass('base',this)">
+          <i class="fa-regular fa-circle"></i> Основание
+        </button>
+        <button class="guess-btn" data-guess="salt" onclick="guessClass('salt',this)">
+          <i class="fa-regular fa-circle"></i> Соль
+        </button>
+      </div>
+      <div id="classGuessFeedback" style="margin-top:8px;font-size:.85rem;font-weight:600;min-height:20px;"></div>
+    </div>
+
+    <div class="feedback" id="feedback">
+      <span class="icon" id="feedbackIcon"></span>
+      <span id="feedbackText"></span>
+    </div>
+  </div>
+
+  <!-- BUTTONS -->
+  <div class="btn-row" id="btnRow">
+    <button class="next-btn primary" onclick="nextTask()"><i class="fa-solid fa-bolt"></i> Новое задание</button>
+    <button class="next-btn" onclick="showAnswer()" id="showAnswerBtn" style="display:none">
+      <i class="fa-regular fa-eye"></i> Показать ответ
+    </button>
+  </div>
+
+  <!-- HISTORY -->
+  <div style="margin-top:28px;">
+    <button class="history-toggle" onclick="toggleHistory()">
+      <i class="fa-regular fa-clock"></i> История ответов
+    </button>
+    <div class="history-list" id="historyList"></div>
+  </div>
+
+  <a href="start_trainer.html" class="back-btn-fixed"><i class="fa-solid fa-arrow-left"></i> Назад</a>
+
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+//  БАЗА ВЕЩЕСТВ
+// ═══════════════════════════════════════════════════════════
+const DB = {
+  oxide: [
+    { name: "оксид натрия",        formula: "Na₂O"  },
+    { name: "оксид калия",         formula: "K₂O"   },
+    { name: "оксид кальция",       formula: "CaO"   },
+    { name: "оксид магния",        formula: "MgO"   },
+    { name: "оксид бария",         formula: "BaO"   },
+    { name: "оксид алюминия",      formula: "Al₂O₃" },
+    { name: "оксид железа(II)",    formula: "FeO"   },
+    { name: "оксид железа(III)",   formula: "Fe₂O₃" },
+    { name: "оксид меди(II)",      formula: "CuO"   },
+    { name: "оксид цинка",         formula: "ZnO"   },
+    { name: "оксид свинца(II)",    formula: "PbO"   },
+    { name: "оксид серы(IV)",      formula: "SO₂"   },
+    { name: "оксид серы(VI)",      formula: "SO₃"   },
+    { name: "оксид азота(II)",     formula: "NO"    },
+    { name: "оксид азота(IV)",     formula: "NO₂"   },
+    { name: "оксид азота(V)",      formula: "N₂O₅"  },
+    { name: "оксид углерода(II)",  formula: "CO"    },
+    { name: "оксид углерода(IV)",  formula: "CO₂"   },
+    { name: "оксид фосфора(V)",    formula: "P₂O₅"  },
+    { name: "оксид кремния(IV)",   formula: "SiO₂"  },
+    { name: "оксид хлора(I)",      formula: "Cl₂O"  },
+    { name: "оксид марганца(VII)", formula: "Mn₂O₇" },
+    { name: "оксид хрома(III)",    formula: "Cr₂O₃" },
+    { name: "оксид никеля(II)",    formula: "NiO"   },
+  ],
+  acid: [
+    { name: "серная кислота",       formula: "H₂SO₄"  },
+    { name: "сернистая кислота",    formula: "H₂SO₃"  },
+    { name: "азотная кислота",      formula: "HNO₃"   },
+    { name: "азотистая кислота",    formula: "HNO₂"   },
+    { name: "соляная кислота",      formula: "HCl"    },
+    { name: "фосфорная кислота",    formula: "H₃PO₄"  },
+    { name: "фосфористая кислота",  formula: "H₃PO₃"  },
+    { name: "угольная кислота",     formula: "H₂CO₃"  },
+    { name: "кремниевая кислота",   formula: "H₂SiO₃" },
+    { name: "бромоводородная кислота", formula: "HBr"  },
+    { name: "иодоводородная кислота",  formula: "HI"   },
+    { name: "плавиковая кислота",   formula: "HF"     },
+    { name: "хлорная кислота",      formula: "HClO₄"  },
+    { name: "хлористая кислота",    formula: "HClO₂"  },
+    { name: "хлорноватая кислота",  formula: "HClO₃"  },
+    { name: "марганцовая кислота",  formula: "HMnO₄"  },
+    { name: "хромовая кислота",     formula: "H₂CrO₄" },
+  ],
+  base: [
+    { name: "гидроксид натрия",      formula: "NaOH"    },
+    { name: "гидроксид калия",       formula: "KOH"     },
+    { name: "гидроксид кальция",     formula: "Ca(OH)₂" },
+    { name: "гидроксид магния",      formula: "Mg(OH)₂" },
+    { name: "гидроксид бария",       formula: "Ba(OH)₂" },
+    { name: "гидроксид алюминия",    formula: "Al(OH)₃" },
+    { name: "гидроксид железа(II)",  formula: "Fe(OH)₂" },
+    { name: "гидроксид железа(III)", formula: "Fe(OH)₃" },
+    { name: "гидроксид меди(II)",    formula: "Cu(OH)₂" },
+    { name: "гидроксид цинка",       formula: "Zn(OH)₂" },
+    { name: "гидроксид аммония",     formula: "NH₄OH"   },
+    { name: "гидроксид свинца(II)",  formula: "Pb(OH)₂" },
+    { name: "гидроксид никеля(II)",  formula: "Ni(OH)₂" },
+    { name: "гидроксид хрома(III)",  formula: "Cr(OH)₃" },
+    { name: "гидроксид лития",       formula: "LiOH"    },
+    { name: "гидроксид стронция",    formula: "Sr(OH)₂" },
+  ],
+  salt: [
+    // сульфаты
+    { name: "сульфат натрия",        formula: "Na₂SO₄"   },
+    { name: "сульфат калия",         formula: "K₂SO₄"    },
+    { name: "сульфат кальция",       formula: "CaSO₄"    },
+    { name: "сульфат магния",        formula: "MgSO₄"    },
+    { name: "сульфат алюминия",      formula: "Al₂(SO₄)₃"},
+    { name: "сульфат меди(II)",      formula: "CuSO₄"    },
+    { name: "сульфат железа(II)",    formula: "FeSO₄"    },
+    { name: "сульфат железа(III)",   formula: "Fe₂(SO₄)₃"},
+    { name: "сульфат бария",         formula: "BaSO₄"    },
+    // нитраты
+    { name: "нитрат натрия",         formula: "NaNO₃"    },
+    { name: "нитрат калия",          formula: "KNO₃"     },
+    { name: "нитрат кальция",        formula: "Ca(NO₃)₂" },
+    { name: "нитрат магния",         formula: "Mg(NO₃)₂" },
+    { name: "нитрат свинца(II)",     formula: "Pb(NO₃)₂" },
+    { name: "нитрат серебра",        formula: "AgNO₃"    },
+    // хлориды
+    { name: "хлорид натрия",         formula: "NaCl"     },
+    { name: "хлорид калия",          formula: "KCl"      },
+    { name: "хлорид кальция",        formula: "CaCl₂"    },
+    { name: "хлорид магния",         formula: "MgCl₂"    },
+    { name: "хлорид алюминия",       formula: "AlCl₃"    },
+    { name: "хлорид железа(III)",    formula: "FeCl₃"    },
+    { name: "хлорид меди(II)",       formula: "CuCl₂"    },
+    { name: "хлорид бария",          formula: "BaCl₂"    },
+    // карбонаты
+    { name: "карбонат натрия",       formula: "Na₂CO₃"   },
+    { name: "карбонат калия",        formula: "K₂CO₃"    },
+    { name: "карбонат кальция",      formula: "CaCO₃"    },
+    { name: "карбонат магния",       formula: "MgCO₃"    },
+    { name: "карбонат бария",        formula: "BaCO₃"    },
+    // фосфаты
+    { name: "фосфат натрия",         formula: "Na₃PO₄"   },
+    { name: "фосфат калия",          formula: "K₃PO₄"    },
+    { name: "фосфат кальция",        formula: "Ca₃(PO₄)₂"},
+    // сульфиты
+    { name: "сульфит натрия",        formula: "Na₂SO₃"   },
+    { name: "сульфит калия",         formula: "K₂SO₃"    },
+    { name: "сульфит кальция",       formula: "CaSO₃"    },
+    // силикаты
+    { name: "силикат натрия",        formula: "Na₂SiO₃"  },
+    { name: "силикат калия",         formula: "K₂SiO₃"   },
+    { name: "силикат кальция",       formula: "CaSiO₃"   },
+    // нитриты
+    { name: "нитрит натрия",         formula: "NaNO₂"    },
+    // прочие
+    { name: "хромат калия",          formula: "K₂CrO₄"   },
+    { name: "перманганат калия",     formula: "KMnO₄"    },
+  ]
+};
+
+const CLASS_NAMES = { oxide:"Оксид", acid:"Кислота", base:"Основание", salt:"Соль" };
+const CLASS_COLORS = { oxide:"oxide", acid:"acid", base:"base", salt:"salt" };
+
+// ═══════════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════════
+let mode = "formula-to-name";
+let activeClasses = new Set(["oxide","acid","base","salt"]);
+let current = null;
+let answered = false;
+let classGuessed = false;
+let score = { correct:0, wrong:0 };
+let history = [];
+
+// ═══════════════════════════════════════════════════════════
+//  GUESS CLASS
+// ═══════════════════════════════════════════════════════════
+function guessClass(guessed, btn) {
+  if (classGuessed || !current) return;
+  classGuessed = true;
+
+  const correct = current.classKey;
+  const fb = document.getElementById("classGuessFeedback");
+
+  document.querySelectorAll(".guess-btn").forEach(b => b.disabled = true);
+
+  if (guessed === correct) {
+    btn.className = "guess-btn correct-guess";
+    fb.style.color = "var(--correct)";
+    fb.innerHTML = `<i class="fa-solid fa-check-circle"></i> Верно! ${CLASS_NAMES[correct]}`;
+    score.correct++;
+    updateScore();
+  } else {
+    btn.className = "guess-btn wrong-guess";
+    fb.style.color = "var(--wrong)";
+    fb.innerHTML = `<i class="fa-solid fa-xmark-circle"></i> Неверно. Правильно: ${CLASS_NAMES[correct]}`;
+    document.querySelectorAll(".guess-btn").forEach(b => {
+      if (b.dataset.guess === correct) b.className = "guess-btn reveal-guess";
+    });
+    score.wrong++;
+    updateScore();
+  }
+
+  const card = document.getElementById("taskCard");
+  const badge = card.querySelector(".class-badge");
+  if (badge) {
+    badge.className = `class-badge badge-${correct}`;
+    badge.textContent = CLASS_NAMES[correct];
+    badge.style.opacity = "1";
+  }
+
+  history.unshift({
+    question: mode === "formula-to-name" ? current.item.formula : current.item.name,
+    userAnswer: CLASS_NAMES[guessed],
+    correct: CLASS_NAMES[correct],
+    isCorrect: guessed === correct,
+    classKey: correct,
+    isClassTask: true
+  });
+  if (history.length > 30) history.pop();
+  updateHistory();
+}
+
+// ═══════════════════════════════════════════════════════════
+//  NORMALISE
+// ═══════════════════════════════════════════════════════════
+function norm(str) {
+  return str.trim().toLowerCase()
+    .replace(/[₀-₉]/g, d => String.fromCharCode(d.charCodeAt(0) - 8272))
+    .replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]/g, d => "0123456789"["⁰¹²³⁴⁵⁶⁷⁸⁹".indexOf(d)])
+    .replace(/\s+/g, " ")
+    .replace(/\(ii\)/g,"(2)").replace(/\(iii\)/g,"(3)")
+    .replace(/\(iv\)/g,"(4)").replace(/\(v\)/g,"(5)")
+    .replace(/\(vi\)/g,"(6)").replace(/\(vii\)/g,"(7)");
+}
+
+function normRef(str) {
+  return norm(str).replace(/\s/g,'');
+}
+
+function checkMatch(input, correct) {
+  const a = norm(input), b = norm(correct);
+  if (a === b) return true;
+  const romanToArabic = s => s
+    .replace(/\(vii\)/g,"(7)").replace(/\(vi\)/g,"(6)").replace(/\(v\)/g,"(5)")
+    .replace(/\(iv\)/g,"(4)").replace(/\(iii\)/g,"(3)").replace(/\(ii\)/g,"(2)");
+  if (romanToArabic(a) === romanToArabic(b)) return true;
+  return false;
+}
+
+// ═══════════════════════════════════════════════════════════
+//  MODE & CLASS CONTROLS
+// ═══════════════════════════════════════════════════════════
+function setMode(m, btn) {
+  mode = m;
+  document.querySelectorAll(".mode-tab").forEach(t => t.classList.remove("active"));
+  btn.classList.add("active");
+  clearTask();
+}
+
+function toggleClass(cls, btn) {
+  if (activeClasses.has(cls)) {
+    if (activeClasses.size === 1) return;
+    activeClasses.delete(cls);
+    btn.className = "class-btn";
+  } else {
+    activeClasses.add(cls);
+    btn.className = `class-btn active-${cls}`;
+  }
+  updateAllBtn();
+  clearTask();
+}
+
+function setAllClasses() {
+  activeClasses = new Set(["oxide","acid","base","salt"]);
+  document.querySelectorAll(".class-btn[data-class]").forEach(b => {
+    const cls = b.dataset.class;
+    b.className = `class-btn active-${cls}`;
+  });
+  updateAllBtn();
+  clearTask();
+}
+
+function updateAllBtn() {
+  const allBtn = document.getElementById("allBtn");
+  const all = activeClasses.size === 4;
+  allBtn.className = all ? "class-btn active-random" : "class-btn";
+}
+
+// ═══════════════════════════════════════════════════════════
+//  TASK
+// ═══════════════════════════════════════════════════════════
+function getPool() {
+  let pool = [];
+  activeClasses.forEach(cls => {
+    DB[cls].forEach(item => pool.push({ item, classKey: cls }));
+  });
+  return pool;
+}
+
+function nextTask() {
+  const pool = getPool();
+  if (!pool.length) return;
+
+  let pick;
+  for (let i = 0; i < 5; i++) {
+    pick = pool[Math.floor(Math.random() * pool.length)];
+    if (!current || pick.item.formula !== current.item.formula) break;
+  }
+  current = pick;
+  answered = false;
+  classGuessed = false;
+
+  const card = document.getElementById("taskCard");
+  const cls = current.classKey;
+  const allMode = activeClasses.size === 4;
+
+  const badgeHtml = allMode
+    ? `<span class="class-badge" style="opacity:0;pointer-events:none">?</span>`
+    : `<span class="class-badge badge-${cls}">${CLASS_NAMES[cls]}</span>`;
+
+  card.className = `task-card`;
+
+  if (mode === "formula-to-name") {
+    card.innerHTML = `
+      <div class="task-label"><i class="fa-regular fa-compass"></i> Назовите вещество</div>
+      <div class="task-question formula">${current.item.formula}</div>
+      ${badgeHtml}
+    `;
+    document.getElementById("hintText").innerHTML = '<i class="fa-regular fa-lightbulb"></i> Введите название на русском языке';
+  } else {
+    card.innerHTML = `
+      <div class="task-label"><i class="fa-regular fa-compass"></i> Напишите формулу</div>
+      <div class="task-question">${current.item.name}</div>
+      ${badgeHtml}
+    `;
+    document.getElementById("hintText").innerHTML = '<i class="fa-regular fa-lightbulb"></i> Используйте цифры для индексов: H2SO4, Ca(OH)2';
+  }
+
+  const guessArea = document.getElementById("classGuessArea");
+  if (allMode) {
+    guessArea.style.display = "block";
+    document.querySelectorAll(".guess-btn").forEach(b => {
+      b.className = "guess-btn";
+      b.disabled = false;
+    });
+    document.getElementById("classGuessFeedback").innerHTML = "";
+  } else {
+    guessArea.style.display = "none";
+  }
+
+  const input = document.getElementById("answerInput");
+  input.value = "";
+  input.className = "answer-input";
+  input.placeholder = mode === "formula-to-name" ? "Введите название..." : "Введите формулу...";
+
+  const fb = document.getElementById("feedback");
+  fb.className = "feedback";
+  fb.style.display = "";
+
+  document.getElementById("answerArea").style.display = "flex";
+  document.getElementById("showAnswerBtn").style.display = "inline-block";
+
+  card.style.opacity = "0";
+  card.style.transform = "translateY(8px)";
+  requestAnimationFrame(() => {
+    card.style.transition = "opacity .25s, transform .25s";
+    card.style.opacity = "1";
+    card.style.transform = "translateY(0)";
+  });
+
+  input.focus();
+}
+
+function clearTask() {
+  current = null;
+  answered = false;
+  classGuessed = false;
+  document.getElementById("taskCard").innerHTML = `
+    <div class="empty-state">
+      <div class="big"><i class="fa-regular fa-flask"></i></div>
+      <div>Нажмите «Новое задание»</div>
+    </div>`;
+  document.getElementById("taskCard").className = "task-card";
+  document.getElementById("answerArea").style.display = "none";
+  document.getElementById("showAnswerBtn").style.display = "none";
+  document.getElementById("feedback").className = "feedback";
+  document.getElementById("classGuessArea").style.display = "none";
+}
+
+// ═══════════════════════════════════════════════════════════
+//  CHECK ANSWER
+// ═══════════════════════════════════════════════════════════
+function checkAnswer() {
+  if (!current || answered) { nextTask(); return; }
+
+  const input = document.getElementById("answerInput");
+  const userVal = input.value.trim();
+  if (!userVal) { input.focus(); return; }
+
+  const correct = mode === "formula-to-name"
+    ? current.item.name
+    : current.item.formula;
+
+  const isCorrect = mode === "formula-to-name"
+    ? checkMatch(userVal, correct)
+    : normRef(userVal) === normRef(correct.replace(/[₀-₉]/g, d => String.fromCharCode(d.charCodeAt(0)-8272)));
+
+  answered = true;
+
+  const fb = document.getElementById("feedback");
+  const icon = document.getElementById("feedbackIcon");
+  const text = document.getElementById("feedbackText");
+
+  if (isCorrect) {
+    input.className = "answer-input correct";
+    fb.className = "feedback correct show";
+    icon.textContent = "✓";
+    text.innerHTML = "Верно!";
+    score.correct++;
+  } else {
+    input.className = "answer-input wrong";
+    fb.className = "feedback wrong show";
+    icon.textContent = "✗";
+    text.innerHTML = `Ошибка. Правильный ответ: <span class="right-answer"><strong>${correct}</strong></span>`;
+    score.wrong++;
+  }
+
+  history.unshift({
+    question: mode === "formula-to-name" ? current.item.formula : current.item.name,
+    userAnswer: userVal,
+    correct,
+    isCorrect,
+    classKey: current.classKey
+  });
+  if (history.length > 30) history.pop();
+
+  updateScore();
+  updateHistory();
+}
+
+function showAnswer() {
+  if (!current) return;
+  answered = true;
+  classGuessed = true;
+  const correct = mode === "formula-to-name" ? current.item.name : current.item.formula;
+  const fb = document.getElementById("feedback");
+  fb.className = "feedback wrong show";
+  document.getElementById("feedbackIcon").textContent = "👁";
+  document.getElementById("feedbackText").innerHTML = `Ответ: <span class="right-answer"><strong>${correct}</strong></span>`;
+  document.getElementById("answerInput").className = "answer-input wrong";
+  document.getElementById("answerInput").value = correct;
+
+  const cls = current.classKey;
+  const card = document.getElementById("taskCard");
+  const badge = card.querySelector(".class-badge");
+  if (badge) { badge.className = `class-badge badge-${cls}`; badge.textContent = CLASS_NAMES[cls]; badge.style.opacity = "1"; }
+
+  document.querySelectorAll(".guess-btn").forEach(b => {
+    b.disabled = true;
+    if (b.dataset.guess === cls) b.className = "guess-btn reveal-guess";
+  });
+  const gfb = document.getElementById("classGuessFeedback");
+  if (gfb) { gfb.style.color = "var(--muted)"; gfb.innerHTML = `<i class="fa-regular fa-info-circle"></i> Класс: ${CLASS_NAMES[cls]}`; }
+
+  score.wrong++;
+  history.unshift({
+    question: mode === "formula-to-name" ? current.item.formula : current.item.name,
+    userAnswer: "—",
+    correct,
+    isCorrect: false,
+    classKey: cls
+  });
+  updateScore();
+  updateHistory();
+}
+
+// ═══════════════════════════════════════════════════════════
+//  SCORE
+// ═══════════════════════════════════════════════════════════
+function updateScore() {
+  const total = score.correct + score.wrong;
+  document.getElementById("scoreCorrect").textContent = score.correct;
+  document.getElementById("scoreWrong").textContent = score.wrong;
+  document.getElementById("scoreTotal").textContent = total;
+  const pct = total > 0 ? Math.round(score.correct / total * 100) : "—";
+  const el = document.getElementById("scorePct");
+  el.textContent = total > 0 ? pct + "%" : "—";
+  el.style.color = total > 0
+    ? (pct >= 80 ? "var(--correct)" : pct >= 50 ? "#f59e0b" : "var(--wrong)")
+    : "var(--muted)";
+}
+
+function resetScore() {
+  score = { correct:0, wrong:0 };
+  history = [];
+  updateScore();
+  updateHistory();
+}
+
+// ═══════════════════════════════════════════════════════════
+//  HISTORY
+// ═══════════════════════════════════════════════════════════
+function toggleHistory() {
+  const list = document.getElementById("historyList");
+  list.classList.toggle("open");
+}
+
+function updateHistory() {
+  const list = document.getElementById("historyList");
+  if (!list.classList.contains("open")) return;
+  renderHistory();
+}
+
+function renderHistory() {
+  const list = document.getElementById("historyList");
+  if (history.length === 0) {
+    list.innerHTML = '<div style="color:var(--muted);font-size:.85rem;padding:8px 14px;"><i class="fa-regular fa-clock"></i> История пуста</div>';
+    return;
+  }
+  list.innerHTML = history.map(h => `
+    <div class="history-item">
+      <span class="h-result">${h.isCorrect ? "✅" : "❌"}</span>
+      <div>
+        <div class="h-q">${h.question}</div>
+        <div class="h-a">
+          Ваш ответ: <span style="color:${h.isCorrect?'var(--correct)':'var(--wrong)'}">${h.userAnswer}</span>
+          ${!h.isCorrect ? `· правильно: <span class="h-correct">${h.correct}</span>` : ""}
+        </div>
+      </div>
+      <span class="class-badge badge-${h.classKey}" style="margin-left:auto;font-size:.68rem">${CLASS_NAMES[h.classKey]}</span>
+    </div>
+  `).join("");
+}
+
+document.querySelector(".history-toggle").addEventListener("click", () => {
+  setTimeout(() => {
+    if (document.getElementById("historyList").classList.contains("open")) renderHistory();
+  }, 10);
+});
+
+// Init
+updateScore();
+updateAllBtn();
+</script>
+</body>
+</html>

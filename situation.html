@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Демо · А что, если бы? — Генератор ситуаций</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;600;700;900&family=Mulish:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --t50:  #e0faf4;
+  --t100: #b3f2e1;
+  --t200: #7de8cc;
+  --t300: #3dd4b0;
+  --t400: #15b896;
+  --t500: #0d9e80;
+  --t600: #08806a;
+  --t700: #066354;
+  --t800: #044a3e;
+  --t900: #02312a;
+
+  --bio: #15b896;
+  --chem: #e07b1a;
+  --geo: #2463c5;
+
+  --bg: #f4fdfb;
+  --surface: #ffffff;
+  --border: #c8f0e6;
+  --text: #02312a;
+  --muted: #5a9e90;
+  --dim: #9fd4c8;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  background-image:
+    radial-gradient(ellipse 60% 40% at 10% 0%, rgba(61,212,176,0.18) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 60% at 90% 100%, rgba(13,158,128,0.12) 0%, transparent 55%);
+  font-family: 'Mulish', sans-serif;
+  color: var(--text);
+  min-height: 100vh;
+  padding: 0 0 80px;
+}
+
+header {
+  padding: 40px 32px 28px;
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.logo-block {}
+.logo-eyebrow {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--t400);
+  margin-bottom: 6px;
+}
+.logo-title {
+  font-family: 'Unbounded', sans-serif;
+  font-size: clamp(22px, 4vw, 38px);
+  font-weight: 900;
+  color: var(--t700);
+  line-height: 1.05;
+  letter-spacing: -1.5px;
+}
+.logo-title em {
+  font-style: normal;
+  color: var(--t400);
+}
+.logo-sub {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 6px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+.stat-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--t800);
+  color: var(--t100);
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-family: 'Unbounded', sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+}
+.stat-pill span {
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--t300);
+}
+
+.main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.sidebar {
+  position: sticky;
+  top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 18px 16px;
+}
+.panel-title {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin-bottom: 12px;
+}
+
+.subj-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1.5px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  font-family: 'Mulish', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  transition: all 0.18s;
+  margin-bottom: 4px;
+  text-align: left;
+}
+.subj-btn:last-child { margin-bottom: 0; }
+.subj-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.subj-count {
+  margin-left: auto;
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--dim);
+}
+.subj-btn:hover {
+  background: var(--t50);
+  color: var(--t700);
+}
+.subj-btn.active {
+  background: var(--t50);
+  border-color: var(--t200);
+  color: var(--t800);
+}
+.subj-btn[data-sub="all"] .subj-dot { background: linear-gradient(135deg, var(--bio), var(--geo)); }
+.subj-btn[data-sub="bio"] .subj-dot { background: var(--bio); }
+.subj-btn[data-sub="chem"] .subj-dot { background: var(--chem); }
+.subj-btn[data-sub="geo"] .subj-dot { background: var(--geo); }
+
+.level-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+.lvl-btn {
+  padding: 9px 8px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
+  background: transparent;
+  cursor: pointer;
+  font-family: 'Mulish', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  transition: all 0.18s;
+  text-align: center;
+}
+.lvl-btn:hover { border-color: var(--t300); color: var(--t700); }
+.lvl-btn.active {
+  background: var(--t700);
+  border-color: var(--t700);
+  color: white;
+}
+
+.saved-empty {
+  font-size: 12px;
+  color: var(--dim);
+  text-align: center;
+  padding: 12px 0;
+  font-style: italic;
+}
+.saved-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--text);
+  line-height: 1.4;
+}
+.saved-item:last-child { border-bottom: none; }
+.saved-dot-s {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--t400);
+  margin-top: 5px;
+  flex-shrink: 0;
+}
+.saved-rm {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: var(--dim);
+  cursor: pointer;
+  font-size: 13px;
+  flex-shrink: 0;
+  padding: 0;
+  line-height: 1;
+  transition: color 0.15s;
+}
+.saved-rm:hover { color: #e05555; }
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.nav-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.nav-counter {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 400;
+}
+.nav-dots {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.nav-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--border);
+  transition: background 0.2s;
+  cursor: pointer;
+}
+.nav-dot.on { background: var(--t400); }
+
+.card {
+  background: var(--surface);
+  border-radius: 22px;
+  border: 1.5px solid var(--border);
+  overflow: hidden;
+  box-shadow: 0 8px 40px rgba(13,158,128,0.08);
+  transition: box-shadow 0.25s;
+  animation: cardIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(16px) scale(0.97); }
+  to   { opacity: 1; transform: none; }
+}
+
+.card-head {
+  padding: 20px 24px 18px;
+  position: relative;
+  overflow: hidden;
+}
+.card-head::after {
+  content: '';
+  position: absolute;
+  right: -20px; top: -20px;
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.1);
+}
+.card-head-meta {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+.badge {
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-family: 'Unbounded', sans-serif;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: rgba(255,255,255,0.2);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.25);
+}
+.card-icon {
+  position: absolute;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 48px;
+  opacity: 0.18;
+}
+.card-number {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 11px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.55);
+  letter-spacing: 0.08em;
+}
+
+.card-body {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.question-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.question-prefix {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--t400);
+}
+.question-text {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.45;
+  letter-spacing: -0.3px;
+}
+
+.hint-label {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--t500);
+  margin-bottom: 6px;
+}
+.hint-text {
+  font-size: 13.5px;
+  color: var(--t800);
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.tag {
+  background: var(--t50);
+  border: 1px solid var(--t100);
+  color: var(--t600);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 999px;
+  letter-spacing: 0.03em;
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 10px;
+}
+.btn {
+  padding: 14px 20px;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  font-family: 'Mulish', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  transition: all 0.18s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+.btn-primary {
+  background: var(--t600);
+  color: white;
+}
+.btn-primary:hover { background: var(--t700); transform: translateY(-1px); }
+.btn-primary:active { transform: scale(0.98); }
+.btn-secondary {
+  background: var(--t50);
+  color: var(--t700);
+  border: 1.5px solid var(--t200);
+}
+.btn-secondary:hover { background: var(--t100); border-color: var(--t300); }
+.btn-icon {
+  background: white;
+  border: 1.5px solid var(--border);
+  color: var(--muted);
+  width: 50px;
+  padding: 0;
+}
+.btn-icon:hover { border-color: var(--t300); color: var(--t600); background: var(--t50); }
+.btn-icon.starred { color: #e0aa1a; border-color: #e0aa1a; background: #fffbef; }
+
+.btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+.btn-primary.spinning svg { animation: spin 0.5s linear; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.history-section {
+  margin-top: 8px;
+}
+.history-title {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin-bottom: 10px;
+  padding-left: 2px;
+}
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.history-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  font-size: 12.5px;
+  color: var(--text);
+  line-height: 1.4;
+}
+.history-chip:hover { border-color: var(--t300); background: var(--t50); }
+.history-chip.current { border-color: var(--t400); background: var(--t50); }
+.hc-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.hc-num {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 9px;
+  color: var(--dim);
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.btn-hint {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1.5px dashed var(--t200);
+  background: transparent;
+  color: var(--muted);
+  font-family: 'Mulish', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s;
+  letter-spacing: 0.02em;
+}
+.btn-hint:hover {
+  background: var(--t50);
+  border-color: var(--t300);
+  color: var(--t600);
+}
+.btn-hint svg { width: 12px; height: 12px; flex-shrink: 0; transition: transform 0.25s; }
+.btn-hint.open svg { transform: rotate(180deg); }
+
+.hint-block {
+  display: none;
+  background: var(--t50);
+  border-left: 3.5px solid var(--t300);
+  border-radius: 0 12px 12px 0;
+  padding: 14px 16px;
+  animation: slideDown 0.28s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+.hint-block.visible { display: block; }
+
+.btn-answer {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1.5px dashed var(--t300);
+  background: transparent;
+  color: var(--t600);
+  font-family: 'Mulish', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s;
+  letter-spacing: 0.02em;
+}
+.btn-answer:hover {
+  background: var(--t50);
+  border-color: var(--t400);
+  color: var(--t700);
+}
+.btn-answer svg {
+  width: 12px; height: 12px;
+  transition: transform 0.25s;
+  flex-shrink: 0;
+}
+.btn-answer.open svg { transform: rotate(180deg); }
+
+.answer-block {
+  display: none;
+  background: linear-gradient(135deg, var(--t800) 0%, var(--t700) 100%);
+  border-radius: 14px;
+  padding: 16px 18px;
+  animation: slideDown 0.28s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+.answer-block.visible { display: block; }
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px) scale(0.98); }
+  to   { opacity: 1; transform: none; }
+}
+.answer-label {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--t300);
+  margin-bottom: 8px;
+}
+.answer-text {
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: var(--t50);
+  font-weight: 400;
+}
+
+@media (max-width: 660px) {
+  .main { grid-template-columns: 1fr; }
+  .sidebar { position: static; }
+  header { padding: 24px 20px 16px; }
+  .main { padding: 0 16px; }
+  .actions { grid-template-columns: 1fr 1fr; }
+  .btn-primary { grid-column: 1 / -1; }
+}
+.back-btn-fixed {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  padding: 10px 22px;
+  background: #1bb8b3;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  border-radius: 10px;
+  text-decoration: none;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  transition: background .15s, transform .1s;
+}
+.back-btn-fixed:hover {
+  background: #17a5a0;
+  transform: translateY(-2px);
+}
+.demo-badge {
+            display: inline-block;
+            background: #ff9800;
+            color: #fff;
+            font-size: 0.55rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 30px;
+            margin-left: 8px;
+            vertical-align: middle;
+            letter-spacing: 0.3px;
+        }
+        .card .demo-badge { margin-left: 10px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-block">
+    <div class="logo-eyebrow">Генератор ситуаций <span class="demo-badge">DEMO</span></div>
+    <div class="logo-title">А <em>что,</em><br>если бы?</div>
+    <div class="logo-sub">Биология · Химия · География</div>
+  </div>
+  <div class="stat-pill">
+    <span id="totalStat">6</span> ситуаций в базе (в оригинальном варианте 93)
+  </div>
+</header>
+
+<div class="main">
+
+  <div class="sidebar">
+    <div class="panel">
+      <div class="panel-title">Предмет</div>
+      <button class="subj-btn active" data-sub="all">
+        <div class="subj-dot"></div>
+        Все предметы
+        <span class="subj-count" id="cnt-all">6</span>
+      </button>
+      <button class="subj-btn" data-sub="bio">
+        <div class="subj-dot"></div>
+        Биология
+        <span class="subj-count" id="cnt-bio">2</span>
+      </button>
+      <button class="subj-btn" data-sub="chem">
+        <div class="subj-dot"></div>
+        Химия
+        <span class="subj-count" id="cnt-chem">2</span>
+      </button>
+      <button class="subj-btn" data-sub="geo">
+        <div class="subj-dot"></div>
+        География
+        <span class="subj-count" id="cnt-geo">2</span>
+      </button>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Сложность</div>
+      <div class="level-row">
+        <button class="lvl-btn active" data-lvl="easy">Базовый</button>
+        <button class="lvl-btn" data-lvl="hard">Сложный</button>
+      </div>
+    </div>
+
+    <div class="panel" id="savedPanel">
+      <div class="panel-title">Сохранено <span id="savedCount" style="color:var(--t400)"></span></div>
+      <div id="savedList"><div class="saved-empty">Пока пусто — нажмите ☆</div></div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <div class="nav-row">
+      <div class="nav-counter" id="navCounter">Ситуация 1</div>
+      <div class="nav-dots" id="navDots"></div>
+    </div>
+
+    <div id="cardWrap"></div>
+
+    <div class="actions">
+      <button class="btn btn-primary" id="btnGen" onclick="generate()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+        Новая ситуация
+      </button>
+      <button class="btn btn-secondary" onclick="discuss()">Обсудить ↗</button>
+      <button class="btn btn-icon" id="btnSave" onclick="toggleSave()" title="Сохранить">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      </button>
+    </div>
+
+    <div class="history-section" id="histSection" style="display:none">
+      <div class="history-title">История генерации</div>
+      <div class="history-list" id="histList"></div>
+    </div>
+
+  </div>
+  <a href="index.html" class="back-btn-fixed">Назад</a>
+</div>
+
+<script>
+const ICONS = { bio:'🧬', chem:'⚗️', geo:'🌍' };
+const COLORS = { bio:'var(--bio)', chem:'var(--chem)', geo:'var(--geo)' };
+const COLOR_HEX = { bio:'#15b896', chem:'#e07b1a', geo:'#2463c5' };
+const LABELS = { bio:'Биология', chem:'Химия', geo:'География' };
+
+// ДЕМО-ДАННЫЕ: по 2 ситуации на предмет (всего 6)
+const DATA = {
+  bio: {
+    easy: [
+      {topic:'Фотосинтез',q:'растения поглощали CO₂ не из воздуха, а из воды?',hint:'Как изменился бы состав атмосферы? Выжили бы наземные экосистемы?',tags:['фотосинтез','атмосфера','экосистемы'],
+       answer:'Растениям пришлось бы конкурировать с водными организмами за CO₂, растворённый в воде. Наземные экосистемы, скорее всего, были бы невозможны: суша стала бы безжизненной. Весь фотосинтез сосредоточился бы в океанах и озёрах. Атмосфера лишилась бы главного «лёгкого» — концентрация O₂ резко упала бы, и большинство животных задохнулось бы.'},
+      {topic:'Кровь',q:'у человека кровь была бы синяя (как у осьминогов), а не красная?',hint:'Гемоцианин vs гемоглобин: как изменилась бы эффективность переноса кислорода?',tags:['кровь','кислород','эволюция'],
+       answer:'Гемоцианин на основе меди переносит кислород в 4–5 раз менее эффективно, чем гемоглобин. Человек не смог бы поддерживать высокий уровень активности: бег, умственное напряжение — всё стало бы недоступным. Мозг, потребляющий ~20% кислорода тела, деградировал бы. Вероятно, люди остались бы медлительными, как осьминоги, и никогда не построили бы цивилизацию.'},
+    ],
+    hard: [
+      {topic:'ДНК',q:'генетический код был бы не четырёхбуквенным, а шестибуквенным?',hint:'Как изменилось бы число возможных кодонов? Насколько сложнее стал бы синтез белка?',tags:['ДНК','генетический код','белки'],
+       answer:'С шестью основаниями вместо четырёх число возможных триплетов-кодонов составило бы 6³ = 216 против нынешних 64. Можно было бы кодировать в 3 раза больше аминокислот, что дало бы белкам невероятное разнообразие структур. Однако сложность молекулярных машин (полимеразы, рибосомы) возросла бы кратно. Клетки стали бы крупнее и медленнее делиться. Эволюция, вероятно, пошла бы по пути меньшего числа видов, но с исключительно сложными белками.'},
+      {topic:'Мутации',q:'все мутации были бы летальными ещё до рождения?',hint:'Возможна ли была бы эволюция? Как возникло бы биоразнообразие?',tags:['мутации','эволюция','отбор'],
+       answer:'Без нейтральных и полезных мутаций естественный отбор потерял бы материал для работы. Все организмы были бы генетически идентичны потомкам первой клетки. При изменении условий среды (засуха, похолодание, новый патоген) вид вымирал бы целиком, не имея вариантов для адаптации. Жизнь застряла бы на уровне самой первой успешной клетки — навсегда.'},
+    ]
+  },
+  chem: {
+    easy: [
+      {topic:'Вода',q:'вода замерзала бы при +20 °C?',hint:'Каким был бы климат? Могла бы жизнь существовать в такой форме?',tags:['вода','агрегатные состояния','жизнь'],
+       answer:'Все водоёмы Земли, кроме экваториальных, промёрзли бы насквозь. Круговорот воды замедлился бы катастрофически: испарение шло бы только в тропиках. Большинство регионов стало бы пустынями, лишёнными жидкой воды. Клетки живых организмов замерзали бы при комнатной температуре, разрываясь кристаллами льда. Жизнь сохранилась бы лишь в узкой тропической полосе в виде примитивных термофилов.'},
+      {topic:'Кислород',q:'кислород был бы токсичен для всех живых организмов?',hint:'Какой газ стал бы основой дыхания? Как изменилась бы химия жизни?',tags:['кислород','дыхание','атмосфера'],
+       answer:'Ирония в том, что кислород и сейчас токсичен — именно поэтому у нас есть антиоксидантные системы. Если бы защиты не было, аэробная жизнь просто не возникла бы. Основой дыхания, вероятно, стал бы азот (хотя он химически инертен) или сера — как у некоторых архей. Химия клетки строилась бы на серосодержащих соединениях. Атмосфера была бы восстановительной, как на древней Земле 3 млрд лет назад.'},
+    ],
+    hard: [
+      {topic:'Периодический закон',q:'в периодической таблице отсутствовал бы целый период — например, третий?',hint:'Не существовали бы Na, Mg, Al, Si, P, S, Cl, Ar. Какие вещества исчезли бы?',tags:['периодическая таблица','элементы','химия'],
+       answer:'Исчезли бы натрий (нервные импульсы), магний (хлорофилл, кости), фосфор (ДНК, АТФ), сера (белки, аминокислоты), кремний (земная кора — 28% Si). Кора Земли состояла бы почти исключительно из углерода, кислорода и металлов 4-го периода. ДНК без фосфатного остова не существовала бы — жизнь в нынешнем виде невозможна. Земля была бы планетой из углеродных минералов — алмазов и графита.'},
+      {topic:'Электроотрицательность',q:'фтор не был бы самым электроотрицательным элементом?',hint:'Как изменилась бы полярность связей? Каким был бы самый сильный окислитель?',tags:['электроотрицательность','связь','фтор'],
+       answer:'Сильнейшим окислителем стал бы кислород или хлор. Связь O–H в воде потеряла бы часть полярности — водородные связи ослабли бы, и вода кипела бы при более низкой температуре (~60°C). Биохимия белков изменилась бы радикально: дисульфидные мостики и водородные связи в белках ослабли бы. Фторсодержащие полимеры (тефлон, фреоны) не обладали бы своими уникальными инертными свойствами.'},
+    ]
+  },
+  geo: {
+    easy: [
+      {topic:'Ось вращения',q:'ось вращения Земли была бы перпендикулярна орбите (без наклона)?',hint:'Исчезли бы времена года. Как изменились бы климатические зоны и сезонная миграция?',tags:['ось вращения','климат','сезоны'],
+       answer:'Каждая точка Земли получала бы одинаковое количество солнечного света круглый год. Климатические пояса стали бы идеально симметричными: вечная жара у экватора, вечный лёд у полюсов. Сезонов не было бы нигде. Перелётные птицы не мигрировали бы — незачем. Сельское хозяйство упростилось бы: урожай собирали бы непрерывно. Биоразнообразие снизилось бы — исчезли бы все виды, адаптированные к сезонным изменениям.'},
+      {topic:'Луна',q:'у Земли не было бы Луны?',hint:'Без лунных приливов — как изменился бы океан? Насколько нестабильной стала бы ось Земли?',tags:['Луна','приливы','климат'],
+       answer:'Ось Земли без стабилизирующего влияния Луны хаотично колебалась бы от 0° до 85°, как у Марса. Климат менялся бы катастрофически каждые десятки тысяч лет: от тропиков до полного оледенения. Приливов не было бы — прибрежные экосистемы, давшие жизни выход на сушу, не возникли бы. Первые сутки длились бы 6–8 часов (Луна замедлила вращение Земли). Жизнь, вероятно, так и осталась бы в океане.'},
+    ],
+    hard: [
+      {topic:'Тектоника',q:'литосферные плиты перестали бы двигаться 100 млн лет назад?',hint:'Прекратился бы вулканизм, исчезли бы горообразование и магнитное поле. Каковы последствия?',tags:['тектоника','вулканизм','магнитное поле'],
+       answer:'Без вулканизма CO₂ перестал бы поступать в атмосферу, постепенно поглощаясь силикатами. Через несколько миллионов лет концентрация CO₂ упала бы ниже порога фотосинтеза — растения вымерли бы. Магнитное поле (генерируемое конвекцией жидкого ядра) ослабло бы. Солнечный ветер сдул бы атмосферу. Земля стала бы холодной безжизненной планетой — как Марс, где тектоника остановилась ~1,5 млрд лет назад.'},
+      {topic:'Гидросфера',q:'весь Мировой океан испарился бы в верхние слои атмосферы?',hint:'Откуда взялись бы осадки? Как изменился бы климат без буфера океана?',tags:['гидросфера','климат','испарение'],
+       answer:'Без океанического буфера суточные колебания температуры достигли бы 80–100°C (как на Луне). Дождей практически не было бы — испарённая вода в верхней атмосфере разлагалась бы ультрафиолетом на H₂ и O₂, постепенно улетая в космос. Через ~1 млрд лет Земля полностью потеряла бы воду — как Венера. Без осадков выветривание пород прекратилось бы, питательные вещества не поступали бы в почву. Жизнь угасла бы за несколько тысяч лет.'},
+    ]
+  }
+};
+
+let subject = 'all';
+let level = 'easy';
+let history = [];
+let histIdx = -1;
+let saved = [];
+
+function getPool() {
+  const keys = subject === 'all' ? ['bio','chem','geo'] : [subject];
+  let pool = [];
+  keys.forEach(k => DATA[k][level].forEach(item => pool.push({...item, subjectKey:k})));
+  return pool;
+}
+
+function totalCount() {
+  const keys = subject === 'all' ? ['bio','chem','geo'] : [subject];
+  return keys.reduce((s,k) => s + DATA[k][level].length, 0);
+}
+
+function generate() {
+  const pool = getPool();
+  if (!pool.length) { alert('Нет ситуаций для выбранных фильтров'); return; }
+  let item, tries = 0;
+  do {
+    item = pool[Math.floor(Math.random() * pool.length)];
+    tries++;
+  } while (history.length >= 3 && history.slice(-3).some(h => h.q === item.q) && tries < 30);
+
+  history.push(item);
+  histIdx = history.length - 1;
+
+  const btn = document.getElementById('btnGen');
+  btn.classList.add('spinning');
+  setTimeout(() => btn.classList.remove('spinning'), 500);
+
+  renderCard(item);
+  renderNav();
+  renderHistory();
+}
+
+function renderCard(item) {
+  const sk = item.subjectKey;
+  const wrap = document.getElementById('cardWrap');
+  wrap.innerHTML = `
+    <div class="card">
+      <div class="card-head" style="background:${COLOR_HEX[sk]}">
+        <div class="card-head-meta">
+          <span class="badge">${LABELS[sk]}</span>
+          <span class="badge">${item.topic}</span>
+        </div>
+        <div class="card-icon">${ICONS[sk]}</div>
+        <div class="card-number">Ситуация ${histIdx + 1} из ${history.length}</div>
+      </div>
+      <div class="card-body">
+        <div class="question-wrap">
+          <div class="question-prefix">А что, если бы</div>
+          <div class="question-text">${item.q}</div>
+        </div>
+        <div class="tags">${item.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="btn-hint" id="btnHint" onclick="toggleHint()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"/></svg>
+            Подсказка
+          </button>
+          <button class="btn-answer" id="btnAnswer" onclick="toggleAnswer()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"/></svg>
+            Показать ответ
+          </button>
+        </div>
+        <div class="hint-block" id="hintBlock">
+          <div class="hint-label">Подсказка для обсуждения</div>
+          <div class="hint-text">${item.hint}</div>
+        </div>
+        <div class="answer-block" id="answerBlock">
+          <div class="answer-label">Научный разбор</div>
+          <div class="answer-text">${item.answer || ''}</div>
+        </div>
+      </div>
+    </div>`;
+  updateSaveBtn();
+}
+
+function renderNav() {
+  document.getElementById('navCounter').textContent = `Ситуация ${histIdx + 1} / ${history.length}`;
+  const dots = document.getElementById('navDots');
+  dots.innerHTML = history.map((_, i) =>
+    `<div class="nav-dot${i === histIdx ? ' on' : ''}" onclick="goTo(${i})"></div>`
+  ).join('');
+}
+
+function renderHistory() {
+  const sec = document.getElementById('histSection');
+  const list = document.getElementById('histList');
+  if (history.length <= 1) { sec.style.display = 'none'; return; }
+  sec.style.display = 'block';
+  list.innerHTML = [...history].reverse().map((h, ri) => {
+    const i = history.length - 1 - ri;
+    const isCurrent = i === histIdx;
+    return `<div class="history-chip${isCurrent ? ' current' : ''}" onclick="goTo(${i})">
+      <div class="hc-dot" style="background:${COLOR_HEX[h.subjectKey]}"></div>
+      <div><b>${LABELS[h.subjectKey]}</b> · ${h.topic} — ${h.q.substring(0,55)}${h.q.length>55?'…':''}</div>
+      <div class="hc-num">#${i+1}</div>
+    </div>`;
+  }).join('');
+}
+
+function goTo(i) {
+  histIdx = i;
+  renderCard(history[i]);
+  renderNav();
+  renderHistory();
+}
+
+function discuss() {
+  if (histIdx < 0) return;
+  const item = history[histIdx];
+  const sk = item.subjectKey;
+  const msg = `Обсудим ситуацию по предмету «${LABELS[sk]}»: «А что, если бы ${item.q}» — ${item.hint} Объясни подробно, какие цепочки последствий запустила бы эта ситуация, что изменилось бы в науке и жизни.`;
+  const url = `https://claude.ai/new?q=${encodeURIComponent(msg)}`;
+  window.open(url, '_blank');
+}
+
+function toggleSave() {
+  if (histIdx < 0) return;
+  const item = history[histIdx];
+  const idx = saved.findIndex(s => s.q === item.q);
+  if (idx >= 0) saved.splice(idx, 1);
+  else saved.push(item);
+  updateSaveBtn();
+  renderSaved();
+}
+
+function updateSaveBtn() {
+  if (histIdx < 0) return;
+  const isSaved = saved.some(s => s.q === history[histIdx].q);
+  const btn = document.getElementById('btnSave');
+  btn.classList.toggle('starred', isSaved);
+  btn.querySelector('svg').setAttribute('fill', isSaved ? 'currentColor' : 'none');
+}
+
+function removeSaved(q) {
+  saved = saved.filter(s => s.q !== q);
+  if (histIdx >= 0 && history[histIdx].q === q) updateSaveBtn();
+  renderSaved();
+}
+
+function renderSaved() {
+  const list = document.getElementById('savedList');
+  const cnt = document.getElementById('savedCount');
+  cnt.textContent = saved.length ? `(${saved.length})` : '';
+  if (!saved.length) {
+    list.innerHTML = '<div class="saved-empty">Пока пусто — нажмите ☆</div>';
+    return;
+  }
+  list.innerHTML = saved.map((s, i) => `
+    <div class="saved-item">
+      <div class="saved-dot-s" style="background:${COLOR_HEX[s.subjectKey]}"></div>
+      <span><b>${LABELS[s.subjectKey]}</b> · ${s.q.substring(0,60)}${s.q.length>60?'…':''}</span>
+      <button class="saved-rm" onclick="removeSaved(${JSON.stringify(s.q)})">✕</button>
+    </div>`).join('');
+}
+
+function toggleHint() {
+  const block = document.getElementById('hintBlock');
+  const btn = document.getElementById('btnHint');
+  if (!block || !btn) return;
+  const open = block.classList.toggle('visible');
+  btn.classList.toggle('open', open);
+  btn.innerHTML = open
+    ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="12" height="12" style="transform:rotate(180deg)"><polyline points="6 9 12 15 18 9"/></svg> Скрыть подсказку`
+    : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="12" height="12"><polyline points="6 9 12 15 18 9"/></svg> Подсказка`;
+}
+
+function toggleAnswer() {
+  const block = document.getElementById('answerBlock');
+  const btn = document.getElementById('btnAnswer');
+  if (!block || !btn) return;
+  const open = block.classList.toggle('visible');
+  btn.classList.toggle('open', open);
+  btn.innerHTML = open
+    ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="12" height="12" style="transform:rotate(180deg)"><polyline points="6 9 12 15 18 9"/></svg> Скрыть ответ`
+    : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="12" height="12"><polyline points="6 9 12 15 18 9"/></svg> Показать ответ`;
+}
+
+function updateCounts() {
+  ['bio','chem','geo'].forEach(k => {
+    document.getElementById('cnt-' + k).textContent =
+      DATA[k].easy.length + DATA[k].hard.length;
+  });
+  const total = Object.values(DATA).reduce((s,d) => s + d.easy.length + d.hard.length, 0);
+  document.getElementById('cnt-all').textContent = total;
+  document.getElementById('totalStat').textContent = total;
+}
+
+document.querySelectorAll('.subj-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.subj-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    subject = btn.dataset.sub;
+  });
+});
+document.querySelectorAll('.lvl-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.lvl-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    level = btn.dataset.lvl;
+  });
+});
+
+updateCounts();
+generate();
+</script>
+</body>
+</html>

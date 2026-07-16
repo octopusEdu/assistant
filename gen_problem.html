@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Демо: Межпредметный генератор</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@600;700;800&family=Raleway:wght@400;500;600;700&display=swap');
+
+        :root {
+            --t50:#f0fdfc; --t100:#ccfbf7; --t200:#99f6ee; --t300:#5eead4;
+            --t500:#14b8a6; --t600:#0d9488; --t700:#0f766e; --t800:#115e59;
+            --bg:#f0fdfc; --border:#99f6ee; --text:#134e4a; --muted:#5eada6;
+            --shadow:0 4px 20px rgba(20,184,166,0.12);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Raleway', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding-bottom: 60px;
+        }
+
+        header {
+            background: #0f766e;
+            padding: 32px 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-mark {
+            width: 48px;
+            height: 48px;
+            background: rgba(255,255,255,0.22);
+            border-radius: 16px;
+            display: grid;
+            place-items: center;
+            color: white;
+            font-size: 26px;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+
+        header h1 {
+            font-family: 'Unbounded', sans-serif;
+            font-size: clamp(24px, 4.5vw, 38px);
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .demo-badge {
+            background: #fbbf24;
+            color: #78350f;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.15rem 0.8rem;
+            border-radius: 40px;
+            margin-left: 1rem;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+        }
+
+        main {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 1.75rem 1.5rem 4rem;
+            width: 100%;
+        }
+
+        .mode-tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 1.5rem;
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            width: fit-content;
+            box-shadow: var(--shadow);
+        }
+
+        .mode-tab {
+            padding: 0.55rem 1.3rem;
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            background: #ffffff;
+            color: var(--muted);
+            transition: all 0.15s;
+            font-family: 'Raleway', sans-serif;
+        }
+
+        .mode-tab.active {
+            background: linear-gradient(135deg, var(--t500), var(--t600));
+            color: white;
+        }
+        .mode-tab:not(:last-child) { border-right: 1px solid var(--border); }
+
+        .filter-row {
+            display: flex;
+            gap: 0.45rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.25rem;
+        }
+
+        .pill {
+            padding: 0.32rem 0.85rem;
+            border-radius: 16px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border: 1.5px solid var(--border);
+            background: #ffffff;
+            color: var(--t700);
+            cursor: pointer;
+            transition: all 0.15s;
+            white-space: nowrap;
+        }
+        .pill.active { background: var(--t800); color: white; border-color: var(--t800); }
+
+        .btn-row {
+            display: flex;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.25rem;
+        }
+
+        .btn {
+            padding: 0.55rem 1.2rem;
+            border-radius: 16px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            transition: all 0.15s;
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-family: 'Raleway', sans-serif;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--t500), var(--t600));
+            color: white;
+            box-shadow: 0 2px 8px rgba(20,184,166,0.25);
+        }
+        .btn-primary:hover { transform: translateY(-1px); }
+
+        .btn-secondary {
+            background: #ffffff;
+            color: var(--t700);
+            border: 1.5px solid var(--t300);
+        }
+        .btn-secondary:hover { border-color: var(--t500); }
+
+        /* --- карточки --- */
+        .lesson-card, .project-card, .adv-card {
+            background: #ffffff;
+            border: 1.5px solid var(--border);
+            border-radius: 16px;
+            padding: 1.6rem;
+            box-shadow: var(--shadow);
+        }
+
+        .project-hero {
+            background: linear-gradient(135deg, var(--t600), var(--t500));
+            margin: -1.6rem -1.6rem 1.6rem;
+            padding: 1.5rem 1.6rem 1.4rem;
+            border-radius: 16px 16px 0 0;
+        }
+
+        .adv-header {
+            background: linear-gradient(135deg, #6d28d9, #8b5cf6);
+            margin: -1.6rem -1.6rem 1.6rem;
+            padding: 1.5rem 1.6rem 1.4rem;
+            border-radius: 16px 16px 0 0;
+        }
+
+        .card-title, .project-title, .adv-title {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            line-height: 1.3;
+            letter-spacing: -0.01em;
+            margin-bottom: 0.4rem;
+        }
+
+        .project-title, .adv-title { color: #ffffff; margin-bottom: 0.7rem; }
+        .card-title { color: var(--t800); }
+
+        .domains { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.8rem; }
+
+        .tag {
+            font-size: 0.68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 0.2rem 0.65rem;
+            border-radius: 16px;
+        }
+        .tag-Биология { color: #15803d; background: #f0fdf4; }
+        .tag-География { color: #0369a1; background: #eff6ff; }
+        .tag-Химия { color: #7e22ce; background: #faf5ff; }
+        .tag-Математика { color: #b45309; background: #fffbeb; }
+        .tag-Физика { color: #be185d; background: #fdf2f8; }
+
+        .card-desc, .adv-desc {
+            font-size: 0.875rem;
+            color: var(--muted);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .card-question, .project-question, .adv-question {
+            background: var(--t50);
+            border-left: 3px solid var(--t500);
+            border-radius: 0 14px 14px 0;
+            padding: 0.85rem 1rem;
+            font-size: 0.86rem;
+            font-weight: 500;
+            color: var(--t800);
+            line-height: 1.6;
+        }
+
+        .card-question strong,
+        .project-question span,
+        .adv-question .label {
+            display: block;
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--t600);
+            margin-bottom: 0.25rem;
+        }
+
+        .level-badge, .meta-badge {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--t700);
+            padding: 0.22rem 0.7rem;
+            background: var(--t100);
+            border: none;
+            border-radius: 16px;
+            display: inline-block;
+        }
+
+        .project-body { padding-top: 0.5rem; }
+        .project-product {
+            background: #fffbeb;
+            border-left: 3px solid #d97706;
+            border-radius: 0 14px 14px 0;
+            padding: 0.8rem 1rem;
+            font-size: 0.86rem;
+            font-weight: 600;
+            color: #78350f;
+            margin-bottom: 1.25rem;
+        }
+        .project-product span {
+            font-size: 0.68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #d97706;
+            display: block;
+            margin-bottom: 0.2rem;
+        }
+
+        .project-sections {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+        }
+        @media (max-width: 580px) { .project-sections { grid-template-columns: 1fr; } }
+
+        .project-section-box {
+            border: 1.5px solid var(--border);
+            border-radius: 14px;
+            padding: 0.9rem 1rem;
+            background: var(--t50);
+        }
+        .project-section-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--t700);
+            margin-bottom: 0.55rem;
+        }
+        .project-steps { list-style: none; }
+        .project-steps li {
+            font-size: 0.8rem;
+            color: var(--text);
+            line-height: 1.45;
+            padding: 0.3rem 0;
+            border-bottom: 1px solid var(--t200);
+            display: flex;
+            gap: 0.5rem;
+        }
+        .project-steps li:last-child { border-bottom: none; }
+        .step-num {
+            width: 18px;
+            height: 18px;
+            min-width: 18px;
+            background: #ffffff;
+            border: 1px solid var(--t300);
+            border-radius: 50%;
+            font-size: 0.6rem;
+            font-weight: 800;
+            display: grid;
+            place-items: center;
+            color: var(--t700);
+            margin-top: 1px;
+        }
+        .roles-list { display: flex; flex-direction: column; gap: 0.4rem; }
+        .role-item { font-size: 0.8rem; line-height: 1.4; display: flex; gap: 0.5rem; }
+
+        .adv-desc { margin-bottom: 1rem; }
+        .adv-footer { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+        .adv-hint { font-size: 0.7rem; color: var(--muted); font-style: italic; }
+
+        .section-label {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 0.68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--muted);
+            margin-bottom: 0.65rem;
+        }
+
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+            gap: 0.6rem;
+        }
+
+        .ex-card {
+            background: #ffffff;
+            border: 1.5px solid var(--border);
+            border-radius: 14px;
+            padding: 0.7rem 0.85rem;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-size: 0.76rem;
+        }
+        .ex-card:hover { border-color: var(--t500); transform: translateY(-2px); box-shadow: var(--shadow); }
+        .ex-subjects { font-size: 0.65rem; color: var(--muted); font-weight: 600; margin-bottom: 0.25rem; }
+        .ex-title { font-weight: 700; color: var(--t800); line-height: 1.3; }
+        .ex-badge {
+            display: inline-block;
+            margin-top: 0.35rem;
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 0.1rem 0.5rem;
+            border-radius: 100px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .ex-badge-lesson { background: var(--t100); color: var(--t700); }
+        .ex-badge-project { background: #fef3c7; color: #d97706; }
+        .ex-badge-advanced { background: #ede9fe; color: #6d28d9; }
+
+        .demo-placeholder {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 0.6rem 1rem;
+            font-size: 0.85rem;
+            color: var(--muted);
+            border: 1px dashed var(--border);
+        }
+
+        .back-btn-fixed {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: var(--t500);
+            color: white;
+            text-decoration: none;
+            padding: 10px 22px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 13px;
+            transition: all 0.2s;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(20,184,166,0.3);
+            font-family: 'Raleway', sans-serif;
+        }
+        .back-btn-fixed:hover { background: var(--t600); transform: translateY(-2px); }
+
+        @media (max-width: 600px) {
+            header { padding: 24px 16px; }
+            header h1 { font-size: 22px; }
+            .logo-mark { width: 36px; height: 36px; font-size: 20px; }
+            main { padding: 1.25rem 1rem 3rem; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-mark"><i class='fa-solid fa-diagram-project'></i></div>
+        <h1>Межпредметный генератор <span class="demo-badge">Демо</span></h1>
+    </header>
+
+    <main>
+        <!-- Вкладки -->
+        <div class="mode-tabs">
+            <button class="mode-tab active" onclick="switchMode('lesson')">Урочные задачи</button>
+            <button class="mode-tab" onclick="switchMode('project')">Проектные задачи</button>
+            <button class="mode-tab" onclick="switchMode('advanced')">Углублённый уровень</button>
+        </div>
+
+        <div class="btn-row">
+            <button class="btn btn-primary" onclick="randomTask()"><i class='fa-solid fa-arrows-rotate'></i> Новая задача</button>
+            <button class="btn btn-secondary" onclick="randomTask()">По выбранной теме</button>
+        </div>
+
+        <div class="filter-row" id="filterRow"></div>
+
+        <!-- Урочная -->
+        <div id="lessonView">
+            <div class="lesson-card">
+                <div class="domains"><span class="tag tag-Биология">Биология</span><span class="tag tag-Математика">Математика</span></div>
+                <div class="card-title">Рост бактерий: считаем по формуле</div>
+                <div class="card-desc">Бактерии делятся каждые 20 минут. Это экспоненциальный рост — популяция удваивается через каждый фиксированный промежуток.</div>
+                <div class="card-question">
+                    <strong>Задание для урока</strong>
+                    <span>Начните с одной клетки. Составьте таблицу: сколько бактерий через 1, 2, 3, 4 часа? Постройте график. Когда их станет больше миллиона?</span>
+                </div>
+                <div class="card-footer"><span class="level-badge">Класс: 6–7</span></div>
+            </div>
+        </div>
+
+        <!-- Проектная -->
+        <div id="projectView" style="display:none;">
+            <div class="project-card">
+                <div class="project-hero">
+                    <div class="project-eyebrow" style="font-size:0.65rem;font-weight:700;text-transform:uppercase;color:rgba(255,255,255,0.85);margin-bottom:0.6rem;">Проектная задача</div>
+                    <div class="domains" style="margin-bottom:0.8rem;"><span class="tag tag-Биология">Биология</span><span class="tag tag-Химия">Химия</span><span class="tag tag-Математика">Математика</span></div>
+                    <div class="project-title">Вода из-под крана: пить или не пить?</div>
+                    <div class="project-problem-label" style="font-size:0.68rem;font-weight:700;text-transform:uppercase;color:rgba(255,255,255,0.75);margin-bottom:0.35rem;">Проблема</div>
+                    <div class="project-problem" style="font-size:0.9rem;color:rgba(255,255,255,0.95);line-height:1.55;font-style:italic;">Жители многих городов сомневаются в качестве водопроводной воды, но никто не проверял воду в нашей школе.</div>
+                </div>
+                <div class="project-body">
+                    <div class="project-product"><span>Продукт проекта</span>Публичный отчёт о качестве воды в школе с рекомендациями</div>
+                    <div class="project-sections">
+                        <div class="project-section-box">
+                            <div class="project-section-label">Этапы работы</div>
+                            <ul class="project-steps">
+                                <li><span class="step-num">1</span><span>Собрать пробы воды в 5–6 точках школы</span></li>
+                                <li><span class="step-num">2</span><span>Провести химические тесты: pH, жёсткость, хлор</span></li>
+                                <li><span class="step-num">3</span><span>Сравнить результаты с нормами СанПиН</span></li>
+                            </ul>
+                        </div>
+                        <div class="project-section-box">
+                            <div class="project-section-label">Роли в команде</div>
+                            <div class="roles-list">
+                                <div class="role-item"><i class='fa-solid fa-flask'></i> Химики — проводят анализы</div>
+                                <div class="role-item"><i class='fa-solid fa-chart-column'></i> Математики — строят графики</div>
+                                <div class="role-item"><i class='fa-solid fa-map'></i> Географы — составляют схему</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-question">
+                        <span>Главный исследовательский вопрос</span>
+                        <span>При каких показателях воду можно считать безопасной? Как результаты соотносятся с нормами?</span>
+                    </div>
+                    <div class="project-footer">
+                        <span class="meta-badge">Класс: 7–9</span>
+                        <span class="meta-badge">Срок: 3–4 недели</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Углублённая -->
+        <div id="advancedView" style="display:none;">
+            <div class="adv-card">
+                <div class="adv-header">
+                    <div class="adv-eyebrow" style="display:flex;align-items:center;gap:0.5rem;font-size:0.65rem;font-weight:700;text-transform:uppercase;color:rgba(255,255,255,0.85);margin-bottom:0.75rem;">
+                        <span style="width:7px;height:7px;border-radius:50%;background:#ffffff;display:inline-block;"></span>
+                        <span>Высокий уровень</span>
+                    </div>
+                    <div class="domains" style="margin-bottom:0.85rem;"><span class="tag tag-Биология">Биология</span><span class="tag tag-Математика">Математика</span></div>
+                    <div class="adv-title">Математическое моделирование эпидемий</div>
+                </div>
+                <div class="adv-body">
+                    <div class="adv-desc-block">
+                        <div class="adv-block-label" style="font-size:0.65rem;font-weight:700;text-transform:uppercase;color:var(--muted);margin-bottom:0.4rem;">Контекст задачи</div>
+                        <div class="adv-desc" style="font-size:0.875rem;line-height:1.6;background:#f5f3ff;border-radius:12px;padding:0.75rem 0.9rem;color:var(--text);">Распространение вирусов описывается системой дифференциальных уравнений SIR. Параметр R₀ определяет, будет ли эпидемия.</div>
+                    </div>
+                    <div class="adv-question-block" style="margin-bottom:1.1rem;">
+                        <div class="adv-block-label" style="font-size:0.65rem;font-weight:700;text-transform:uppercase;color:var(--muted);margin-bottom:0.4rem;">Исследовательское задание</div>
+                        <div class="adv-question" style="font-size:0.875rem;font-weight:500;color:#1e1b4b;line-height:1.65;background:#ede9fe;border-left:3px solid #6d28d9;border-radius:0 14px 14px 0;padding:0.85rem 1rem;">Адаптируйте классическую SIR-модель для лесного массива с учётом латентного периода. Рассчитайте базовое репродуктивное число R₀ для бешенства среди лисиц.</div>
+                    </div>
+                    <div class="adv-footer">
+                        <span class="meta-badge">Класс: 10–11</span>
+                        <span class="adv-hint">Для олимпиад, НПК и углублённых курсов</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Примеры -->
+        <div style="margin-top:1.75rem;">
+            <div class="section-label">Примеры задач — нажмите, чтобы открыть</div>
+            <div class="examples-grid" id="exGrid"></div>
+        </div>
+    </main>
+
+    <a href="index.html" class="back-btn-fixed"><i class='fa-solid fa-arrow-left'></i> Назад</a>
+
+    <script>
+        // ---------- ДЕМО-ДАННЫЕ ----------
+        const LESSONS = [
+            { d: ["Биология", "Математика"], t: "Рост бактерий: считаем по формуле", desc: "Бактерии делятся каждые 20 минут.", q: "Начните с одной клетки. Составьте таблицу. Постройте график.", lv: "6–7" },
+            { d: ["Биология", "Математика"], t: "Правило Бергмана: размер и холод", desc: "У теплокровных в холодном климате тело крупнее.", q: "Вычислите соотношение площади поверхности к объёму для кубов 1 см и 2 см.", lv: "7–8" },
+            { d: ["География", "Математика"], t: "Масштаб карты на практике", desc: "Масштаб 1:100 000 означает: 1 см на карте = 1 км.", q: "Измерьте расстояние от школы до города и пересчитайте в км.", lv: "5–6" },
+        ];
+
+        const PROJECTS = [
+            { d: ["Биология", "Химия", "Математика"], t: "Вода из-под крана: пить или не пить?", problem: "Жители сомневаются в качестве воды.", product: "Публичный отчёт о качестве воды", steps: ["Собрать пробы", "Провести тесты", "Сравнить с нормами"], roles: ["<i class='fa-solid fa-flask'></i> Химики", "<i class='fa-solid fa-chart-column'></i> Математики"], question: "При каких показателях вода безопасна?", lv: "7–9", dur: "3–4 недели" },
+            { d: ["Биология", "География", "Математика"], t: "Зелёная карта школьного двора", problem: "Школьный двор — экосистема, которую можно улучшить.", product: "Интерактивная карта зелёных насаждений", steps: ["Инвентаризация деревьев", "Определить виды", "Нанести на план"], roles: ["<i class='fa-solid fa-leaf'></i> Биологи", "<i class='fa-solid fa-map'></i> Географы"], question: "Насколько двор обеспечен зеленью?", lv: "6–8", dur: "4–5 недель" },
+            { d: ["Физика", "Математика", "Обществознание"], t: "Шумовая карта школы", problem: "Шум мешает концентрации на уроке.", product: "Шумовая карта с предложениями по снижению шума", steps: ["Изучить нормы", "Измерить уровень шума", "Построить карту"], roles: ["<i class='fa-solid fa-volume-high'></i> Физики", "<i class='fa-solid fa-scale-balanced'></i> Правоведы"], question: "Соответствует ли шумовой режим нормам?", lv: "8–10", dur: "3–4 недели" },
+        ];
+
+        const ADVANCED = [
+            { d: ["Биология", "Математика"], t: "Математическое моделирование эпидемий", desc: "Распространение вирусов описывается SIR-моделью.", q: "Адаптируйте модель для лесного массива. Рассчитайте R₀ для бешенства.", lv: "10–11", diff: "Высокий уровень" },
+            { d: ["География", "Физика"], t: "Тепловой баланс горных ледников", desc: "Радиационный баланс и таяние льда зависят от альбедо.", q: "Выведите уравнение скорости абляции в зависимости от высоты.", lv: "10–11", diff: "Сложный" },
+            { d: ["Химия", "Физика"], t: "Кинетика ферментативных реакций", desc: "Уравнение Михаэлиса–Ментен описывает скорость реакции.", q: "Постройте график зависимости скорости от концентрации субстрата.", lv: "10–11", diff: "Средний" },
+        ];
+
+        // ---------- ЛОГИКА ----------
+        let mode = 'lesson';
+        let filter = 'all';
+
+        function currentDB() {
+            if (mode === 'lesson') return LESSONS;
+            if (mode === 'project') return PROJECTS;
+            return ADVANCED;
+        }
+
+        function allDomains(db) {
+            const s = new Set();
+            db.forEach(p => p.d.forEach(d => s.add(d)));
+            return s;
+        }
+
+        const discOrder = ["Биология","География","Химия","Физика","Математика","Информатика","Обществознание","История","ОБЖ","Искусство","Конструирование"];
+
+        function sortedDomains(set) {
+            return [...set].sort((a,b) => {
+                let ia = discOrder.indexOf(a), ib = discOrder.indexOf(b);
+                if (ia < 0) ia = 99;
+                if (ib < 0) ib = 99;
+                return ia - ib;
+            });
+        }
+
+        function buildFilters() {
+            const row = document.getElementById('filterRow');
+            row.innerHTML = '';
+            const domains = sortedDomains(allDomains(currentDB()));
+            const mkPill = (val, label) => {
+                const p = document.createElement('span');
+                p.className = 'pill' + (val === filter ? ' active' : '');
+                p.dataset.f = val;
+                p.textContent = label;
+                p.onclick = () => { filter = val; buildFilters(); randomTask(); };
+                row.appendChild(p);
+            };
+            mkPill('all', 'Все');
+            domains.forEach(d => mkPill(d, d));
+        }
+
+        function filteredDB() {
+            const db = currentDB();
+            if (filter === 'all') return db;
+            return db.filter(p => p.d.includes(filter));
+        }
+
+        function pick() {
+            const pool = filteredDB();
+            return pool[Math.floor(Math.random() * pool.length)];
+        }
+
+        // ---------- РЕНДЕР ----------
+        function renderItem(p) {
+            if (!p) return;
+            if (mode === 'lesson') {
+                document.getElementById('lessonView').innerHTML = `
+                    <div class="lesson-card">
+                        <div class="domains">${p.d.map(d => `<span class="tag tag-${d}">${d}</span>`).join('')}</div>
+                        <div class="card-title">${p.t}</div>
+                        <div class="card-desc">${p.desc}</div>
+                        <div class="card-question"><strong>Задание для урока</strong><span>${p.q}</span></div>
+                        <div class="card-footer"><span class="level-badge">Класс: ${p.lv}</span></div>
+                    </div>
+                `;
+            } else if (mode === 'project') {
+                document.getElementById('projectView').innerHTML = `
+                    <div class="project-card">
+                        <div class="project-hero">
+                            <div class="project-eyebrow" style="font-size:0.65rem;font-weight:700;text-transform:uppercase;color:rgba(255,255,255,0.85);margin-bottom:0.6rem;">Проектная задача</div>
+                            <div class="domains" style="margin-bottom:0.8rem;">${p.d.map(d => `<span class="tag tag-${d}">${d}</span>`).join('')}</div>
+                            <div class="project-title">${p.t}</div>
+                            <div class="project-problem-label" style="font-size:0.68rem;font-weight:700;text-transform:uppercase;color:rgba(255,255,255,0.75);margin-bottom:0.35rem;">Проблема</div>
+                            <div class="project-problem" style="font-size:0.9rem;color:rgba(255,255,255,0.95);line-height:1.55;font-style:italic;">${p.problem}</div>
+                        </div>
+                        <div class="project-body">
+                            <div class="project-product"><span>Продукт проекта</span>${p.product}</div>
+                            <div class="project-sections">
+                                <div class="project-section-box">
+                                    <div class="project-section-label">Этапы работы</div>
+                                    <ul class="project-steps">${p.steps.map((s,i) => `<li><span class="step-num">${i+1}</span><span>${s}</span></li>`).join('')}</ul>
+                                </div>
+                                <div class="project-section-box">
+                                    <div class="project-section-label">Роли в команде</div>
+                                    <div class="roles-list">${p.roles.map(r => `<div class="role-item">${r}</div>`).join('')}</div>
+                                </div>
+                            </div>
+                            <div class="project-question"><span>Главный исследовательский вопрос</span><span>${p.question}</span></div>
+                            <div class="project-footer">
+                                <span class="meta-badge">Класс: ${p.lv}</span>
+                                <span class="meta-badge">Срок: ${p.dur}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                document.getElementById('advancedView').innerHTML = `
+                    <div class="adv-card">
+                        <div class="adv-header">
+                            <div class="adv-eyebrow" style="display:flex;align-items:center;gap:0.5rem;font-size:0.65rem;font-weight:700;text-transform:uppercase;color:rgba(255,255,255,0.85);margin-bottom:0.75rem;">
+                                <span style="width:7px;height:7px;border-radius:50%;background:#ffffff;display:inline-block;"></span>
+                                <span>${p.diff || 'Высокий уровень'}</span>
+                            </div>
+                            <div class="domains" style="margin-bottom:0.85rem;">${p.d.map(d => `<span class="tag tag-${d}">${d}</span>`).join('')}</div>
+                            <div class="adv-title">${p.t}</div>
+                        </div>
+                        <div class="adv-body">
+                            <div class="adv-desc-block">
+                                <div class="adv-block-label" style="font-size:0.65rem;font-weight:700;text-transform:uppercase;color:var(--muted);margin-bottom:0.4rem;">Контекст задачи</div>
+                                <div class="adv-desc" style="font-size:0.875rem;line-height:1.6;background:#f5f3ff;border-radius:12px;padding:0.75rem 0.9rem;color:var(--text);">${p.desc}</div>
+                            </div>
+                            <div class="adv-question-block" style="margin-bottom:1.1rem;">
+                                <div class="adv-block-label" style="font-size:0.65rem;font-weight:700;text-transform:uppercase;color:var(--muted);margin-bottom:0.4rem;">Исследовательское задание</div>
+                                <div class="adv-question" style="font-size:0.875rem;font-weight:500;color:#1e1b4b;line-height:1.65;background:#ede9fe;border-left:3px solid #6d28d9;border-radius:0 14px 14px 0;padding:0.85rem 1rem;">${p.q}</div>
+                            </div>
+                            <div class="adv-footer">
+                                <span class="meta-badge">Класс: ${p.lv}</span>
+                                <span class="adv-hint">Для олимпиад, НПК и углублённых курсов</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function randomTask() {
+            renderItem(pick());
+        }
+
+        // ---------- ПРИМЕРЫ ----------
+        function buildExamples() {
+            const grid = document.getElementById('exGrid');
+            grid.innerHTML = '';
+            const allItems = [
+                ...LESSONS.map(p => ({ ...p, _type: 'lesson' })),
+                ...PROJECTS.map(p => ({ ...p, _type: 'project' })),
+                ...ADVANCED.map(p => ({ ...p, _type: 'advanced' }))
+            ].sort(() => Math.random() - 0.5).slice(0, 8);
+            allItems.forEach(p => {
+                const c = document.createElement('div');
+                c.className = 'ex-card';
+                const badge = p._type === 'lesson'
+                    ? `<span class="ex-badge ex-badge-lesson">Урок</span>`
+                    : p._type === 'project'
+                    ? `<span class="ex-badge ex-badge-project">Проект</span>`
+                    : `<span class="ex-badge ex-badge-advanced">Углублённый</span>`;
+                c.innerHTML = `<div class="ex-subjects">${p.d.join(' · ')}</div><div class="ex-title">${p.t}</div>${badge}`;
+                c.onclick = () => {
+                    if (mode !== p._type) switchMode(p._type);
+                    renderItem(p);
+                };
+                grid.appendChild(c);
+            });
+        }
+
+        // ---------- ПЕРЕКЛЮЧЕНИЕ ----------
+        function switchMode(m) {
+            mode = m;
+            document.querySelectorAll('.mode-tab').forEach((el, i) => {
+                el.classList.toggle('active', ['lesson','project','advanced'][i] === m);
+            });
+            document.getElementById('lessonView').style.display = m === 'lesson' ? 'block' : 'none';
+            document.getElementById('projectView').style.display = m === 'project' ? 'block' : 'none';
+            document.getElementById('advancedView').style.display = m === 'advanced' ? 'block' : 'none';
+            filter = 'all';
+            buildFilters();
+            randomTask();
+            buildExamples();
+        }
+
+        // ---------- ИНИТ ----------
+        switchMode('lesson');
+    </script>
+</body>
+</html>
