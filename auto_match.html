@@ -4,13 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Автопроверка заданий · тесты · ответы · Word · выделение</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
     <style>
+        :root {
+            /* Единый фирменный стиль для всех демо-страниц */
+            --back-btn-bg:    #12c2b3;
+            --back-btn-hover: #0a9b8f;
+            --burgundy:       #96123f;
+        }
         * {
             box-sizing: border-box;
             margin: 0;
         }
         body {
-            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            font-family: 'Inter', system-ui, sans-serif;
             background: #eef5f8;
             padding: 24px 20px 80px;
             color: #1a2e3f;
@@ -29,10 +36,11 @@
             border: 1px solid #d9e9ed;
         }
         h1 {
+            font-family: 'Syne', sans-serif;
             font-size: 1.9rem;
             font-weight: 800;
             margin: 0 0 4px;
-            color: #0e3b42;
+            color: #066b63;
             letter-spacing: -0.3px;
         }
         .sub {
@@ -184,21 +192,22 @@
             position: fixed;
             bottom: 24px;
             left: 24px;
-            padding: 8px 22px;
-            background: #1e6b6b;
+            padding: 12px 28px;
+            background: var(--back-btn-bg);
             color: #fff;
-            font-weight: 700;
-            font-size: 0.85rem;
+            font-weight: 600;
+            font-size: 14px;
+            font-family: 'Inter', system-ui, sans-serif;
             border-radius: 12px;
             text-decoration: none;
-            box-shadow: 0 2px 8px rgba(0, 60, 60, 0.1);
-            transition: 0.15s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: all 0.2s;
             border: none;
             z-index: 99;
         }
         .back-btn-fixed:hover {
-            background: #155757;
-            transform: translateY(-1px);
+            background: var(--back-btn-hover);
+            transform: translateY(-2px);
         }
         .btn-outline:disabled, .check-btn:disabled { opacity: 0.5; pointer-events: none; }
         .image-preview { max-width: 100%; max-height: 50px; border-radius: 8px; border: 1px solid #c4dce3; margin-top: 6px; }
@@ -206,7 +215,7 @@
         .teal-accent { color: #1e6b6b; }
         .title-bold {
             font-weight: 800;
-            color: #0e3b42;
+            color: var(--burgundy);
         }
 
         /* ===== ШАПКА В СТИЛЕ agent_p.html ===== */
@@ -279,16 +288,16 @@
         }
 
         .header-title {
-            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            font-family: 'Syne', sans-serif;
             font-size: clamp(1.9rem, 4vw, 2.8rem);
             font-weight: 800;
-            color: #0e3b42;
+            color: var(--burgundy);
             line-height: 1.15;
             margin-bottom: 0.75rem;
             letter-spacing: -0.02em;
         }
         .header-title span {
-            color: #2a9d8f;
+            color: var(--burgundy);
         }
         .header-sub {
             font-size: 1rem;
@@ -347,7 +356,7 @@
         <h1 class="header-title">Автопроверка заданий<br><span></span></h1>
 
             Загрузите образец (эталон с ответами) → затем работы учеников. Система проверяет тесты, краткие ответы, примеры.<br>
-            <span style="color:#1a6b6b; font-weight:500;">Правильные ответы в эталоне могут быть выделены цветом или жирным шрифтом — система распознаёт их.</span>
+            <span style="color:#1a6b6b; font-weight:500;">Правильные ответы в эталоне могут быть выделены цветом или жирным шрифтом – система распознаёт их.</span>
             <span class="model-badge">⚡ Встроенный ИИ</span>
      
     </div>
@@ -688,7 +697,7 @@
                 details.push({
                     questionIdx: i,
                     isCorrect: isCorr,
-                    studentAnswer: studentAns || "—",
+                    studentAnswer: studentAns || "–",
                     correctAnswer: correctAnswers[i],
                     points: points,
                     maxPoint: maxScores[i]
@@ -732,7 +741,7 @@
             tableHtml += `<td>${percentVal}%</td>`;
             for (let d of g.details) {
                 let statusClass = d.isCorrect ? "correct" : "incorrect";
-                let displayAns = d.studentAnswer || "—";
+                let displayAns = d.studentAnswer || "–";
                 let mark = d.isCorrect ? "✓" : "✗";
                 tableHtml += `<td class="${statusClass}">${escapeHtml(displayAns)}<br><small>${mark} (${d.points}/${d.maxPoint})<br>верно: ${escapeHtml(d.correctAnswer)}</small></td>`;
             }
