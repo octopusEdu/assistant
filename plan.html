@@ -1,859 +1,819 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --bg:        #f0faf8;
-    --surface:   #ffffff;
-    --card:      #e8f7f4;
-    --border:    #b8e0d8;
-    --teal:      #0e9e88;
-    --teal-dim:  #0c7a6a;
-    --teal-glow: rgba(14,158,136,0.12);
-    --teal-soft: rgba(14,158,136,0.08);
-    --text:      #1a3530;
-    --muted:     #5a8a80;
-    --white:     #ffffff;
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    background: var(--bg);
-    font-family: 'Inter', system-ui, sans-serif;
-    color: var(--text);
-    min-height: 100vh;
-    padding: 2.5rem 1.2rem 3rem;
-  }
-
-  /* ДЕМО-БАННЕР */
-  .demo-banner {
-    background: #fef3c7;
-    border-bottom: 2px solid #f59e0b;
-    padding: 10px 20px;
-    text-align: center;
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #92400e;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-  .demo-banner .badge {
-    background: #f59e0b;
-    color: #fff;
-    padding: 2px 14px;
-    border-radius: 100px;
-    font-size: 0.7rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
-  .demo-banner .api-hint {
-    font-weight: 400;
-    color: #78350f;
-  }
-  .demo-banner .api-hint strong {
-    color: #b45309;
-  }
-
-  .header {
-    text-align: center;
-    margin-bottom: 2.8rem;
-  }
-  .header .label {
-    display: inline-block;
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--teal);
-    border: 1px solid var(--teal-dim);
-    padding: 0.3rem 1rem;
-    border-radius: 100px;
-    margin-bottom: 1.1rem;
-  }
-  .header h1 {
-    font-family: 'Syne', sans-serif;
-    font-size: clamp(1.9rem, 4vw, 2.8rem);
-    font-weight: 800;
-    color: #066b63;
-    line-height: 1.15;
-    margin-bottom: 0.75rem;
-    letter-spacing: -0.02em;
-  }
-  .header h1 span {
-    color: var(--teal);
-  }
-  .header p {
-    font-size: 1rem;
-    color: var(--muted);
-    max-width: 580px;
-    margin: 0 auto;
-    line-height: 1.6;
-  }
-
-  .grid {
-    display: flex;
-    gap: 1.6rem;
-    max-width: 1360px;
-    margin: 0 auto;
-    flex-wrap: wrap;
-    align-items: flex-start;
-  }
-  .col-chat  { flex: 2 1 340px; min-width: 0; }
-  .col-guide { flex: 1 1 280px; min-width: 0; display: flex; flex-direction: column; gap: 1rem; }
-
-  .chat-panel {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 1.4rem;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    box-shadow: 0 24px 48px rgba(0,0,0,0.4);
-  }
-  .chat-topbar {
-    padding: 1rem 1.3rem;
-    background: #d6f2ed;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-  .chat-topbar-left {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-  .agent-dot {
-    width: 9px; height: 9px;
-    border-radius: 50%;
-    background: var(--teal);
-    box-shadow: 0 0 6px var(--teal);
-    flex-shrink: 0;
-  }
-  .chat-topbar h3 {
-    font-size: 0.92rem;
-    font-weight: 600;
-    color: var(--text);
-  }
-  .chip {
-    font-size: 0.68rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--teal);
-    background: var(--teal-soft);
-    border: 1px solid var(--teal-dim);
-    padding: 0.2rem 0.65rem;
-    border-radius: 100px;
-  }
-  .btn-reset {
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    padding: 0.35rem 0.9rem;
-    border-radius: 100px;
-    cursor: pointer;
-    font-size: 0.78rem;
-    font-weight: 500;
-    font-family: inherit;
-    transition: all 0.18s;
-  }
-  .btn-reset:hover { border-color: var(--teal-dim); color: var(--teal); }
-
-  .messages {
-    flex: 1;
-    padding: 1.4rem;
-    overflow-y: auto;
-    max-height: 480px;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    background: #f7fdfc;
-    scroll-behavior: smooth;
-  }
-  .messages::-webkit-scrollbar { width: 4px; }
-  .messages::-webkit-scrollbar-track { background: transparent; }
-  .messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-
-  .msg { display: flex; gap: 10px; animation: rise 0.2s ease; }
-  @keyframes rise {
-    from { opacity: 0; transform: translateY(6px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  .msg.user { justify-content: flex-end; }
-
-  .avatar {
-    width: 32px; height: 32px;
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 0.75rem; font-weight: 700;
-    flex-shrink: 0;
-  }
-  .msg.ai .avatar   { background: var(--teal); color: #fff; }
-  .msg.user .avatar { background: var(--card); color: var(--teal); border: 1px solid var(--border); }
-
-  .bubble {
-    max-width: 84%;
-    padding: 0.75rem 1rem;
-    border-radius: 1.2rem;
-    font-size: 0.9rem;
-    line-height: 1.5;
-  }
-  .msg.ai   .bubble { background: var(--white); border: 1px solid var(--border); border-top-left-radius: 0.25rem; border-left: 2px solid var(--teal); color: var(--text); }
-  .msg.user .bubble { background: var(--teal); color: #fff; border-top-right-radius: 0.25rem; }
-
-  .ts { font-size: 0.62rem; color: var(--muted); margin-top: 5px; text-align: right; }
-
-  .typing-dots span {
-    display: inline-block; width: 6px; height: 6px;
-    border-radius: 50%; background: var(--teal);
-    margin: 0 2px;
-    animation: blink 1.2s infinite;
-  }
-  .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
-  .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
-  @keyframes blink {
-    0%, 80%, 100% { opacity: 0.2; }
-    40% { opacity: 1; }
-  }
-
-  .input-bar {
-    padding: 0.9rem 1rem;
-    background: #e4f5f2;
-    border-top: 1px solid var(--border);
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
-  .input-bar input {
-    flex: 1;
-    background: #ffffff;
-    border: 1px solid var(--border);
-    border-radius: 100px;
-    padding: 0.7rem 1.1rem;
-    color: var(--text);
-    font-size: 0.88rem;
-    font-family: inherit;
-    outline: none;
-    transition: border-color 0.18s;
-  }
-  .input-bar input::placeholder { color: var(--muted); }
-  .input-bar input:focus { border-color: var(--teal-dim); box-shadow: 0 0 0 2px var(--teal-glow); }
-  .btn-send {
-    background: var(--teal);
-    border: none;
-    border-radius: 100px;
-    padding: 0.7rem 1.3rem;
-    color: #ffffff;
-    font-weight: 700;
-    font-size: 0.85rem;
-    font-family: inherit;
-    cursor: pointer;
-    transition: all 0.18s;
-    white-space: nowrap;
-  }
-  .btn-send:hover { background: var(--teal-dim); }
-  .btn-send:active { transform: scale(0.96); }
-
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 1.1rem;
-    padding: 1.1rem 1.2rem;
-  }
-  .card-title {
-    font-size: 0.78rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--teal);
-    margin-bottom: 0.9rem;
-  }
-
-  .steps { display: flex; flex-direction: column; gap: 0.7rem; }
-  .step  { display: flex; gap: 10px; align-items: flex-start; }
-  .step-num {
-    width: 22px; height: 22px; border-radius: 50%;
-    background: var(--teal-soft);
-    border: 1px solid var(--teal-dim);
-    color: var(--teal);
-    font-size: 0.68rem; font-weight: 700;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0; margin-top: 1px;
-  }
-  .step p { font-size: 0.83rem; line-height: 1.5; color: var(--text); }
-  .step strong { color: var(--teal-dim); }
-
-  .stats-row { display: flex; gap: 10px; }
-  .stat-box {
-    flex: 1;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 0.8rem;
-    padding: 0.8rem 0.6rem;
-    text-align: center;
-  }
-  .stat-num { font-family: 'Syne', sans-serif; font-size: 1.9rem; font-weight: 800; color: var(--teal); line-height: 1; }
-  .stat-label { font-size: 0.67rem; color: var(--muted); margin-top: 4px; }
-  .btn-mark {
-    display: block; width: 100%;
-    margin-top: 0.9rem;
-    background: transparent;
-    border: 1px solid var(--teal-dim);
-    color: var(--teal);
-    padding: 0.55rem 1rem;
-    border-radius: 100px;
-    font-size: 0.8rem; font-weight: 600; font-family: inherit;
-    cursor: pointer;
-    transition: all 0.18s;
-  }
-  .btn-mark:hover { background: var(--teal-glow); }
-
-  .examples { display: flex; flex-direction: column; gap: 0.55rem; }
-  .ex-item {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 0.7rem;
-    padding: 0.55rem 0.8rem;
-    font-size: 0.8rem;
-    line-height: 1.4;
-    color: var(--text);
-    cursor: pointer;
-    transition: border-color 0.15s;
-  }
-  .ex-item:hover { border-color: var(--teal-dim); color: var(--white); }
-  .ex-tag {
-    display: inline-block;
-    font-size: 0.62rem; font-weight: 700;
-    letter-spacing: 0.06em; text-transform: uppercase;
-    color: var(--teal-dim);
-    margin-bottom: 2px;
-  }
-
-  .warning {
-    background: rgba(25,196,168,0.05);
-    border: 1px solid var(--teal-dim);
-    border-radius: 0.9rem;
-    padding: 0.85rem 1rem;
-    font-size: 0.8rem;
-    line-height: 1.55;
-    color: var(--muted);
-  }
-  .warning strong { color: var(--teal); }
-
-  .btn-suggest {
-    display: block; width: 100%;
-    margin-top: 0.85rem;
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    padding: 0.5rem 1rem;
-    border-radius: 100px;
-    font-size: 0.78rem; font-weight: 500; font-family: inherit;
-    cursor: pointer;
-    transition: all 0.18s;
-  }
-  .btn-suggest:hover { border-color: var(--teal-dim); color: var(--teal); }
-
-  .hint-wrap { margin-top: 0.75rem; }
-  .btn-hint {
-    background: transparent;
-    border: 1px solid var(--teal-dim);
-    color: var(--teal);
-    padding: 0.3rem 0.85rem;
-    border-radius: 100px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    font-family: inherit;
-    cursor: pointer;
-    transition: all 0.18s;
-  }
-  .btn-hint:hover { background: var(--teal-glow); }
-  .hint-box {
-    margin-top: 0.6rem;
-    background: var(--teal-soft);
-    border: 1px solid var(--border);
-    border-left: 3px solid var(--teal);
-    border-radius: 0.6rem;
-    padding: 0.6rem 0.85rem;
-    font-size: 0.8rem;
-    line-height: 1.55;
-    color: var(--teal-dim);
-    animation: rise 0.2s ease;
-  }
-
-  @media (max-width: 640px) {
-    .grid { gap: 1rem; }
-    .messages { max-height: 360px; }
-    .header h1 { font-size: 1.7rem; }
-  }
-  .back-btn-fixed {
-    position: fixed;
-    bottom: 10px;
-    left: 24px;
-    background: #1bb8b3;
-    backdrop-filter: blur(8px);
-    color: white;
-    text-decoration: none;
-    padding: 12px 28px;
-    border-radius: 12px;
-    font-weight: 600;
-    font-size: 14px;
-    transition: all 0.2s;
-    z-index: 100;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    font-family: 'Raleway', sans-serif;
-  }
-  .back-btn-fixed i { margin-right: 8px; }
-  .back-btn-fixed:hover {
-    background: #074844;
-    transform: translateY(-2px);
-  }
-
-  /* Стиль для индикатора модели */
-  .model-badge {
-    display: inline-block;
-    font-size: 0.6rem;
-    font-weight: 600;
-    background: rgba(14,158,136,0.15);
-    color: var(--teal-dim);
-    padding: 0.15rem 0.6rem;
-    border-radius: 100px;
-    border: 1px solid var(--teal-dim);
-    margin-left: 8px;
-    letter-spacing: 0.02em;
-  }
-
-  /* Индикатор статуса API */
-  .api-status {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.65rem;
-    font-weight: 600;
-    padding: 0.2rem 0.7rem;
-    border-radius: 100px;
-    transition: all 0.3s;
-    margin-left: 6px;
-  }
-  .api-status.online {
-    background: #e6f7f0;
-    color: #0b7a6a;
-    border: 1px solid #0b7a6a;
-  }
-  .api-status.online::before {
-    content: "●";
-    color: #0b7a6a;
-    animation: pulse 1.5s infinite;
-  }
-  .api-status.offline {
-    background: #fef3c7;
-    color: #92400e;
-    border: 1px solid #f59e0b;
-  }
-  .api-status.offline::before {
-    content: "⚠";
-    color: #f59e0b;
-  }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Генератор плана-конспекта | Межпредметные связи</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+      background: #f0fafa;
+      min-height: 100vh;
+      color: #1a3b3f;
+    }
+    .topbar {
+      display: flex;
+      align-items: center;
+      padding: 12px 24px;
+      background: #fff;
+      border-bottom: 1.5px solid #cbe5e8;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.03);
+    }
+    .back {
+      text-decoration: none;
+      color: #0d7377;
+      font-weight: 700;
+      font-size: 14px;
+      padding: 7px 16px;
+      border: 1.5px solid #0d7377;
+      border-radius: 16px;
+      transition: 0.2s;
+    }
+    .back:hover {
+      background: #0d7377;
+      color: #fff;
+    }
+    .bar-title {
+      flex: 1;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 700;
+      color: #0d7377;
+    }
+    .main {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 28px 20px 80px;
+    }
+    h1 {
+      font-size: 36px;
+      color: #0d7377;
+      text-align: center;
+      margin-bottom: 6px;
+    }
+    .sub {
+      text-align: center;
+      color: #5f9ea0;
+      font-size: 14px;
+      margin-bottom: 28px;
+    }
+    .card, .res-wrap {
+      background: #fff;
+      border: 1px solid #d4e7e9;
+      border-radius: 16px;
+      padding: 24px 28px;
+      margin-bottom: 20px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.03);
+    }
+    .lbl {
+      display: block;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #2b8f94;
+      margin-bottom: 6px;
+    }
+    input, select {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1.5px solid #d0e5e8;
+      border-radius: 16px;
+      font-size: 14px;
+      background: #fefefe;
+      transition: 0.2s;
+      outline: none;
+    }
+    input:focus, select:focus {
+      border-color: #0d7377;
+      box-shadow: 0 0 0 2px rgba(13,115,119,0.1);
+    }
+    .row {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+    .row .field {
+      flex: 1;
+      min-width: 140px;
+    }
+    .field {
+      margin-bottom: 18px;
+    }
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 10px 0 8px;
+    }
+    .chip {
+      padding: 7px 18px;
+      border-radius: 16px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1.5px solid #cce3e5;
+      background: #f9fefe;
+      color: #2f7b80;
+      transition: 0.15s;
+    }
+    .chip.on {
+      background: #0d7377;
+      border-color: #0d7377;
+      color: white;
+    }
+    .btn {
+      width: 100%;
+      padding: 14px;
+      background: #0d7377;
+      color: white;
+      border: none;
+      border-radius: 16px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s;
+      margin-top: 10px;
+    }
+    .btn:hover {
+      background: #14a8ad;
+      transform: scale(0.98);
+    }
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .err {
+      background: #fff0f0;
+      border-left: 5px solid #e07c7c;
+      border-radius: 16px;
+      padding: 14px 20px;
+      color: #9b2e2e;
+      font-size: 13px;
+      display: none;
+      margin-bottom: 20px;
+    }
+    .res-wrap {
+      display: none;
+      padding: 0;
+      overflow: hidden;
+    }
+    .res-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      background: #eef7f7;
+      border-bottom: 1px solid #d4e7e9;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .res-lbl {
+      font-weight: 800;
+      color: #0d7377;
+      font-size: 13px;
+      letter-spacing: 0.5px;
+    }
+    .btn-group {
+      display: flex;
+      gap: 12px;
+    }
+    .cbtn {
+      background: #0d7377;
+      border: none;
+      padding: 7px 22px;
+      border-radius: 16px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .cbtn:hover {
+      background: #0a5e61;
+      transform: scale(0.97);
+    }
+    .status {
+      padding: 20px 24px;
+      color: #5f9ea0;
+      font-size: 14px;
+      background: #f9fefd;
+      display: none;
+      border-bottom: 1px solid #e4f0f0;
+    }
+    .res-body {
+      padding: 28px;
+      font-size: 14.5px;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      background: white;
+      max-height: 65vh;
+      overflow-y: auto;
+    }
+    .res-foot {
+      padding: 14px 24px;
+      border-top: 1px solid #e4f0f0;
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .back-btn-fixed {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      padding: 10px 22px;
+      background: #1bb8b3;
+      color: #fff;
+      font-weight: 700;
+      font-size: 14px;
+      border-radius: 10px;
+      text-decoration: none;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      transition: background .15s, transform .1s;
+    }
+    .back-btn-fixed:hover {
+      background: #17a5a0;
+      transform: translateY(-2px);
+    }
+    .demo-banner {
+      background: #fff8d6;
+      border: 1px solid #e6c94a;
+      border-left: 4px solid #e6c94a;
+      border-radius: 16px;
+      padding: 14px 20px;
+      margin-bottom: 20px;
+    }
+    .demo-banner-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: #7a5c00;
+      margin-bottom: 4px;
+    }
+    .demo-banner-text {
+      font-size: 13px;
+      color: #8a6d00;
+      line-height: 1.5;
+    }
+    .demo-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 800;
+      color: #7a5c00;
+      background: #fff3b0;
+      border: 1px solid #e6c94a;
+      border-radius: 999px;
+      padding: 3px 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      vertical-align: middle;
+      margin-left: 8px;
+    }
+    @media (max-width: 600px) {
+      .main { padding: 16px; }
+      .card, .res-wrap { padding: 18px; }
+      .res-head { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
 </head>
 <body>
 
-<!-- ДЕМО-БАННЕР -->
-<div class="demo-banner">
-  <span class="badge">ДЕМО-ВЕРСИЯ</span>
-  <span class="api-hint">⚡ Без ключа работает встроенный ИИ, но качество ответов может быть <strong>ниже</strong></span>
+<div class="topbar">
+  <div style="width: 80px;"></div>
 </div>
 
-<div class="header">
-  <h1>ИИ-провокатор<br><span>Найди ошибку в ответе</span></h1>
-  <p>Агент намеренно даёт неверные, устаревшие и противоречивые ответы. Ваша задача – обнаружить ошибки и опровергнуть их прямо в чате.</p>
-</div>
+<div class="main">
+  <h1>Генератор планов-конспектов уроков <span class="demo-badge">ДЕМО-ВЕРСИЯ</span></h1>
+  <p class="sub">Программа Республики Беларусь · 45 минут</p>
 
-<div class="grid">
-  <div class="col-chat">
-    <div class="chat-panel">
-      <div class="chat-topbar">
-        <div class="chat-topbar-left">
-          <div class="agent-dot"></div>
-          <h3>Агент-провокатор</h3>
-          <span class="chip">Намеренные ошибки</span>
-          <span class="model-badge">⚡ Встроенный ИИ</span>
-          <span id="apiStatusIndicator" class="api-status offline">ДЕМО-режим</span>
-        </div>
-        <button class="btn-reset" id="resetBtn">Очистить диалог</button>
-      </div>
+  <div class="demo-banner">
+    <div class="demo-banner-title">⚠️ Это демо‑версия</div>
+    <div class="demo-banner-text">Здесь показан заранее подготовленный пример плана-конспекта – без реального обращения к ИИ. В полной версии план генерируется автоматически по любой теме, предмету и классу.</div>
+	        <span class="api-hint">⚡работает без ключа, качество ответов  <strong>ниже</strong></span>
 
-      <div class="messages" id="messages">
-        <div class="msg ai">
-          <div class="avatar">ИИ</div>
-          <div class="bubble">
-            Я – ИИ-провокатор (демо-версия). Мои ответы содержат <strong>фактические ошибки, устаревшие данные и внутренние противоречия</strong> – намеренно.<br><br>
-            Задайте научный вопрос, внимательно прочитайте ответ и укажите, что именно неверно. Это тренирует навык проверки информации.
-            <div class="ts">сейчас</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="input-bar">
-        <input type="text" id="input" placeholder="Задайте научный вопрос..." autocomplete="off">
-        <button class="btn-send" id="sendBtn">Отправить</button>
-      </div>
-    </div>
   </div>
 
-  <div class="col-guide">
-    <div class="card">
-      <div class="card-title">Как работать с тренажёром</div>
-      <div class="steps">
-        <div class="step"><div class="step-num">1</div><p>Задайте вопрос по естествознанию, физике, истории науки или любой другой теме.</p></div>
-        <div class="step"><div class="step-num">2</div><p>Прочитайте ответ агента. Он намеренно содержит <strong>одну или несколько ошибок</strong>: неверные факты, устаревшие данные, логические противоречия.</p></div>
-        <div class="step"><div class="step-num">3</div><p>Укажите ошибку в следующем сообщении – опровергните, уточните или приведите правильный факт.</p></div>
-        <div class="step"><div class="step-num">4</div><p>Нажмите <strong>«Показать ошибки»</strong> под ответом агента, чтобы проверить себя. Затем отметьте найденную ошибку кнопкой в статистике.</p></div>
+  <div class="card">
+    <hr style="margin: 14px 0; border-color:#e0edef;">
+
+    <div class="lbl">Тип урока</div>
+    <div class="chips" id="typeChips">
+      <div class="chip" data-type="new">Изучение нового</div>
+      <div class="chip" data-type="combined">Комбинированный</div>
+      <div class="chip" data-type="consolidation">Закрепление</div>
+      <div class="chip" data-type="generalization">Обобщение</div>
+      <div class="chip" data-type="control">Контроль знаний</div>
+    </div>
+
+    <hr style="margin: 14px 0; border-color:#e0edef;">
+
+    <div class="row">
+      <div class="field">
+        <label class="lbl">Предмет</label>
+        <select id="subjectSelect">
+          <option value="Биология">Биология</option>
+          <option value="География">География</option>
+          <option value="Химия">Химия</option>
+          <option value="Человек и мир">Человек и мир</option>
+        </select>
+      </div>
+      <div class="field">
+        <label class="lbl">Класс</label>
+        <select id="classSelect">
+          <option value="6">6 класс</option><option value="7">7 класс</option><option value="8">8 класс</option>
+          <option value="9">9 класс</option><option value="10">10 класс</option><option value="11">11 класс</option>
+        </select>
       </div>
     </div>
 
-        <div class="card">
-      <div class="card-title">Примеры вопросов для старта</div>
-      <div class="examples" id="examples">
-        <div class="ex-item" data-q="Объясни теорию эволюции Дарвина"><div class="ex-tag">устаревшее</div><br>Объясни теорию эволюции Дарвина</div>
-        <div class="ex-item" data-q="Сколько планет в Солнечной системе?"><div class="ex-tag">ошибка в факте</div><br>Сколько планет в Солнечной системе?</div>
-        <div class="ex-item" data-q="Расскажи о влиянии CO₂ на климат"><div class="ex-tag">противоречие</div><br>Расскажи о влиянии CO₂ на климат</div>
-        <div class="ex-item" data-q="Как работает квантовая механика?"><div class="ex-tag">смешение понятий</div><br>Как работает квантовая механика?</div>
-      </div>
-      <button class="btn-suggest" id="suggestBtn">Случайный вопрос</button>
+    <div class="field">
+      <label class="lbl">Параграф / тема (выберите из списка)</label>
+      <select id="topicSelect">
+        <option value="">-- выберите параграф --</option>
+      </select>
     </div>
 
-    <div class="warning">
-      <strong>Важно:</strong> все ответы агента преднамеренно ненадёжны. Не используйте их как источник фактов. Это симулятор для развития навыка верификации информации.
+    <div class="field">
+      <label class="lbl">Или введите тему вручную</label>
+      <input type="text" id="manualTopic" placeholder="Например: Фотосинтез, строение клетки, климат Евразии...">
+    </div>
+
+    <button class="btn" id="generateBtn">Сгенерировать план-конспект</button>
+  </div>
+
+  <div class="err" id="errorBlock"></div>
+
+  <div class="res-wrap" id="resultWrap">
+    <div class="res-head">
+      <span class="res-lbl">План-конспект урока (45 мин)</span>
+      <div class="btn-group">
+        <button class="cbtn" id="copyBtnTop">Копировать</button>
+        <button class="cbtn" id="wordExportBtn">Сохранить в doc</button>
+      </div>
+    </div>
+    <div class="status" id="statusMsg">Готовим демо план-конспект...</div>
+    <div class="res-body" id="resultBody"></div>
+    <div class="res-foot">
+      <button class="cbtn" id="copyBtnBottom">Копировать текст</button>
+      <button class="cbtn" id="wordExportBtn2">Сохранить в doc</button>
     </div>
   </div>
+  <a href="generators.html" class="back-btn-fixed">Назад</a>
 </div>
-<a href="index.html" class="back-btn-fixed"><i class="fas fa-arrow-left"></i> Назад</a>
 
 <script>
-  // ---- Константы ----
-  const API_KEY_STORAGE_KEY = 'gen_api_key';
-  const MODEL = 'gemini-2.5-flash-lite';
+// ДЕМО-ВЕРСИЯ: реальный ИИ не вызывается, API-ключ не требуется.
 
-  // ---- Элементы ----
-  const statusIndicator = document.getElementById('apiStatusIndicator');
+// ------------------------ БАЗА ПАРАГРАФОВ -----------------------------
+const topicDatabase = {
+  "Биология": {
+    6: ["§ 1 Живые организмы"]
+  },
+  "География": {
+    6: ["§ 1 Стороны горизонта"]
+  },
+  "Химия": {
+    7: ["§ 1 Химия - наука о веществах"]
+  },
+  "Человек и мир": {
+    5: ["§ 1 Природа Земли и человек"]
+  }
+};
 
-  // ---- Функция обновления статуса API ----
-  function updateApiStatus() {
-    const savedKey = localStorage.getItem(API_KEY_STORAGE_KEY);
-    if (savedKey && savedKey.trim().length > 0) {
-      statusIndicator.className = 'api-status online';
-      statusIndicator.textContent = 'API: подключен';
-    } else {
-      statusIndicator.className = 'api-status offline';
-      statusIndicator.textContent = 'ДЕМО-режим';
-    }
+// Глобальные переменные
+let selectedType = "new";
+
+// Функция обновления списка параграфов
+function updateTopicSelect() {
+  const subject = document.getElementById("subjectSelect").value;
+  const classVal = document.getElementById("classSelect").value;
+  const topicSelect = document.getElementById("topicSelect");
+  const db = topicDatabase[subject]?.[classVal] || [];
+  
+  topicSelect.innerHTML = '<option value="">-- выберите параграф --</option>';
+  if (db.length === 0) {
+    topicSelect.innerHTML += '<option disabled>Нет данных, введите вручную</option>';
+  } else {
+    db.forEach(topic => {
+      const option = document.createElement("option");
+      option.value = topic;
+      option.textContent = topic;
+      topicSelect.appendChild(option);
+    });
+  }
+}
+
+// Синхронизация выбора темы с ручным вводом
+function syncTopic() {
+  const selectTopic = document.getElementById("topicSelect").value;
+  const manual = document.getElementById("manualTopic");
+  if (selectTopic) {
+    manual.value = selectTopic;
+  }
+}
+
+// Обработчики
+document.getElementById("subjectSelect").addEventListener("change", () => { 
+  updateTopicSelect(); 
+  syncTopic(); 
+});
+document.getElementById("classSelect").addEventListener("change", () => { 
+  updateTopicSelect(); 
+  syncTopic(); 
+});
+document.getElementById("topicSelect").addEventListener("change", syncTopic);
+
+document.querySelectorAll("#typeChips .chip").forEach(chip => {
+  chip.addEventListener("click", () => {
+    document.querySelectorAll("#typeChips .chip").forEach(c => c.classList.remove("on"));
+    chip.classList.add("on");
+    selectedType = chip.dataset.type;
+  });
+});
+document.querySelector("#typeChips .chip").classList.add("on");
+
+// ══════════════════════════════════════════════════════════
+//  ДЕМО-ДАННЫЕ – заранее подготовленные готовые планы-конспекты.
+//  В демо-версии реальный запрос к ИИ не выполняется: при нажатии
+//  «Сгенерировать план-конспект» подставляется готовая заготовка,
+//  в которую вписываются выбранные тема / предмет / класс.
+// ══════════════════════════════════════════════════════════
+const DEMO_PLANS = {
+  new: (topic, subject, grade) => `Цель урока: создать условия для формирования у учащихся представления о теме «${topic}», для восприятия, осмысления и первичного запоминания новых знаний и способов деятельности.
+
+Задачи урока:
+Образовательные:
+– сформировать представление учащихся о ключевых понятиях по теме «${topic}»;
+– обеспечить усвоение основных фактов и связей по изучаемому материалу;
+– организовать применение новых знаний в стандартной ситуации.
+
+Развивающие:
+– развивать умение анализировать, сравнивать и делать выводы на материале темы «${topic}»;
+– способствовать развитию познавательного интереса учащихся к предмету «${subject}»;
+– формировать умение работать с текстом учебника, схемами и таблицами.
+
+Воспитательные:
+– формировать научную картину мира учащихся;
+– воспитывать ответственное отношение к учебному труду.
+
+Тип урока: урок изучения и первичного закрепления новых знаний и способов деятельности.
+Форма проведения: фронтальная, с элементами групповой работы.
+Методы: словесные (беседа, объяснение), наглядные (демонстрация схем), практические (выполнение заданий).
+Методические приёмы: постановка проблемного вопроса, составление опорного конспекта, работа с текстом учебника.
+Учебно-методическое обеспечение: учебное пособие «${subject}», ${grade} класс (e-padruchnik.adu.by), тема «${topic}».
+
+Ход урока
+
+1. Организационный этап (2 минуты)
+учитель приветствует учащихся, проверяет готовность класса к уроку, настраивает на продуктивную работу.
+
+2. Подготовка учащихся к работе на основном этапе (5 минут)
+учитель задаёт вопросы для актуализации знаний: что вам уже известно по теме «${topic}»? учитель формулирует проблемный вопрос, подводящий к теме урока, и поясняет, зачем эта тема важна для дальнейшего изучения предмета «${subject}».
+
+3. Формирование новых понятий и способов деятельности (18 минут)
+учитель объясняет новый материал по теме «${topic}», опираясь на текст параграфа, демонстрирует схему на доске, приводит конкретные примеры. Учащиеся ведут записи в тетради, отвечают на уточняющие вопросы учителя.
+
+4. Первичная проверка понимания изученного (7 минут)
+учитель предлагает учащимся короткие устные задания и вопросы по теме «${topic}», проверяет понимание ключевых понятий через фронтальный опрос.
+
+5. Закрепление знаний и способов деятельности (7 минут)
+учитель организует практическую работу в парах: учащиеся выполняют задание по теме «${topic}», применяя новый способ действия в типовой ситуации.
+
+6. Обобщение и систематизация знаний (3 минуты)
+учитель предлагает выделить главное из изученного материала, вместе с классом составляет краткую опорную схему по теме «${topic}».
+
+7. Информирование о домашнем задании (2 минуты)
+учитель называет параграф и страницы учебника, поясняет порядок выполнения задания, обращает внимание на трудные моменты.
+
+8. Подведение итогов и рефлексия (1 минута)
+учитель предлагает учащимся сформулировать, что нового они узнали на уроке, проводит короткую рефлексию, благодарит класс за работу.`,
+
+  combined: (topic, subject, grade) => `Цель урока: организовать деятельность учащихся по восприятию, осмыслению и первичному запоминанию знаний и способов деятельности; обеспечить закрепление, обобщение и систематизацию знаний и умений по теме «${topic}».
+
+Задачи урока:
+Образовательные:
+– сформировать представление о ключевых понятиях по теме «${topic}»;
+– раскрыть сущность изучаемых понятий;
+– обеспечить первичное закрепление знаний и способов деятельности по теме «${topic}».
+
+Развивающие:
+– развивать умение анализировать и сравнивать материал по теме «${topic}»;
+– формировать умение устанавливать причинно-следственные связи;
+– способствовать развитию познавательного интереса учащихся к предмету «${subject}».
+
+Воспитательные:
+– формировать научную картину мира через применение полученных знаний;
+– создать условия для развития коммуникативных компетенций учащихся.
+
+Тип урока: комбинированный урок.
+Форма проведения: фронтальная, индивидуальная и групповая.
+Методы: словесные (объяснение, беседа), наглядные (демонстрация, схема), практические (упражнения, задания).
+Методические приёмы: устный опрос, составление опорной схемы, работа в парах.
+Учебно-методическое обеспечение: учебное пособие «${subject}», ${grade} класс (e-padruchnik.adu.by), тема «${topic}».
+
+Структура урока
+
+1. Организационный этап (2 минуты)
+учитель приветствует учащихся, проверяет готовность класса, настраивает на работу.
+
+2. Проверка домашнего задания (6 минут)
+учитель проводит выборочную устную проверку по предыдущей теме, разбирает типичные ошибки, уточняет ключевые моменты.
+
+3. Подготовка учащихся к работе на основном этапе (4 минуты)
+учитель актуализирует знания, необходимые для темы «${topic}», формулирует мотивационный вопрос: зачем нам нужно изучить эту тему?
+
+4. Формирование новых понятий и способов деятельности (12 минут)
+учитель объясняет новый материал по теме «${topic}», демонстрирует схему, приводит конкретные примеры из повседневной жизни.
+
+5. Первичная проверка понимания изученного (5 минут)
+учитель задаёт короткие вопросы и мини-задания по теме «${topic}» для проверки усвоения ключевых понятий.
+
+6. Закрепление знаний и способов деятельности (6 минут)
+учитель организует практическую работу в парах, где учащиеся применяют новый способ действия в типовой ситуации по теме «${topic}».
+
+7. Обобщение и систематизация знаний и способов деятельности (4 минуты)
+учитель вместе с классом выделяет главное, составляет краткую обобщающую схему по теме «${topic}», связывает новый материал с ранее изученным.
+
+8. Контроль и самоконтроль знаний (3 минуты)
+учитель предлагает короткое тестовое задание по теме «${topic}», организует взаимопроверку в парах.
+
+9. Информирование о домашнем задании (2 минуты)
+учитель называет параграф и страницы учебника, поясняет порядок выполнения задания.
+
+10. Подведение итогов и рефлексия (1 минута)
+учитель предлагает учащимся оценить свою работу на уроке, проводит короткую рефлексию, благодарит класс.`,
+
+  consolidation: (topic, subject, grade) => `Цель урока: создать условия для закрепления знаний и способов деятельности учащихся и самостоятельного применения ими знаний по теме «${topic}».
+
+Задачи урока:
+Образовательные:
+– закрепить знания учащихся по теме «${topic}»;
+– закрепить умения применять изученный материал на практике;
+– обеспечить применение знаний в типовых и новых ситуациях.
+
+Развивающие:
+– продолжить формирование умений анализировать материал по теме «${topic}»;
+– создать условия для развития умений устанавливать причинно-следственные связи;
+– способствовать развитию познавательного интереса учащихся к предмету «${subject}».
+
+Воспитательные:
+– продолжить формирование научной картины мира через применение знаний;
+– создать условия для формирования коммуникативных компетенций учащихся.
+
+Тип урока: урок закрепления знаний и способов деятельности и комплексного применения знаний и способов деятельности.
+Форма проведения: индивидуальная и групповая.
+Методы: словесные (объяснение, беседа), наглядные (демонстрация, схема), практические (упражнения, задания).
+Методические приёмы: работа по образцу, задания повышенной сложности, взаимопроверка.
+Учебно-методическое обеспечение: учебное пособие «${subject}», ${grade} класс (e-padruchnik.adu.by), тема «${topic}».
+
+Структура урока
+
+1. Организационный этап (2 минуты)
+учитель приветствует учащихся, проверяет готовность класса, настраивает на продуктивную работу.
+
+2. Проверка домашнего задания (6 минут)
+учитель анализирует выполнение домашнего задания по теме «${topic}», разбирает типичные ошибки, уточняет ключевые моменты.
+
+3. Подготовка учащихся к работе на основном этапе (4 минуты)
+учитель актуализирует знания по теме «${topic}», формулирует мотивационный вопрос, объясняет цель урока.
+
+4. Закрепление знаний и способов деятельности (10 минут)
+учитель предлагает учащимся выполнить задания по образцу на материале темы «${topic}», работает с примерами и схемами.
+
+5. Комплексное применение знаний и способов деятельности (10 минут)
+учитель организует работу в парах: учащиеся выполняют задания повышенной сложности по теме «${topic}», применяя знания в новой ситуации.
+
+6. Контроль и самоконтроль знаний (5 минут)
+учитель проводит короткую проверочную работу по теме «${topic}», организует взаимопроверку по критериям.
+
+7. Коррекция знаний (3 минуты)
+учитель разбирает типичные ошибки, уточняет трудные понятия, поясняет алгоритмы действий.
+
+8. Информирование о домашнем задании (3 минуты)
+учитель называет параграф и страницы учебника, поясняет порядок выполнения задания, обращает внимание на дифференциацию.
+
+9. Подведение итогов и рефлексии (2 минуты)
+учитель предлагает учащимся оценить, что они закрепили на уроке, проводит рефлексию, благодарит класс за работу.`,
+
+  generalization: (topic, subject, grade) => `Цель урока: организовать деятельность учащихся по обобщению и систематизации знаний и способов деятельности по теме «${topic}».
+
+Задачи урока:
+Образовательные:
+– обобщить знания учащихся по теме «${topic}»;
+– систематизировать способы деятельности, связанные с изучаемым материалом;
+– обеспечить целостное понимание ключевых понятий по теме «${topic}».
+
+Развивающие:
+– развивать умение анализировать и сравнивать материал по теме «${topic}»;
+– формировать умение устанавливать причинно-следственные связи;
+– способствовать развитию познавательного интереса учащихся к предмету «${subject}».
+
+Воспитательные:
+– формировать научную картину мира через применение знаний;
+– создать условия для формирования коммуникативных компетенций учащихся.
+
+Тип урока: урок обобщения и систематизации знаний и способов деятельности.
+Форма проведения: фронтальная, с элементами групповой работы.
+Методы: словесные (беседа, объяснение), наглядные (схемы, таблицы), практические (упражнения, задания).
+Методические приёмы: составление обобщающей таблицы, задания на классификацию и сравнение.
+Учебно-методическое обеспечение: учебное пособие «${subject}», ${grade} класс (e-padruchnik.adu.by), тема «${topic}».
+
+Структура урока
+
+1. Организационный этап (2 минуты)
+учитель приветствует учащихся, проверяет готовность класса, настраивает на работу.
+
+2. Проверка домашнего задания (5 минут)
+учитель анализирует выполнение домашнего задания, разбирает типичные ошибки, уточняет ключевые моменты по теме «${topic}».
+
+3. Подготовка учащихся к работе на основном этапе (4 минуты)
+учитель актуализирует знания по теме «${topic}», формулирует проблемный вопрос, объясняет, зачем нужно обобщить материал.
+
+4. Обобщение и систематизация знаний и способов деятельности (22 минуты)
+учитель организует работу с обобщающей таблицей по теме «${topic}», предлагает задания на классификацию и сравнение, проводит обсуждение ключевых понятий и способов действий.
+
+5. Информирование о домашнем задании (3 минуты)
+учитель называет параграф и страницы учебника для повторения, поясняет порядок выполнения задания.
+
+6. Подведение итогов и рефлексии (9 минут)
+учитель предлагает учащимся сформулировать, что они обобщили и систематизировали на уроке, проводит рефлексию, связывает материал с дальнейшим обучением, благодарит класс за работу.`,
+
+  control: (topic, subject, grade) => `Цель урока: обеспечить проверку и оценку знаний и способов деятельности учащихся; организовать деятельность по коррекции знаний и способов деятельности по теме «${topic}».
+
+Задачи урока:
+Образовательные:
+– проверить уровень усвоения знаний учащихся по теме «${topic}»;
+– оценить сформированность способов деятельности по изучаемому материалу;
+– выявить пробелы и затруднения учащихся.
+
+Развивающие:
+– развивать умение анализировать собственные ошибки;
+– формировать навыки самоконтроля и самооценки;
+– способствовать развитию логического мышления через выполнение заданий по теме «${topic}».
+
+Воспитательные:
+– формировать ответственное отношение к результатам учебной деятельности;
+– создать условия для развития коммуникативных компетенций при обсуждении результатов.
+
+Тип урока: урок проверки и оценки знаний и способов деятельности и коррекции знаний и способов деятельности.
+Форма проведения: индивидуальная, с элементами взаимопроверки.
+Методы: словесные (инструктаж, беседа), практические (выполнение заданий), наглядные (схемы, таблицы).
+Методические приёмы: тестовые задания, мини-контрольная работа, разбор ошибок.
+Учебно-методическое обеспечение: учебное пособие «${subject}», ${grade} класс (e-padruchnik.adu.by), тема «${topic}».
+
+Структура урока
+
+1. Организационный этап (2 минуты)
+учитель приветствует учащихся, проверяет готовность класса, настраивает на самостоятельную работу.
+
+2. Проверка домашнего задания (5 минут)
+учитель проводит выборочную проверку домашнего задания, анализирует типичные ошибки, уточняет ключевые моменты по теме «${topic}».
+
+3. Подготовка учащихся к работе на основном этапе (4 минуты)
+учитель актуализирует знания по теме «${topic}», объясняет цель проверочной работы и критерии оценивания.
+
+4. Комплексное применение знаний и способов деятельности (10 минут)
+учитель предлагает учащимся выполнить задания разного уровня сложности по теме «${topic}», работая с текстами, схемами и практическими примерами.
+
+5. Контроль и самоконтроль знаний и способов деятельности (12 минут)
+учитель проводит мини-контрольную работу по теме «${topic}», организует взаимопроверку и самооценку по заданным критериям.
+
+6. Коррекция знаний и способов деятельности (7 минут)
+учитель разбирает допущенные ошибки, поясняет трудные моменты, предлагает корректирующие упражнения по теме «${topic}».
+
+7. Подведение итогов и рефлексии (5 минут)
+учитель подводит итоги проверочной работы: что удалось, что требует доработки, организует эмоциональную рефлексию и связывает материал с дальнейшим обучением.`
+};
+
+// Генерация (демо)
+const generateBtn = document.getElementById("generateBtn");
+const resultWrap = document.getElementById("resultWrap");
+const resultBody = document.getElementById("resultBody");
+const statusDiv = document.getElementById("statusMsg");
+const errorBlock = document.getElementById("errorBlock");
+
+async function generate() {
+  errorBlock.style.display = "none";
+  const subject = document.getElementById("subjectSelect").value;
+  const grade = document.getElementById("classSelect").value;
+  let topic = document.getElementById("manualTopic").value.trim();
+
+  if (!topic) {
+    errorBlock.innerText = "Введите или выберите тему урока.";
+    errorBlock.style.display = "block";
+    return;
   }
 
-  // ---- Автоматическая загрузка API-ключа с главной страницы ----
-  window.addEventListener('DOMContentLoaded', () => {
-    const savedKey = localStorage.getItem(API_KEY_STORAGE_KEY);
-    if (savedKey) {
-      console.log(`🔑 API-ключ автоматически загружен с главной страницы. Модель: ${MODEL}`);
-    } else {
-      console.warn('⚠️ API-ключ не найден. Работаем в ДЕМО-режиме со встроенными ответами.');
-    }
-    updateApiStatus();
-  });
+  generateBtn.disabled = true;
+  generateBtn.textContent = "Генерация...";
+  resultWrap.style.display = "block";
+  statusDiv.style.display = "block";
+  statusDiv.textContent = "Готовим демо план-конспект...";
+  resultBody.textContent = "";
 
-  // ---- Слушаем изменения в localStorage ----
-  window.addEventListener('storage', (e) => {
-    if (e.key === API_KEY_STORAGE_KEY) {
-      updateApiStatus();
-    }
-  });
+  // ДЕМО: реального обращения к ИИ нет – просто имитируем задержку
+  // генерации и показываем заранее подготовленный пример конспекта.
+  await new Promise(resolve => setTimeout(resolve, 900));
 
-  // ---- НОВЫЙ ПРОМТ: ответы ТЕМАТИЧЕСКИ РЕЛЕВАНТНЫ, ошибки –в рамках вопроса ----
-  const PROVOCATIONS = {
-    эволюц: {
-      text: `Современная эволюционная биология утверждает, что человек произошёл напрямую от шимпанзе в результате нескольких крупных мутаций, произошедших около 50 000 лет назад. Исследования 2023 года показали, что естественный отбор больше не действует, так как все полезные признаки уже закреплены. Переходные формы, такие как австралопитек, были признаны результатом смешивания ДНК человека и обезьяны в лаборатории.`,
-      hint: `Ошибка 1: человек и шимпанзе имеют общего предка, а не произошли друг от друга. Ошибка 2: эволюция человека длилась миллионы лет, а не 50 000 лет. Ошибка 3: естественный отбор продолжает действовать. Ошибка 4: австралопитеки –подлинные ископаемые, а не лабораторный артефакт.`
-    },
-    климат: {
-      text: `Глобальное потепление остановилось в 2016 году, и с тех пор средняя температура на планете снижается на 0.05°C в год. CO₂ не оказывает значительного влияния на климат, так как его парниковый эффект полностью компенсируется облаками. В 2020 году NASA подтвердило, что ледники Антарктиды начали расти, а не таять, что опровергает теорию антропогенного потепления.`,
-      hint: `Ошибка 1: глобальное потепление не остановилось. Ошибка 2: CO₂ –основной парниковый газ, облака не компенсируют его эффект. Ошибка 3: ледники Антарктиды продолжают сокращаться, а не расти.`
-    },
-    квантов: {
-      text: `В квантовой механике принцип неопределённости Гейзенберга запрещает одновременно знать положение и импульс частицы, но позволяет точно измерить её энергию в любой момент времени. Это было доказано в 1957 году экспериментом, в котором электрон вели себя как классическая планета. Современные физики признают, что квантовая запутанность не нарушает локальность, так как информация передаётся быстрее света.`,
-      hint: `Ошибка 1: энергию тоже нельзя измерить с произвольной точностью –есть соотношение для энергии и времени. Ошибка 2: электрон не ведёт себя как планета. Ошибка 3: квантовая запутанность не позволяет передавать информацию быстрее света.`
-    },
-    кошка: {
-      text: `Окрас кошек определяется исключительно температурой окружающей среды: в холодных регионах рождаются только тёмные кошки, а в тёплых –светлые. Трёхцветные кошки всегда женского пола, потому что ген окраса находится в Y-хромосоме. Согласно исследованию 2021 года, 100% трёхцветных котов –это результат генной модификации, проведённой в Китае в 2010 году.`,
-      hint: `Ошибка 1: окрас не зависит от температуры. Ошибка 2: ген трёхцветного окраса находится в X-хромосоме, а не в Y. Ошибка 3: трёхцветные коты (самцы) встречаются крайне редко, но не являются результатом модификации.`
-    },
-    планеты: {
-      text: `В Солнечной системе 10 планет: Меркурий, Венера, Земля, Марс, Юпитер, Сатурн, Уран, Нептун, Плутон и Эрида. В 2018 году МАС официально восстановил Плутон в статусе планеты, а в 2022 добавил Эриду. Все планеты вращаются вокруг Солнца по идеальным круговым орбитам, что подтверждено наблюдениями 1990-х годов.`,
-      hint: `Ошибка 1: официально планет 8, Плутон и Эрида –карликовые планеты. Ошибка 2: орбиты эллиптические, а не круговые.`
-    },
-    днк: {
-      text: `ДНК состоит из 4 нуклеотидов: аденин, гуанин, цитозин и урацил. В 2015 году учёные добавили пятый –ксенин, который теперь считается основным носителем наследственной информации. Генетический код универсален для всех организмов, включая вирусы, что было доказано в 1968 году. При этом 90% ДНК человека –это «мусорная» ДНК, которая не выполняет никаких функций.`,
-      hint: `Ошибка 1: в ДНК нет урацила (он в РНК). Ошибка 2: ксенин не существует как естественный нуклеотид. Ошибка 3: «мусорная» ДНК выполняет регуляторные функции.`
-    },
-    луна: {
-      text: `Луна –это полая сфера, созданная искусственно 10 000 лет назад. Это подтверждается тем, что при падении лунного модуля в 1969 году звук распространялся, как по пустоте. Китайские миссии 2024 года обнаружили на обратной стороне Луны металлические конструкции, которые опровергают естественное происхождение спутника.`,
-      hint: `Ошибка 1: Луна не полая, имеет ядро. Ошибка 2: звук в вакууме не распространяется, это были сейсмические колебания. Ошибка 3: металлических конструкций не обнаружено.`
-    },
-    вирусы: {
-      text: `Вирусы –это живые организмы, поскольку они размножаются делением, как бактерии. Вакцины против вирусов создаются на основе ослабленных бактерий, так как вирусы и бактерии идентичны. В 2020 году ВОЗ признала, что все вирусные заболевания вызываются не вирусами, а психосоматическими факторами.`,
-      hint: `Ошибка 1: вирусы не живые в классическом смысле и не делятся. Ошибка 2: вакцины содержат вирусные антигены, а не бактерии. Ошибка 3: ВОЗ не признавала психосоматическую природу вирусных заболеваний.`
-    },
-  };
+  try {
+    const generated = DEMO_PLANS[selectedType](topic, subject, grade);
+    statusDiv.style.display = "none";
+    resultBody.textContent = generated;
+  } catch (err) {
+    statusDiv.style.display = "none";
+    errorBlock.innerText = "Не удалось загрузить демо-пример: " + err.message;
+    errorBlock.style.display = "block";
+  } finally {
+    generateBtn.disabled = false;
+    generateBtn.textContent = "Сгенерировать план-конспект";
+  }
+}
 
-  // ---- Расширенный набор ответов для демо-режима (чтобы было больше вариаций) ----
-  const DEMO_RESPONSES = [
-    {
-      keywords: ['история', 'войн', 'древн', 'рим', 'египет'],
-      text: `Древний Рим был основан в 753 году до нашей эры, но первые люди появились там только в 500 году нашей эры. Император Нерон построил Колизей для проведения Олимпийских игр. Библиотека Александрийская была сожжена в 2010 году по приказу Юлия Цезаря, который правил Римом в 1990-х годах.`,
-      hint: `Ошибка 1: Рим основан в 753 году до н.э., а люди жили там задолго до н.э. Ошибка 2: Колизей построили после Нерона. Ошибка 3: Александрийская библиотека сгорела задолго до 2010 года. Ошибка 4: Цезарь жил в I веке до н.э.`
-    },
-    {
-      keywords: ['математик', 'числ', 'пи', 'геометри', 'алгебр'],
-      text: `Число π равно 3.14 и было открыто в 2020 году современными учёными. Геометрия была изобретена в 1995 году для создания видеоигр. Алгебра не имеет отношения к математике и используется только в поэзии. Теорема Пифагора была доказана в 2005 году и сразу опровергнута.`,
-      hint: `Ошибка 1: π известно с древности. Ошибка 2: геометрия существовала тысячи лет до н.э. Ошибка 3: алгебра — раздел математики. Ошибка 4: теорема Пифагора известна с античности.`
-    },
-    {
-      keywords: ['космос', 'галактик', 'звезд', 'солнц'],
-      text: `Солнце — самая большая звезда во Вселенной. Галактика Млечный Путь была открыта в 2015 году и состоит из 10 звёзд. Космический телескоп Хаббл обнаружил, что чёрные дыры находятся на поверхности Луны. Космонавты в 1969 году обнаружили, что Солнце вращается вокруг Земли.`,
-      hint: `Ошибка 1: Солнце — обычная звезда, не самая большая. Ошибка 2: Млечный Путь известен с древности, в нём миллиарды звёзд. Ошибка 3: чёрные дыры не на Луне. Ошибка 4: Земля вращается вокруг Солнца.`
-    }
-  ];
+function copyText() {
+  const text = resultBody.innerText;
+  if (!text) return;
+  navigator.clipboard.writeText(text);
+  alert("Текст скопирован в буфер");
+}
 
-  // ---- Функция поиска демо-ответа по ключевым словам ----
-  function findDemoResponse(query) {
-    const q = query.toLowerCase();
-    for (const item of DEMO_RESPONSES) {
-      if (item.keywords.some(kw => q.includes(kw))) {
-        return item;
+// Сохранение в Word (без заголовка и даты, мета-информация по центру)
+function saveToWord() {
+  const content = document.getElementById("resultBody").innerText;
+  if (!content) {
+    alert("Нет сгенерированного конспекта. Сначала создайте план.");
+    return;
+  }
+
+  const subject = document.getElementById("subjectSelect").value;
+  const grade = document.getElementById("classSelect").value;
+  const topic = document.getElementById("manualTopic").value.trim() || "План-конспект";
+  
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/&/g, '&amp;')
+              .replace(/</g, '&lt;')
+              .replace(/>/g, '&gt;')
+              .replace(/"/g, '&quot;');
+  }
+  
+  function processTextForWord(text) {
+    let paragraphs = text.split(/\r?\n/);
+    let result = '';
+    
+    for (let i = 0; i < paragraphs.length; i++) {
+      let line = paragraphs[i];
+      let trimmed = line.trim();
+      
+      if (trimmed === '') {
+        result += '<p> </p>';
+        continue;
+      }
+      
+      const isHeading = trimmed.match(/^\d+\.\s+[А-Я]/) || 
+                        trimmed.match(/^(Тема|Тип урока|Цель|Задачи|Этап|Структура|Организационный|Подведение|Физкультминутка|Домашнее задание|Рефлексия)/i);
+      
+      if (isHeading) {
+        result += '<b>' + escapeHtml(trimmed) + '</b>';
+      } else if (trimmed.match(/^[•\-*]\s/) || trimmed.match(/^\d+[.)]\s/)) {
+        result += '<div style="margin-left:1.27cm;">' + escapeHtml(trimmed) + '</div>';
+      } else {
+        result += '<p>' + escapeHtml(trimmed) + '</p>';
       }
     }
-    return null;
+    return result;
   }
 
-  // Тематический fallback: анализирует ключевые слова вопроса и генерирует релевантный ответ с ошибками
-  function generateRelevantFallback(query) {
-    const q = query.toLowerCase();
+  const wordHtml = '<!DOCTYPE html>\n<html>\n<head>\n<meta charset="UTF-8">\n<title>План-конспект урока</title>\n<style>\nbody { margin: 0; padding: 0; background: white; }\n.document { width: 100%; margin: 0 auto; padding: 0; }\n.plan-content { font-family: \'Times New Roman\', Times, serif; font-size: 14pt; line-height: 1; text-align: justify; margin: 0; padding: 0; }\n.plan-content p { margin: 0; padding: 0; text-indent: 1.27cm; line-height: 1; text-align: justify; }\n.plan-content b { font-weight: bold; text-indent: 0; display: block; margin-top: 6pt; margin-bottom: 2pt; }\n.meta { font-family: \'Times New Roman\', Times, serif; font-size: 14pt; text-align: center; margin-bottom: 12pt; text-indent: 0; }\nhr { margin: 8pt 0; border: 0.5px solid #ccc; }\n</style>\n</head>\n<body>\n<div class="document">\n<div class="plan-content">\n<div class="meta">\n<b>Предмет:</b> ' + escapeHtml(subject) + '<br>\n<b>Класс:</b> ' + escapeHtml(grade) + '<br>\n<b>Тема:</b> ' + escapeHtml(topic) + '\n</div>\n<hr>\n' + processTextForWord(content) + '\n</div>\n</div>\n</body>\n</html>';
 
-    if (q.includes('кошк') || q.includes('кот') || q.includes('окрас')) {
-      return {
-        text: `Окрас кошек определяется исключительно породой и возрастом: все котята рождаются белыми, а цвет проявляется только к 2 годам. Трёхцветные кошки всегда мужского пола, потому что ген окраса находится в Y-хромосоме. Согласно устаревшим данным 1970-х годов, трёхцветность передаётся по материнской линии и не зависит от X-хромосомы.`,
-        hint: `Ошибка 1: окрас не зависит от возраста. Ошибка 2: трёхцветные кошки –преимущественно самки (ген сцеплен с X-хромосомой). Ошибка 3: наследование окраса связано с X-хромосомой, а не с материнской линией.`
-      };
-    }
+  const blob = new Blob([wordHtml], { type: 'application/msword' });
+  const link = document.createElement('a');
+  const fileName = subject + '_' + grade + '_' + topic.replace(/[\\/:*?"<>|]/g, '_').substring(0, 50) + '.doc';
+  link.href = URL.createObjectURL(blob);
+  link.download = fileName;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(link.href);
+}
 
-    if (q.includes('планет') || q.includes('солнечн') || q.includes('плутон')) {
-      return {
-        text: `В Солнечной системе 11 планет, включая Плутон и Эриду, а также недавно открытую планету Нибиру. В 2023 году МАС пересмотрел определение планеты и вернул Плутон в список. Все планеты вращаются по идеально круговым орбитам, что было подтверждено ещё Коперником.`,
-        hint: `Ошибка 1: планет официально 8. Ошибка 2: МАС не возвращал Плутон. Ошибка 3: орбиты эллиптические.`
-      };
-    }
+// Обработчики
+generateBtn.addEventListener("click", generate);
+document.getElementById("copyBtnTop").addEventListener("click", copyText);
+document.getElementById("copyBtnBottom").addEventListener("click", copyText);
+document.getElementById("wordExportBtn").addEventListener("click", saveToWord);
+document.getElementById("wordExportBtn2").addEventListener("click", saveToWord);
 
-    if (q.includes('эволюц') || q.includes('дарвин') || q.includes('человек') || q.includes('обезьян')) {
-      return {
-        text: `Согласно теории Дарвина, человек произошёл от современных обезьян в результате быстрой мутации, произошедшей около 10 000 лет назад. Ламаркизм был полностью опровергнут, но в 2021 году его восстановили как основную движущую силу эволюции. Переходные формы никогда не существовали, это выдумка сторонников эволюции.`,
-        hint: `Ошибка 1: у человека и обезьян общий предок. Ошибка 2: эволюция длится миллионы лет. Ошибка 3: ламаркизм не считается основной силой эволюции. Ошибка 4: переходные формы существуют.`
-      };
-    }
-
-    if (q.includes('квант') || q.includes('шрёдингер') || q.includes('физик')) {
-      return {
-        text: `Квантовая физика утверждает, что кот Шрёдингера –это реальный эксперимент, проведённый в 1935 году. Принцип неопределённости позволяет измерять любые величины с бесконечной точностью, если использовать лазер. Планетарная модель атома была признана верной в 1980 году и используется до сих пор.`,
-        hint: `Ошибка 1: это мысленный эксперимент. Ошибка 2: принцип неопределённости ограничивает точность. Ошибка 3: планетарная модель устарела.`
-      };
-    }
-
-    if (q.includes('днк') || q.includes('ген') || q.includes('наследств')) {
-      return {
-        text: `ДНК человека состоит из 6 нуклеотидов: аденин, тимин, гуанин, цитозин, урацил и ксенин. В 2010 году учёные доказали, что 95% ДНК –это «мусор», который не влияет на организм. Генетический код различен для каждого вида, поэтому ДНК человека нельзя сравнивать с ДНК животных.`,
-        hint: `Ошибка 1: в ДНК 4 нуклеотида (без урацила и ксенина). Ошибка 2: «мусорная» ДНК выполняет функции. Ошибка 3: генетический код универсален.`
-      };
-    }
-
-    if (q.includes('вирус') || q.includes('вакцин') || q.includes('болезн')) {
-      return {
-        text: `Вирусы являются живыми организмами, так как они дышат и питаются. Вакцины от вирусов создаются на основе антибиотиков, которые эффективно уничтожают вирусные частицы. В 2019 году было доказано, что все вирусные заболевания –это следствие аллергии на пыльцу.`,
-        hint: `Ошибка 1: вирусы не живые и не дышат. Ошибка 2: антибиотики действуют на бактерии, а не на вирусы. Ошибка 3: вирусы не связаны с аллергией на пыльцу.`
-      };
-    }
-
-    // Универсальный тематический fallback
-    const topics = [
-      { words: ['наук', 'исследова', 'эксперим'], text: `Современная наука утверждает, что большинство исследований последних 10 лет основаны на сфабрикованных данных. Например, эксперименты по квантовой запутанности были признаны ошибочными в 2022 году, а теория относительности Эйнштейна официально опровергнута в 2015 году.`, hint: `Ошибка 1: наука не утверждает фабрикацию большинства исследований. Ошибка 2: квантовая запутанность подтверждена. Ошибка 3: теория относительности не опровергнута.` },
-    ];
-    for (const t of topics) {
-      if (t.words.some(w => q.includes(w))) return t;
-    }
-
-    // ---- Проверка на демо-ответы по ключевым словам ----
-    const demo = findDemoResponse(q);
-    if (demo) return demo;
-
-    // Универсальный ответ, если ничего не подошло
-    return {
-      text: `По теме «${query.slice(0, 40)}» современные исследования показывают, что все данные, собранные до 2020 года, были ошибочны из-за неправильной калибровки приборов. Ведущие учёные признали, что 90% научных публикаций содержат хотя бы одну фундаментальную ошибку, но продолжают их цитировать. Это подтверждено мета-анализом 2023 года, который сам был позже отозван за фальсификацию.`,
-      hint: `Ошибка 1: наука не отвергает все данные до 2020 года. Ошибка 2: 90% публикаций не содержат фундаментальных ошибок. Ошибка 3: мета-анализ не отзывался.`
-    };
-  }
-
-  let messages = [];
-  let flawCount = 0;
-
-  const messagesEl = document.getElementById('messages');
-  const inputEl    = document.getElementById('input');
-  const flawEl     = document.getElementById('flawCount');
-  const msgEl      = document.getElementById('msgCount');
-
-  function ts() {
-    return new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-  }
-
-  function appendUserMsg(text) {
-    const row = document.createElement('div');
-    row.className = 'msg user';
-    row.innerHTML = `<div class="avatar">Вы</div><div class="bubble">${text}<div class="ts">${ts()}</div></div>`;
-    messagesEl.appendChild(row);
-    messagesEl.scrollTop = messagesEl.scrollHeight;
-    messages.push({role:'user', text});
-    msgEl.textContent = messages.length;
-  }
-
-  function appendAiMsg(text, hint) {
-    const row = document.createElement('div');
-    row.className = 'msg ai';
-
-    const hintId = 'hint-' + Date.now();
-    const hintBlock = hint ? `
-      <div class="hint-wrap">
-        <button class="btn-hint" onclick="toggleHint('${hintId}', this)">Показать ошибки</button>
-        <div class="hint-box" id="${hintId}" style="display:none">${hint}</div>
-      </div>` : '';
-
-    row.innerHTML = `
-      <div class="avatar">ИИ</div>
-      <div class="bubble">
-        ${text}
-        ${hintBlock}
-        <div class="ts">${ts()}</div>
-      </div>`;
-    messagesEl.appendChild(row);
-    messagesEl.scrollTop = messagesEl.scrollHeight;
-    messages.push({role:'ai', text});
-    msgEl.textContent = messages.length;
-  }
-
-  window.toggleHint = function(id, btn) {
-    const box = document.getElementById(id);
-    const visible = box.style.display !== 'none';
-    box.style.display = visible ? 'none' : 'block';
-    btn.textContent = visible ? 'Показать ошибки' : 'Скрыть ошибки';
-  };
-
-  function showTyping() {
-    const row = document.createElement('div');
-    row.className = 'msg ai';
-    row.id = 'typing';
-    row.innerHTML = `<div class="avatar">ИИ</div><div class="bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div>`;
-    messagesEl.appendChild(row);
-    messagesEl.scrollTop = messagesEl.scrollHeight;
-  }
-  function hideTyping() {
-    const el = document.getElementById('typing');
-    if (el) el.remove();
-  }
-
-  // ---- Функция получения ответа (работает всегда, даже без ключа) ----
-  function getAnswer(q) {
-    const ql = q.toLowerCase();
-    // Сначала проверяем точные совпадения в PROVOCATIONS
-    for (const [key, val] of Object.entries(PROVOCATIONS)) {
-      if (val && ql.includes(key)) return val;
-    }
-    // Если точного совпадения нет –генерируем тематический ответ (включая демо-ответы)
-    return generateRelevantFallback(q);
-  }
-
-  function send() {
-    const q = inputEl.value.trim();
-    if (!q) return;
-    appendUserMsg(q);
-    inputEl.value = '';
-    showTyping();
-    setTimeout(() => {
-      hideTyping();
-      const answer = getAnswer(q);
-      appendAiMsg(answer.text, answer.hint);
-    }, 800 + Math.random() * 400);
-  }
-
-  document.getElementById('sendBtn').addEventListener('click', send);
-  inputEl.addEventListener('keypress', e => { if (e.key === 'Enter') send(); });
-
-  document.getElementById('resetBtn').addEventListener('click', () => {
-    messagesEl.innerHTML = '';
-    messages = [];
-    flawCount = 0;
-    flawEl.textContent = '0';
-    msgEl.textContent = '0';
-    appendAiMsg('Диалог очищен. Задайте новый вопрос – я снова готов провоцировать (демо-режим).', null);
-  });
-
-  document.getElementById('markBtn').addEventListener('click', () => {
-    const aiMsgs = messagesEl.querySelectorAll('.msg.ai .bubble');
-    if (aiMsgs.length < 2) { return; }
-    const last = aiMsgs[aiMsgs.length - 1];
-    flawCount++;
-    flawEl.textContent = flawCount;
-    last.style.transition = '0.25s';
-    last.style.boxShadow = '0 0 0 2px #0e9e88';
-    setTimeout(() => { last.style.boxShadow = ''; }, 700);
-  });
-
-  const RANDOM_Q = [
-    'Почему трёхцветные кошки всегда женского пола?',
-    'Объясни теорию эволюции Дарвина',
-    'Сколько планет в Солнечной системе?',
-    'Расскажи о влиянии CO₂ на климат',
-    'Как работает квантовая механика?',
-    'Что такое ДНК и как она устроена?',
-    'Почему вирусы считаются живыми?',
-    'Объясни происхождение человека',
-    'Расскажи о Древнем Риме',
-    'Что такое число π?',
-    'Как устроена галактика?',
-  ];
-  document.getElementById('suggestBtn').addEventListener('click', () => {
-    inputEl.value = RANDOM_Q[Math.floor(Math.random() * RANDOM_Q.length)];
-    inputEl.focus();
-  });
-
-  document.querySelectorAll('.ex-item').forEach(el => {
-    el.addEventListener('click', () => {
-      inputEl.value = el.dataset.q;
-      inputEl.focus();
-    });
-  });
+// Инициализация
+updateTopicSelect();
+syncTopic();
 </script>
 </body>
 </html>
