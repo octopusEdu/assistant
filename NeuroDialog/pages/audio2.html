@@ -48,9 +48,6 @@ body {
 body::before {
   content:'';
   position: fixed; inset:0;
-  background-image:
-    linear-gradient(rgba(20,184,166,0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(20,184,166,0.06) 1px, transparent 1px);
   background-size: 36px 36px;
   pointer-events:none; z-index:0;
 }
@@ -647,6 +644,28 @@ body::before {
   .eleven-wrapper .progress-section { padding: 12px 16px 0 16px; }
   .eleven-wrapper .card-header { padding: 14px 16px; }
 }
+.back-btn-fixed {
+    position: fixed;
+    bottom: 10px;
+    left: 24px;
+    background: #1bb8b3;
+    backdrop-filter: blur(8px);
+    color: white;
+    text-decoration: none;
+    padding: 12px 28px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.2s;
+    z-index: 100;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    font-family: 'Raleway', sans-serif;
+  }
+  .back-btn-fixed i { margin-right: 8px; }
+  .back-btn-fixed:hover {
+    background: #074844;
+    transform: translateY(-2px);
+  }
 </style>
 </head>
 <body>
@@ -662,7 +681,8 @@ body::before {
       <div class="choice-card" onclick="showPage(3)"><div class="choice-icon"><i class="fa-solid fa-bacterium"></i></div><h3>Биология</h3><p>Комменсализм, нахлебничество</p></div>
       <div class="choice-card" onclick="showPage(15)"><div class="choice-icon"><i class="fa-solid fa-compass"></i></div><h3>География</h3><p>Строение вулкана</p></div>
     </div>
-    
+      <a href="../index.html" class="back-btn-fixed"><i class="fas fa-arrow-left"></i> Назад</a>
+
   </div>
 </div>
 
@@ -675,7 +695,7 @@ body::before {
         <div class="image-card"><img src="img/kom2.png"><p>Квартирантство</p></div>
       </div>
       <div class="speech-bubble"><strong>Хочу озвучить вот эти слайды</strong></div>
-      <div class="continue-wrapper"><a href="#" class="continue-btn" onclick="showPage(4); return false;">Продолжение</a></div>
+      <div class="continue-wrapper"><a href="#" class="continue-btn" onclick="showPage(4); return false;"><i class="fa-solid fa-arrow-right"></i>Продолжение</a></div>
     </div>
   </div>
 </div>
@@ -744,7 +764,7 @@ body::before {
         <div class="el-toggle-row">Speaker boost<div class="el-toggle"></div></div>
       </div>
     </div>
-    <div class="continue-wrapper"><a href="#" class="continue-btn" onclick="(function(){var a=document.getElementById('komAudio');a.pause();a.currentTime=0;showPage(5);})(); return false;">Продолжение</a></div>
+    <div class="continue-wrapper"><a href="#" class="continue-btn" onclick="(function(){var a=document.getElementById('komAudio');a.pause();a.currentTime=0;showPage(5);})(); return false;"><i class="fa-solid fa-arrow-right"></i>Продолжение</a></div>
   </div>
 </div>
 
@@ -758,7 +778,7 @@ body::before {
     </div>
     <audio id="komAudio_p5"><source src="pages/src/Audio_bio.mp3" type="audio/mpeg"></audio>
     <div class="audio-ctrl-row"><button class="tts-btn green audio-start-btn" onclick="(function(){var a=document.getElementById('komAudio_p5');a.currentTime=0;a.play();})()"><span class="blink-hand">&#9654;</span> Старт аудио</button><button class="tts-btn red audio-stop-btn" onclick="(function(){var a=document.getElementById('komAudio_p5');a.pause();a.currentTime=0;})()">&#9632; Стоп</button></div>
-    <div class="continue-wrapper"><a href="#" class="try-btn" onclick="(function(){var a=document.getElementById('komAudio_p5');a.pause();a.currentTime=0;showPage(7);})(); return false;">Попробовать</a></div>
+    <div class="continue-wrapper"><a href="#" class="try-btn" onclick="(function(){var a=document.getElementById('komAudio_p5');a.pause();a.currentTime=0;showPage(7);})(); return false;"><i class="fa-solid fa-flask"></i> Попробовать</a></div>
   </div>
 </div>
 
@@ -808,7 +828,7 @@ body::before {
     <div class="msg-ai"><span class="label">ИИ:</span> Отличная идея! Озвучка сделает материал более доступным и выразительным. Сначала подготовь короткие тексты для каждого слайда – 1–2 предложения, которые поясняют визуальный материал</div>
     <div class="msg-teacher"><span class="label">Учитель:</span> Хорошо. Например, для слайда «Ионная решётка» я написала: «Ионная кристаллическая решётка состоит из положительных и отрицательных ионов, удерживаемых электростатическими силами»<br>Какой сервис для озвучки текста бесплатный и удобный?</div>
     <div class="msg-ai"><span class="label">ИИ:</span> Предлагаю <a href="https://elevenlabs.io/" target="_blank" style="color:var(--teal-600); font-weight:700;">ElevenLabs</a> — отличный сервис с естественными голосами</div>
-    <div class="continue-wrapper"><a href="#" class="continue-btn" onclick="showPage(9); return false;">Продолжение</a></div>
+    <div class="continue-wrapper"><a href="#" class="continue-btn" onclick="showPage(9); return false;"><i class="fa-solid fa-arrow-right"></i>Продолжение</a></div>
   </div>
 </div>
 
@@ -818,7 +838,7 @@ body::before {
     <h1 class="slide-title">ИОННАЯ РЕШЁТКА</h1>
     <div class="crystals-row"><div class="crystal-card"><img src="img/kom4.png"></div><div class="crystal-card"><img src="img/kom5.png"></div><div class="crystal-card"><img src="img/kom6.png"></div></div>
     <div class="speech-bubble"><strong>Хочу озвучить этот слайд</strong></div>
-    <div class="continue-wrapper"><a href="#" class="continue-btn" onclick="showPage(10); return false;">Продолжение</a></div>
+    <div class="continue-wrapper"><a href="#" class="continue-btn" onclick="showPage(10); return false;"><i class="fa-solid fa-arrow-right"></i>Продолжение</a></div>
   </div>
 </div>
 
@@ -880,7 +900,7 @@ body::before {
         <div class="el-toggle-row">Speaker boost<div class="el-toggle"></div></div>
       </div>
     </div>
-    <div class="continue-wrapper"><a href="#" class="continue-btn" onclick="(function(){var a=document.getElementById('komAudio1');a.pause();a.currentTime=0;showPage(11);})(); return false;">Продолжение</a></div>
+    <div class="continue-wrapper"><a href="#" class="continue-btn" onclick="(function(){var a=document.getElementById('komAudio1');a.pause();a.currentTime=0;showPage(11);})(); return false;"><i class="fa-solid fa-arrow-right"></i>Продолжение</a></div>
   </div>
 </div>
 
@@ -891,7 +911,7 @@ body::before {
     <div class="crystals-row"><div class="crystal-card"><img src="img/kom4.png"><p class="crystal-desc">Каждый ион окружён шестью противоположными – это типичная ионная решётка с координационным числом 6</p></div><div class="crystal-card"><img src="img/kom5.png"><p class="crystal-desc">Координационное число – 8, то есть каждый ион окружён восемью противоположными</p></div><div class="crystal-card"><img src="img/kom6.png"><p class="crystal-desc">Это ионная решётка с высокой симметрией и плотной упаковкой</p></div></div>
     <audio id="komAudio_p11"><source src="pages/src/Audio_chem.mp3" type="audio/mpeg"></audio>
     <div class="audio-ctrl-row"><button class="tts-btn green audio-start-btn" onclick="(function(){var a=document.getElementById('komAudio_p11');a.currentTime=0;a.play();})()"><span class="blink-hand">&#9654;</span> Старт аудио</button><button class="tts-btn red audio-stop-btn" onclick="(function(){var a=document.getElementById('komAudio_p11');a.pause();a.currentTime=0;})()">&#9632; Стоп</button></div>
-    <div class="continue-wrapper"><a href="#" class="try-btn" onclick="(function(){var a=document.getElementById('komAudio_p11');a.pause();a.currentTime=0;showPage(13);})(); return false;">Попробовать</a></div>
+    <div class="continue-wrapper"><a href="#" class="try-btn" onclick="(function(){var a=document.getElementById('komAudio_p11');a.pause();a.currentTime=0;showPage(13);})(); return false;"><i class="fa-solid fa-flask"></i> Попробовать</a></div>
   </div>
 </div>
 
@@ -937,17 +957,17 @@ body::before {
     <div class="msg-teacher"><span class="label">Учитель:</span> Я создаю слайд-презентацию по теме «Строение вулкана» и хочу её озвучить. Как лучше это сделать?</div>
     <div class="msg-ai"><span class="label">ИИ:</span> Отличный выбор! Озвучка добавит эмоциональную выразительность и поможет ученикам лучше усвоить материал. Начнём с подготовки текста для каждого слайда – короткого, чёткого и понятного</div>
     <div class="msg-teacher"><span class="label">Учитель:</span> Какой сервис для озвучки текста бесплатный и удобный?</div>
-    <div class="msg-ai"><span class="label">ИИ:</span> Ты можешь попробовать <a href="https://elevenlabs.io/" target="_blank" style="color:var(--teal-600); font-weight:700;">ElevenLabs</a></div>
-    <div class="continue-wrapper"><a href="#" class="continue-btn" onclick="showPage(15); return false;">Продолжение</a></div>
+    <div class="msg-ai"><span class="label">ИИ:</span> Ты можешь <i class="fa-solid fa-flask"></i> Попробовать <a href="https://elevenlabs.io/" target="_blank" style="color:var(--teal-600); font-weight:700;">ElevenLabs</a></div>
+    <div class="continue-wrapper"><a href="#" class="continue-btn" onclick="showPage(15); return false;"><i class="fa-solid fa-arrow-right"></i>Продолжение</a></div>
   </div>
 </div>
 
 <!-- ==================== СТРАНИЦА 15: Слайд вулкан ==================== -->
 <div id="page15" class="page">
-  <div class="container">
+  <div class="content-block">
     <img src="img/kom7.png" style="max-width:100%; border-radius:var(--radius);">
     <div class="speech-bubble" style="margin-top:30px;"><strong>Хочу озвучить вот этот слайд</strong></div>
-    <div class="continue-wrapper"><a href="#" class="continue-btn" onclick="showPage(16); return false;">Продолжение</a></div>
+    <div class="continue-wrapper"><a href="#" class="continue-btn" onclick="showPage(16); return false;"><i class="fa-solid fa-arrow-right"></i>Продолжение</a></div>
   </div>
 </div>
 
@@ -1009,19 +1029,19 @@ body::before {
         <div class="el-toggle-row">Speaker boost<div class="el-toggle"></div></div>
       </div>
     </div>
-    <div class="continue-wrapper"><a href="#" class="continue-btn" onclick="(function(){var a=document.getElementById('komAudio2');a.pause();a.currentTime=0;showPage(17);})(); return false;">Продолжение</a></div>
+    <div class="continue-wrapper"><a href="#" class="continue-btn" onclick="(function(){var a=document.getElementById('komAudio2');a.pause();a.currentTime=0;showPage(17);})(); return false;"><i class="fa-solid fa-arrow-right"></i>Продолжение</a></div>
   </div>
 </div>
 
 <!-- ==================== СТРАНИЦА 17: Строение вулкана ==================== -->
 <div id="page17" class="page">
-  <div class="container">
+  <div class="content-block">
     <h1 class="slide-title">СТРОЕНИЕ ВУЛКАНА</h1>
     <div class="volcano-layout"><div class="volcano-left"><p><span class="volcano-term">Жерло</span> – трубообразный канал, по которому магма изливается на поверхность</p><br><p><span class="volcano-term">Вулканический очаг</span> – подземный резервуар магмы</p></div><div style="flex:1; text-align:center; min-width:280px;"><img src="img/kom7.png" alt="Строение вулкана" style="max-width:100%;"></div><div class="volcano-right"><p><span class="volcano-term">Кратер</span> (от греч. «кратер» – чаша) – чашеобразное углубление на плоской вершине вулкана</p><br><p><span class="volcano-term">Боковой кратер</span> – побочный кратер вулкана, расположенный на его склоне и представляющий собой окончание выводного канала, отходящего от центрального жерла</p></div></div>
     <div class="volcano-bottom"><p><span class="volcano-term">Вулкан</span> – возвышенность (чаще всего гора конусообразной формы), возникающая над каналами и трещинами в земной коре, по которым на земную поверхность извергаются лава, пепел, горячие газы, пары воды и обломки горных пород</p></div>
     <audio id="komAudio_p17"><source src="pages/src/Audio_geo.mp3" type="audio/mpeg"></audio>
     <div class="audio-ctrl-row"><button class="tts-btn green audio-start-btn" onclick="(function(){var a=document.getElementById('komAudio_p17');a.currentTime=0;a.play();})()"><span class="blink-hand">&#9654;</span> Старт аудио</button><button class="tts-btn red audio-stop-btn" onclick="(function(){var a=document.getElementById('komAudio_p17');a.pause();a.currentTime=0;})()">&#9632; Стоп</button></div>
-    <div class="continue-wrapper"><a href="#" class="try-btn" onclick="(function(){var a=document.getElementById('komAudio_p17');a.pause();a.currentTime=0;showPage(19);})(); return false;">Попробовать</a></div>
+    <div class="continue-wrapper"><a href="#" class="try-btn" onclick="(function(){var a=document.getElementById('komAudio_p17');a.pause();a.currentTime=0;showPage(19);})(); return false;"><i class="fa-solid fa-arrow-right"></i><i class="fa-solid fa-flask"></i> Попробовать</a></div>
   </div>
 </div>
 
@@ -1053,7 +1073,7 @@ body::before {
           <button class="btn btn-primary" id="elevenResetBtn3">Сбросить все шаги</button>
           <button class="btn btn-outline" id="elevenExpandBtn3">Развернуть инструкции</button>
         </div>
-        <div id="elevenResultMsg3" class="result-message">✅ Ваш голос готов к использованию! Теперь вы можете синтезировать речь с уникальным характером. Не забудьте сохранить настройки голоса для будущих проектов.</div>
+        <div id="elevenResultMsg3" class="result-message">🗲 Ваш голос готов к использованию! Теперь вы можете синтезировать речь с уникальным характером. Не забудьте сохранить настройки голоса для будущих проектов.</div>
       </div>
     </div>
 
@@ -1111,7 +1131,7 @@ body::before {
           <li><strong>Stability (стабильность)</strong> – чем выше значение, тем более монотонным и ровным будет голос.</li>
           <li><strong>Clarity + Similarity</strong> – уровень чёткости и схожести с описанием.</li>
         </ul>
-        <div class="tip"><strong>Совет:</strong> Начните с базовых настроек, а затем корректируйте их после прослушивания результата.</div>`
+        <div class="tip"><strong><i class="fa-solid fa-lightbulb my-icon"></i>  Совет:</strong> Начните с базовых настроек, а затем корректируйте их после прослушивания результата.</div>`
       },
       {
         title: "Генерация и прослушивание голоса",
@@ -1157,7 +1177,7 @@ body::before {
           <li>Нажмите <strong>«Generate»</strong>.</li>
           <li>Скачайте MP3-файл через кнопку <strong>«Download»</strong>.</li>
         </ul>
-        <div class="tip"><strong>Совет:</strong> Для длинных текстов разбивайте их на части по 2–3 минуты – так качество синтеза будет выше.</div>`
+        <div class="tip"><strong><i class="fa-solid fa-lightbulb my-icon"></i>  Совет:</strong> Для длинных текстов разбивайте их на части по 2–3 минуты – так качество синтеза будет выше.</div>`
       }
     ];
 
