@@ -5,9 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Аудиоконтент — НейроДиалог</title>
 <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700;800;900&family=Nunito:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
 <style>
 /* ═══════════════════════════════════════════════
-   TOKENS & RESET (как в index.html)
+   TOKENS & RESET
 ═══════════════════════════════════════════════ */
 :root {
   --teal-50:  #f0fdfc;
@@ -44,6 +46,7 @@ body {
   color: var(--ink);
   min-height: 100vh;
   overflow-x: auto;
+  padding-bottom: 80px; /* место для фиксированной кнопки */
 }
 body::before {
   content:'';
@@ -80,7 +83,7 @@ body::before {
   gap: 8px;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: 16px;
   padding: 8px 20px;
   font-weight: 700;
   color: var(--ink-soft);
@@ -120,13 +123,15 @@ body::before {
 .choice-icon { font-size: 3rem; margin-bottom: 16px; }
 .choice-card h3 { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: 1.2rem; margin-bottom: 8px; color: var(--ink); }
 .choice-card p { font-size: 0.85rem; color: var(--ink-soft); }
-.content-block {
-  background: var(--surface);
+
+/* === Белый контейнер для слайдов === */
+.slide-white-container {
+  background: #ffffff;
   border-radius: var(--radius);
-  border: 1px solid var(--border-light);
-  padding: 28px;
-  margin-bottom: 28px;
+  padding: 32px 28px;
   box-shadow: var(--shadow);
+  border: 1px solid var(--border-light);
+  margin-bottom: 24px;
 }
 .slide-title {
   font-family: 'Raleway', sans-serif;
@@ -147,7 +152,7 @@ body::before {
   text-align: center;
   max-width: 320px;
   background: var(--surface2);
-  border-radius: 12px;
+  border-radius: 16px;
   padding: 16px;
   border: 1px solid var(--border-light);
 }
@@ -162,150 +167,6 @@ body::before {
   color: var(--ink-mid);
   font-size: 0.9rem;
 }
-.speech-bubble {
-  background: var(--teal-50);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 18px 24px;
-  margin: 20px 0;
-  position: relative;
-  font-size: 1rem;
-  font-weight: 500;
-  color: var(--teal-800);
-}
-.speech-bubble::before {
-  content: '';
-  position: absolute;
-  bottom: -12px;
-  left: 30px;
-  border-width: 12px 10px 0;
-  border-style: solid;
-  border-color: var(--border) transparent transparent;
-}
-.speech-bubble::after {
-  content: '';
-  position: absolute;
-  bottom: -10px;
-  left: 31px;
-  border-width: 10px 8px 0;
-  border-style: solid;
-  border-color: var(--teal-50) transparent transparent;
-}
-.tts-screenshot {
-  background: var(--surface);
-  border: 1px solid var(--border-light);
-  border-radius: 20px;
-  padding: 24px;
-  margin: 20px 0;
-}
-.tts-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 16px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--border-light);
-}
-.tts-title { color: var(--teal-600); font-weight: 800; font-size: 0.9rem; }
-.tts-subtitle { color: var(--ink-soft); margin-bottom: 16px; font-size: 0.85rem; }
-.tts-tabs { display: flex; gap: 20px; margin-bottom: 12px; }
-.tts-tab { color: var(--teal-600); font-weight: 700; cursor: default; font-size: 0.85rem; }
-.tts-textarea {
-  width: 100%;
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 14px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.8rem;
-  background: var(--surface2);
-  resize: vertical;
-  margin: 12px 0;
-}
-.tts-controls {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 10px;
-  margin: 16px 0;
-}
-.tts-control-row {
-  background: var(--surface2);
-  border-radius: 12px;
-  padding: 8px 12px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-.tts-control-label { font-weight: 700; font-size: 0.7rem; color: var(--teal-600); min-width: 50px; }
-.tts-control-value { font-size: 0.75rem; color: var(--ink); background: white; padding: 4px 10px; border-radius: 20px; border: 1px solid var(--border-light); }
-.tts-buttons { display: flex; gap: 12px; flex-wrap: wrap; margin: 16px 0; }
-.tts-btn {
-  padding: 8px 20px;
-  border-radius: 12px;
-  border: none;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all .2s;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-family: 'Nunito', sans-serif;
-}
-.tts-btn.green { background: var(--teal-600); color: white; }
-.tts-btn.green:hover { background: var(--teal-700); transform: translateY(-2px); }
-.tts-btn.blue { background: #0891b2; color: white; }
-.tts-btn.red { background: #ef4444; color: white; }
-.tts-btn.red:hover { background: #dc2626; transform: translateY(-2px); }
-
-/* ═══════════════════════════════════════════════
-   ELEVENLABS MOCKUP
-═══════════════════════════════════════════════ */
-.el-app { display: flex; border: 1px solid #e5e5e5; border-radius: 20px; overflow: hidden; background: #fff; margin: 20px 0; box-shadow: var(--shadow); }
-.el-sidebar { width: 190px; flex-shrink: 0; background: #fafafa; border-right: 1px solid #eee; padding: 16px 10px; font-size: 0.78rem; display: none; }
-.el-logo { font-weight: 800; font-size: 0.95rem; margin-bottom: 14px; padding: 0 6px; color: #111; }
-.el-workspace { display: flex; align-items: center; gap: 8px; background: #fff; border: 1px solid #eee; border-radius: 10px; padding: 6px 8px; margin-bottom: 16px; font-weight: 700; color: #111; }
-.el-workspace-dot { width: 16px; height: 16px; border-radius: 5px; background: #ff6b35; flex-shrink: 0; }
-.el-nav-item { display: flex; align-items: center; gap: 9px; padding: 6px 8px; border-radius: 8px; color: #666; margin-bottom: 1px; }
-.el-nav-item i { width: 14px; text-align: center; font-size: 0.75rem; }
-.el-nav-item.active { background: #eee; color: #111; font-weight: 700; }
-.el-nav-label { font-size: 0.62rem; text-transform: uppercase; letter-spacing: .03em; color: #aaa; margin: 12px 0 4px 8px; font-weight: 800; }
-.el-main { flex: 1; min-width: 0; padding: 22px 26px; display: flex; flex-direction: column; }
-.el-topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-.el-topbar-title { font-weight: 800; font-size: 1rem; color: #111; }
-.el-topbar-actions { display: flex; gap: 16px; font-size: 0.78rem; color: #888; font-weight: 600; }
-.el-textbox { flex: 1; display: flex; flex-direction: column; }
-.el-textarea { flex: 1; min-height: 140px; border: none; resize: none; outline: none; font-family: 'Nunito', sans-serif; font-size: 1.02rem; color: #333; width: 100%; background: transparent; }
-.el-textarea::placeholder { color: #bbb; }
-.el-generate-row { display: flex; justify-content: flex-end; margin-top: 8px; }
-.el-generate-btn { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg,#ff9248,#ff5e62); color: #fff; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.85rem; box-shadow: 0 4px 10px rgba(255,94,98,.35); transition: transform .2s; }
-.el-generate-btn:hover { transform: translateY(-2px) scale(1.05); }
-.el-result-bar { display: flex; align-items: center; gap: 12px; margin-top: 16px; padding: 12px 16px; background: var(--surface2); border-radius: 12px; border: 1px solid var(--border-light); }
-.el-play-btn { width: 32px; height: 32px; border-radius: 50%; background: #111; color: #fff; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
-.el-waveform { flex: 1; display: flex; align-items: center; gap: 2px; height: 24px; overflow: hidden; }
-.el-waveform span { width: 3px; flex-shrink: 0; background: #cfcfcf; border-radius: 2px; }
-.el-icon-btn { width: 30px; height: 30px; border-radius: 50%; border: 1px solid #ddd; background: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #555; flex-shrink: 0; text-decoration: none; }
-.el-panel { width: 250px; flex-shrink: 0;  padding: 18px; background: #fff; }
-.el-panel-tabs { display: flex; gap: 18px; margin-bottom: 16px; font-size: 0.82rem; }
-.el-panel-tab { color: #aaa; font-weight: 700; padding-bottom: 6px; }
-.el-panel-tab.active { color: #111; border-bottom: 2px solid #111; }
-.el-field-label { font-size: 0.72rem; font-weight: 800; color: #333; margin: 14px 0 6px; text-transform: uppercase; letter-spacing: .02em; }
-.el-voice-card { display: flex; align-items: center; gap: 9px; border: 1px solid #eee; border-radius: 12px; padding: 8px 10px; font-weight: 700; font-size: 0.85rem; color: #111; }
-.el-voice-avatar { width: 24px; height: 24px; border-radius: 50%; background: var(--teal-500); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 800; flex-shrink: 0; }
-.el-model-card { border: 1px solid #eee; border-radius: 12px; padding: 9px 10px; font-size: 0.8rem; }
-.el-model-top { display: flex; align-items: center; gap: 6px; font-weight: 700; color: #111; }
-.el-v2-badge { background: #111; color: #fff; border-radius: 4px; padding: 1px 5px; font-size: 0.6rem; font-weight: 800; }
-.el-slider-row { margin: 12px 0; }
-.el-slider-labels { display: flex; justify-content: space-between; font-size: 0.62rem; color: #aaa; margin-bottom: 5px; }
-.el-slider-track { height: 3px; background: #eee; border-radius: 2px; position: relative; }
-.el-slider-fill { position: absolute; left: 0; top: 0; height: 100%; background: #111; border-radius: 2px; }
-.el-slider-dot { width: 11px; height: 11px; background: #111; border-radius: 50%; position: absolute; top: 50%; transform: translate(-50%,-50%); }
-.el-toggle-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; font-weight: 700; color: #333; margin: 14px 0; }
-.el-toggle { width: 32px; height: 17px; border-radius: 20px; background: #111; position: relative; flex-shrink: 0; }
-.el-toggle::after { content: ''; width: 13px; height: 13px; background: #fff; border-radius: 50%; position: absolute; top: 2px; right: 2px; }
-.el-output-select { border: 1px solid #eee; border-radius: 10px; padding: 8px 10px; font-size: 0.78rem; font-weight: 700; color: #111; display: flex; justify-content: space-between; align-items: center; }
-@media (min-width: 900px) { .el-sidebar { display: block; } }
 .crystals-row {
   display: flex;
   gap: 24px;
@@ -318,7 +179,7 @@ body::before {
   flex: 1;
   min-width: 180px;
   background: var(--surface2);
-  border-radius: 20px;
+  border-radius: 16px;
   padding: 16px;
   border: 1px solid var(--border-light);
 }
@@ -337,128 +198,80 @@ body::before {
   margin-top: 20px;
   padding: 16px;
   background: var(--teal-50);
-  border-radius: 12px;
+  border-radius: 16px;
 }
-.copy-block {
-  display: flex;
-  gap: 16px;
-  background: var(--teal-50);
-  border-radius: 20px;
-  padding: 20px;
-  margin: 20px 0;
-  
+.dash-list { list-style-type: "– "; padding-left: 1.5em; margin-top: 8px; }
+.dash-list li { margin-bottom: 4px; font-size: 0.75rem; color: var(--ink-mid); }
+
+/* Кнопки аудио */
+.tts-btn {
+  padding: 8px 20px;
+  border-radius: 16px;
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Nunito', sans-serif;
 }
-.copy-icon { font-size: 2rem; }
-.copy-text { flex: 1; }
-.copy-hint { font-size: 0.7rem; font-weight: 800; color: var(--teal-600); text-transform: uppercase; margin-bottom: 6px; }
-.link-card {
-  background: var(--surface2);
-  border-radius: 12px;
-  padding: 16px;
-  border: 1px solid var(--border-light);
-}
-.link-card-title { font-weight: 800; color: var(--teal-700); }
-.link-card-url { font-size: 0.7rem; color: var(--teal-500); word-break: break-all; }
+.tts-btn.green { background: var(--teal-600); color: white; }
+.tts-btn.green:hover { background: var(--teal-700); transform: translateY(-2px); }
+.tts-btn.red { background: #ef4444; color: white; }
+.tts-btn.red:hover { background: #dc2626; transform: translateY(-2px); }
+.audio-ctrl-row { display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
+.blink-hand { animation: blink 1s infinite; display: inline-block; }
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
 .continue-wrapper {
   display: flex;
   justify-content: flex-end;
   gap: 16px;
   margin-top: 24px;
 }
-.continue-btn, .try-btn {
+.try-btn {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   padding: 10px 24px;
   background: var(--teal-600);
   color: white;
-  border-radius: 12px;
+  border-radius: 16px;
   text-decoration: none;
   font-weight: 700;
   transition: all .2s;
   border: none;
   cursor: pointer;
 }
-.continue-btn:hover, .try-btn:hover { background: var(--teal-700); transform: translateY(-2px); }
-.audio-ctrl-row { display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
-.blink-hand { animation: blink 1s infinite; display: inline-block; }
-@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
-.msg-teacher, .msg-ai {
-  background: var(--surface2);
-  border-radius: 20px;
-  padding: 14px 20px;
-  margin-bottom: 14px;
-  border: 1px solid var(--border-light);
-}
-.msg-teacher .label { font-weight: 800; color: #059669; }
-.msg-ai .label { font-weight: 800; color: var(--teal-600); }
-.resources-block { display: flex; gap: 24px; flex-wrap: wrap; margin: 20px 0; }
-.resources-block > * { flex: 1; }
-.page { display: none; }
-.page.active { display: block; }
-.dash-list { list-style-type: "– "; padding-left: 1.5em; margin-top: 8px; }
-.dash-list li { margin-bottom: 4px; font-size: 0.75rem; color: var(--ink-mid); }
+.try-btn:hover { background: var(--teal-700); transform: translateY(-2px); }
 
-/* Финальный белый слайд с вулканом */
-.final-slide {
-  background: #ffffff;
-  border-radius: var(--radius);
-  padding: 40px;
-  box-shadow: var(--shadow);
-  border: 1px solid var(--border-light);
-  margin: 20px 0;
-}
-.final-slide .volcano-img {
-  max-width: 80%;
-  display: block;
-  margin: 0 auto 30px auto;
-  border-radius: 12px;
-}
-.final-slide .volcano-text {
-  text-align: center;
-  color: var(--ink-mid);
-  line-height: 1.8;
-  font-size: 1.05rem;
-  max-width: 800px;
-  margin: 0 auto;
-}
-.final-slide .volcano-text strong {
-  color: var(--teal-700);
-}
-
-/* ЕДИНАЯ ФИКСИРОВАННАЯ КНОПКА НАЗАД */
+/* === ЕДИНАЯ ФИКСИРОВАННАЯ КНОПКА НАЗАД === */
 .back-btn-fixed {
   position: fixed;
-  bottom: 24px;
+  bottom: 10px;
   left: 24px;
-  background: #0d9488;
+  background: #1bb8b3;
+  backdrop-filter: blur(8px);
   color: white;
   text-decoration: none;
-  padding: 14px 28px;
-  border-radius: 16px;
-  font-weight: 700;
-  font-size: 15px;
-  transition: all 0.25s ease;
-  z-index: 1000;
-  box-shadow: 0 6px 20px rgba(13, 148, 136, 0.35);
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
+  padding: 12px 28px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.2s;
+  z-index: 100;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   font-family: 'Raleway', sans-serif;
-  border: none;
-  cursor: pointer;
 }
-.back-btn-fixed i {
-  font-size: 16px;
-}
+.back-btn-fixed i { margin-right: 8px; }
 .back-btn-fixed:hover {
-  background: #0f766e;
-  transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 10px 28px rgba(13, 148, 136, 0.45);
+  background: #074844;
+  transform: translateY(-2px);
 }
-.back-btn-fixed:active {
-  transform: scale(0.96);
-}
+
+/* Скрытие / показ страниц */
+.page { display: none; }
+.page.active { display: block; }
 
 @media (max-width: 760px) {
   .container { padding: 20px 16px; }
@@ -466,10 +279,7 @@ body::before {
   .images-row { flex-direction: column; align-items: center; }
   .volcano-layout { flex-direction: column; }
   .volcano-layout > div:nth-child(2) { order: -1; }
-  .el-app { flex-direction: column; }
-  .el-sidebar { display: none !important; }
-  .el-panel { width: 100%; border-left: none; border-top: 1px solid #eee; }
-  .final-slide { padding: 20px; }
+  .slide-white-container { padding: 20px 16px; }
   .back-btn-fixed {
     bottom: 16px;
     left: 16px;
@@ -478,249 +288,9 @@ body::before {
     border-radius: 16px;
   }
 }
-
-/* ElevenLabs Algorithm Styles */
-.eleven-wrapper {
-  background: var(--surface);
-  border-radius: var(--radius);
-  border: 1px solid var(--border-light);
-  padding: 28px;
-  margin-top: 30px;
-  box-shadow: var(--shadow);
-}
-.eleven-wrapper .title-screen {
-  background: var(--surface2);
-  border-radius: 12px;
-  padding: 30px 24px;
-  margin-bottom: 24px;
-  text-align: center;
-  border: 1px solid var(--border-light);
-}
-.eleven-wrapper .title-screen h2 {
-  font-family: 'Raleway', sans-serif;
-  font-size: 1.8rem;
-  font-weight: 800;
-  color: var(--teal-700);
-  margin-bottom: 12px;
-}
-.eleven-wrapper .title-screen .badge-main {
-  display: inline-block;
-  background: var(--teal-100);
-  color: var(--teal-700);
-  border-radius: 12px;
-  padding: 6px 18px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  margin-bottom: 12px;
-}
-.eleven-wrapper .card {
-  background: var(--surface);
-  border-radius: 12px;
-  overflow: hidden;
-  border: 1px solid var(--border-light);
-}
-.eleven-wrapper .card-header {
-  padding: 20px 24px;
-  color: white;
-  background: linear-gradient(135deg, #1a9988, #0d6b5c);
-}
-.eleven-wrapper .card-header h3 {
-  font-family: 'Raleway', sans-serif;
-  font-size: 1.3rem;
-  font-weight: 700;
-  margin-bottom: 4px;
-}
-.eleven-wrapper .card-header p {
-  opacity: 0.92;
-  font-size: 0.85rem;
-}
-.eleven-wrapper .card-header .badge {
-  display: inline-block;
-  background: rgba(255,255,255,0.2);
-  border-radius: 12px;
-  padding: 4px 12px;
-  font-size: 0.65rem;
-  margin-top: 8px;
-  font-weight: 500;
-}
-.eleven-wrapper .progress-section {
-  padding: 16px 24px 0 24px;
-}
-.eleven-wrapper .progress-label {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.75rem;
-  color: var(--ink-soft);
-  margin-bottom: 6px;
-}
-.eleven-wrapper .progress-bar-container {
-  background: var(--border-light);
-  border-radius: 12px;
-  height: 6px;
-  overflow: hidden;
-}
-.eleven-wrapper .progress-fill {
-  width: 0%;
-  height: 100%;
-  border-radius: 12px;
-  background: var(--teal-600);
-  transition: width 0.3s ease;
-}
-.eleven-wrapper .stages {
-  padding: 12px 24px 24px 24px;
-}
-.eleven-wrapper .stage {
-  background: var(--surface2);
-  border-radius: 14px;
-  margin-bottom: 12px;
-  border: 1px solid var(--border-light);
-  transition: all 0.2s;
-  overflow: hidden;
-}
-.eleven-wrapper .stage.completed {
-  background: var(--teal-50);
-  border-color: var(--teal-400);
-}
-.eleven-wrapper .stage-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 18px;
-  cursor: pointer;
-  user-select: none;
-}
-.eleven-wrapper .stage-check {
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  background: white;
-  border: 2px solid var(--muted);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--ink-soft);
-  transition: all 0.2s;
-  flex-shrink: 0;
-  cursor: pointer;
-}
-.eleven-wrapper .stage.completed .stage-check {
-  background: var(--teal-600);
-  border-color: var(--teal-600);
-  color: white;
-}
-.eleven-wrapper .stage-title {
-  flex: 1;
-  font-weight: 600;
-  font-size: 0.9rem;
-  color: var(--ink);
-}
-.eleven-wrapper .stage-body {
-  padding: 0 18px 18px 56px;
-  border-top: 1px solid var(--border-light);
-  display: none;
-  background: var(--surface);
-  font-size: 0.85rem;
-  line-height: 1.5;
-}
-.eleven-wrapper .stage.expanded .stage-body {
-  display: block;
-}
-.eleven-wrapper .stage-body ul { padding-left: 1.2rem; margin: 6px 0; }
-.eleven-wrapper .stage-body li { margin-bottom: 3px; }
-.eleven-wrapper .tip {
-  background: var(--teal-50);
-  padding: 10px 14px;
-  border-radius: 12px;
-  margin: 12px 0;
-  font-size: 0.82rem;
- 
-}
-.eleven-wrapper .prompt-example {
-  background: var(--surface2);
-  border: 1px solid var(--border-light);
-  border-radius: 12px;
-  padding: 10px 14px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.75rem;
-  margin: 8px 0;
-  white-space: pre-wrap;
-  word-break: break-word;
-}
-.eleven-wrapper .button-group {
-  display: flex;
-  gap: 12px;
-  margin: 0 24px 24px 24px;
-  flex-wrap: wrap;
-}
-.eleven-wrapper .btn {
-  padding: 8px 18px;
-  border-radius: 14px;
-  border: none;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.2s;
-  font-size: 0.8rem;
-  font-family: 'Nunito', sans-serif;
-}
-.eleven-wrapper .btn-primary {
-  background: var(--teal-600);
-  color: white;
-}
-.eleven-wrapper .btn-primary:hover {
-  background: var(--teal-700);
-  transform: translateY(-1px);
-}
-.eleven-wrapper .btn-outline {
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--ink-mid);
-}
-.eleven-wrapper .btn-outline:hover {
-  background: var(--surface2);
-}
-.eleven-wrapper .result-message {
-  background: var(--teal-50);
-  margin: 0 24px 24px 24px;
-  padding: 14px 20px;
-  border-radius: 14px;
-
-  display: none;
-  font-weight: 500;
-  color: var(--teal-800);
-}
-.eleven-wrapper .result-message.show {
-  display: block;
-}
-.eleven-wrapper footer {
-  text-align: center;
-  color: var(--ink-soft);
-  font-size: 0.7rem;
-  margin-top: 20px;
-  padding-bottom: 6px;
-}
-.eleven-wrapper a {
-  color: var(--teal-600);
-  text-decoration: none;
-}
-.eleven-wrapper a:hover {
-  text-decoration: underline;
-}
-@media (max-width: 650px) {
-  .eleven-wrapper .stage-body { padding-left: 18px; }
-  .eleven-wrapper .card-header h3 { font-size: 1.1rem; }
-  .eleven-wrapper .title-screen h2 { font-size: 1.3rem; }
-  .eleven-wrapper .title-screen { padding: 24px 16px; }
-  .eleven-wrapper .button-group { margin: 0 16px 16px 16px; }
-  .eleven-wrapper .stages { padding: 8px 16px 16px 16px; }
-  .eleven-wrapper .progress-section { padding: 12px 16px 0 16px; }
-  .eleven-wrapper .card-header { padding: 14px 16px; }
-}
 </style>
 </head>
 <body>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
 <!-- ==================== СТРАНИЦА 1: Выбор учителя ==================== -->
 <div id="page1" class="page active">
@@ -728,435 +298,121 @@ body::before {
     <a href="../index.html" class="back-home"><i class="fa-solid fa-arrow-left"></i> Все инструменты</a>
     <div class="page-title"><i class="fa-solid fa-headphones" style="color: #0d9488;"></i> Аудиоконтент</div>
     <div class="choice-grid">
-      <div class="choice-card" onclick="showPage(9)"><div class="choice-icon"><i class="fa-solid fa-flask"></i></div><h3>Химия</h3><p>Ионные кристаллические решётки</p></div>
-      <div class="choice-card" onclick="showPage(3)"><div class="choice-icon"><i class="fa-solid fa-bacterium"></i></div><h3>Биология</h3><p>Комменсализм, нахлебничество</p></div>
-      <div class="choice-card" onclick="showPage(15)"><div class="choice-icon"><i class="fa-solid fa-compass"></i></div><h3>География</h3><p>Строение вулкана</p></div>
-    </div>
-    <a href="../index.html" class="try-btn" onclick="showPage(1); return false;">
-   Назад
-</a>
-  </div>
-</div>
-
-<!-- ==================== СТРАНИЦА 3: Слайды биология ==================== -->
-<div id="page3" class="page">
-  <div class="container">
-    <div class="content-block">
-      <div class="images-row">
-        <div class="image-card"><img src="img/kom1.png"><p>Нахлебничество</p></div>
-        <div class="image-card"><img src="img/kom2.png"><p>Квартирантство</p></div>
-      </div>
-      <div class="speech-bubble"><strong>Хочу озвучить вот эти слайды</strong></div>
-      <div class="continue-wrapper"><a href="#" class="continue-btn" onclick="showPage(4); return false;">Продолжение</a></div>
+      <div class="choice-card" onclick="showPage(11)"><div class="choice-icon"><i class="fa-solid fa-flask"></i></div><h3>Химия</h3><p>Ионные кристаллические решётки</p></div>
+      <div class="choice-card" onclick="showPage(5)"><div class="choice-icon"><i class="fa-solid fa-bacterium"></i></div><h3>Биология</h3><p>Комменсализм, нахлебничество</p></div>
+      <div class="choice-card" onclick="showPage(17)"><div class="choice-icon"><i class="fa-solid fa-compass"></i></div><h3>География</h3><p>Строение вулкана</p></div>
     </div>
   </div>
+  <a href="../index.html" class="back-btn-fixed"><i class="fas fa-arrow-left"></i> Назад</a>
 </div>
 
-<!-- ==================== СТРАНИЦА 4: TTS скриншот биология ==================== -->
-<div id="page4" class="page">
-  <div class="container">
-    <div class="el-app">
-      <div class="el-sidebar">
-        <div class="el-logo">‖ElevenLabs</div>
-        <div class="el-workspace"><span class="el-workspace-dot"></span>ElevenCreative</div>
-        <div class="el-nav-item"><i class="fa-solid fa-house"></i>Home</div>
-        <div class="el-nav-item"><i class="fa-solid fa-microphone-lines"></i>Voices</div>
-        <div class="el-nav-item"><i class="fa-solid fa-clapperboard"></i>Studio</div>
-        <div class="el-nav-item"><i class="fa-solid fa-diagram-project"></i>Flows</div>
-        <div class="el-nav-item"><i class="fa-solid fa-swatchbook"></i>Templates</div>
-        <div class="el-nav-item"><i class="fa-solid fa-box-archive"></i>Assets</div>
-        <div class="el-nav-label">Pinned</div>
-        <div class="el-nav-item active"><i class="fa-solid fa-headphones"></i>Text to Speech</div>
-        <div class="el-nav-item"><i class="fa-solid fa-wand-magic-sparkles"></i>Sound Effects</div>
-        <div class="el-nav-item"><i class="fa-solid fa-photo-film"></i>Image &amp; Video</div>
-        <div class="el-nav-item"><i class="fa-solid fa-user-large"></i>Voice Isolator</div>
-        <div class="el-nav-item"><i class="fa-solid fa-sliders"></i>Voice Changer</div>
-        <div class="el-nav-item"><i class="fa-solid fa-music"></i>Music</div>
-        <div class="el-nav-item"><i class="fa-solid fa-closed-captioning"></i>Speech to Text</div>
-        <div class="el-nav-item"><i class="fa-solid fa-language"></i>Dubbing</div>
-      </div>
-      <div class="el-main">
-        <div class="el-topbar"><span class="el-topbar-title">Text to Speech</span><span class="el-topbar-actions">Feedback&nbsp;&nbsp;Docs&nbsp;&nbsp;Ask</span></div>
-        <div class="el-textbox">
-          <textarea class="el-textarea" id="typewriter" rows="6" placeholder="Start typing here or paste any text you want to turn into lifelike speech…"></textarea>
-          <script>
-            const text = "Комменсализм, возникающий в результате трофических связей и основанный на потреблении одним видом остатков пищи другого вида, называется нахлебничеством. Например, мелкие птицы питаются остатками пищи крокодилов, песцы доедают остатки трапезы медведя белого, а птицы-падальщики или гиены питаются остатками пищи крупных хищников (львов, леопардов)";
-            const textarea = document.getElementById("typewriter");
-            let index = 0;
-            function type() { if (index < text.length) { textarea.value += text.charAt(index); index++; setTimeout(type, 40); } }
-            window.addEventListener('load', type);
-          </script>
-          <div class="el-generate-row"><button class="el-generate-btn" onclick="document.getElementById('komAudio').play()"><i class="fa-solid fa-arrow-up"></i></button></div>
-        </div>
-        <div class="el-result-bar">
-          <button class="el-play-btn" onclick="document.getElementById('komAudio').play()"><i class="fa-solid fa-play"></i></button>
-          <div class="el-waveform"><span style="height:8px"></span><span style="height:6px"></span><span style="height:14px"></span><span style="height:12px"></span><span style="height:12px"></span><span style="height:10px"></span><span style="height:8px"></span><span style="height:22px"></span><span style="height:8px"></span><span style="height:24px"></span><span style="height:18px"></span><span style="height:6px"></span><span style="height:6px"></span><span style="height:8px"></span><span style="height:12px"></span><span style="height:12px"></span><span style="height:22px"></span><span style="height:24px"></span><span style="height:6px"></span><span style="height:22px"></span><span style="height:12px"></span><span style="height:22px"></span><span style="height:18px"></span><span style="height:12px"></span><span style="height:20px"></span><span style="height:24px"></span><span style="height:14px"></span><span style="height:6px"></span><span style="height:10px"></span><span style="height:18px"></span><span style="height:16px"></span><span style="height:14px"></span><span style="height:10px"></span><span style="height:12px"></span><span style="height:16px"></span><span style="height:8px"></span></div>
-          <a href="src/Audio_bio.mp3" download class="el-icon-btn"><i class="fa-solid fa-arrow-down"></i></a>
-        </div>
-        <audio id="komAudio"><source src="src/Audio_bio.mp3" type="audio/mpeg"></audio>
-        <script>
-          const audioKom = document.getElementById('komAudio');
-          document.addEventListener("visibilitychange", () => { if (document.hidden) { audioKom.pause(); audioKom.currentTime = 0; } });
-          window.addEventListener("pagehide", () => { audioKom.pause(); audioKom.currentTime = 0; });
-          document.querySelectorAll('a').forEach(link => { link.addEventListener('click', () => { audioKom.pause(); audioKom.currentTime = 0; }); });
-        </script>
-      </div>
-      <div class="el-panel">
-        <div class="el-panel-tabs"><span class="el-panel-tab active">Settings</span><span class="el-panel-tab">History</span></div>
-        <div class="el-field-label">Voice</div>
-        <div class="el-voice-card"><span class="el-voice-avatar">Д</span>Дмитрий</div>
-        <div class="el-field-label">Model</div>
-        <div class="el-model-card"><div class="el-model-top"><span class="el-v2-badge">V2</span>Eleven Multilingual v2</div></div>
-        <div class="el-slider-row"><div class="el-field-label" style="margin-top:0;">Speed</div><div class="el-slider-labels"><span>Slower</span><span>Faster</span></div><div class="el-slider-track"><div class="el-slider-fill" style="width:55%"></div><div class="el-slider-dot" style="left:55%"></div></div></div>
-        <div class="el-slider-row"><div class="el-field-label" style="margin-top:0;">Stability</div><div class="el-slider-labels"><span>More variable</span><span>More stable</span></div><div class="el-slider-track"><div class="el-slider-fill" style="width:62%"></div><div class="el-slider-dot" style="left:62%"></div></div></div>
-        <div class="el-slider-row"><div class="el-field-label" style="margin-top:0;">Similarity</div><div class="el-slider-labels"><span>Low</span><span>High</span></div><div class="el-slider-track"><div class="el-slider-fill" style="width:85%"></div><div class="el-slider-dot" style="left:85%"></div></div></div>
-        <div class="el-slider-row"><div class="el-field-label" style="margin-top:0;">Style Exaggeration</div><div class="el-slider-labels"><span>None</span><span>Exaggerated</span></div><div class="el-slider-track"><div class="el-slider-fill" style="width:5%"></div><div class="el-slider-dot" style="left:5%"></div></div></div>
-        <div class="el-field-label">Output Format</div>
-        <div class="el-output-select">MP3 44.1 kHz (128kbps) <i class="fa-solid fa-chevron-down" style="font-size:0.7rem;"></i></div>
-        <div class="el-toggle-row">Speaker boost<div class="el-toggle"></div></div>
-      </div>
-    </div>
-    <div class="continue-wrapper"><a href="#" class="continue-btn" onclick="(function(){var a=document.getElementById('komAudio');a.pause();a.currentTime=0;showPage(5);})(); return false;">Продолжение</a></div>
-  </div>
-</div>
-
-<!-- ==================== СТРАНИЦА 5: Комменсализм ==================== -->
+<!-- ==================== СТРАНИЦА 5: Комменсализм (Биология) ==================== -->
 <div id="page5" class="page">
   <div class="container">
-    <h1 class="slide-title">КОММЕНСАЛИЗМ</h1>
-    <div class="images-row">
-      <div class="image-card"><img src="img/kom1.png"><p style="font-weight:normal; font-size: 14px; max-width: 500px;">Маленькая птица стоит в пасти крокодила и выклёвывает остатки пищи и паразитов из его зубов</p><ul class="dash-list" style="text-align: left;"><li>Птица получает пищу – выгоду</li><li>Крокодил получает чистку зубов – тоже выгоду</li><li>Оба участника получают пользу и не вредят друг другу.</li></ul></div>
-      <div class="image-card"><img src="img/kom3.png"><p style="font-weight:normal; font-size: 14px; max-width: 500px;">Пример комменсализма, но с элементами конкуренции</p><ul class="dash-list" style="text-align: left;"><li>Львы активно питаются добычей (буйволом).</li><li>Гиены стоят рядом, ожидая, когда смогут получить остатки</li><li>Они не охотились, но хотят воспользоваться результатом охоты львов</li></ul></div>
-    </div>
-    <audio id="komAudio_p5"><source src="src/Audio_bio.mp3" type="audio/mpeg"></audio>
-    <div class="audio-ctrl-row"><button class="tts-btn green audio-start-btn" onclick="(function(){var a=document.getElementById('komAudio_p5');a.currentTime=0;a.play();})()"><span class="blink-hand">&#9654;</span> Старт аудио</button><button class="tts-btn red audio-stop-btn" onclick="(function(){var a=document.getElementById('komAudio_p5');a.pause();a.currentTime=0;})()">&#9632; Стоп</button></div>
-    <div class="continue-wrapper"><a href="#" class="try-btn" onclick="(function(){var a=document.getElementById('komAudio_p5');a.pause();a.currentTime=0;showPage(7);})(); return false;">Попробовать</a></div>
-  </div>
-</div>
-
-<!-- ==================== СТРАНИЦА 7: Ресурсы биология с ElevenLabs алгоритмом ==================== -->
-<div id="page7" class="page">
-  <div class="container">
-    <div class="resources-block">
-    </div>
-    
-    <!-- ВСТАВКА ELEVENLABS АЛГОРИТМА -->
-    <div class="eleven-wrapper">
-      <div class="title-screen">
-        <div class="badge-main">Интерактивный алгоритм</div>
-        <h2>Создание идеального голоса в ElevenLabs</h2>
-        <p style="color: var(--ink-soft);">От текстового описания до готового аудио – за несколько минут</p>
+    <div class="slide-white-container">
+      <h1 class="slide-title">КОММЕНСАЛИЗМ</h1>
+      <div class="images-row">
+        <div class="image-card">
+          <img src="img/kom1.png" alt="комменсализм">
+          <p style="font-weight:normal; font-size: 14px; max-width: 300px;">Маленькая птица стоит в пасти крокодила и выклёвывает остатки пищи и паразитов из его зубов</p>
+          <ul class="dash-list" style="text-align: left;">
+            <li>Птица получает пищу – выгоду</li>
+            <li>Крокодил получает чистку зубов – тоже выгоду</li>
+            <li>Оба участника получают пользу и не вредят друг другу.</li>
+          </ul>
+        </div>
+        <div class="image-card">
+          <img src="img/kom3.png" alt="комменсализм пример">
+          <p style="font-weight:normal; font-size: 14px; max-width: 300px;">Пример комменсализма, но с элементами конкуренции</p>
+          <ul class="dash-list" style="text-align: left;">
+            <li>Львы активно питаются добычей (буйволом).</li>
+            <li>Гиены стоят рядом, ожидая, когда смогут получить остатки</li>
+            <li>Они не охотились, но хотят воспользоваться результатом охоты львов</li>
+          </ul>
+        </div>
       </div>
-
-      <div class="card">
-        <div class="card-header">
-          <h3>Алгоритм: генерация голоса через ElevenLabs</h3>
-          <p>Используйте промпты, чтобы получить голос с нужным характером, тембром и стилем</p>
-          <div class="badge">AI Voice Generator • Voice Design</div>
-          <p style="font-size:0.7rem; opacity:0.8; margin-top:6px;">Нажмите на кружок с номером шага, чтобы отметить его как выполненный</p>
-        </div>
-        <div class="progress-section">
-          <div class="progress-label"><span>Прогресс создания голоса</span><span id="elevenProgressPercent">0%</span></div>
-          <div class="progress-bar-container"><div class="progress-fill" id="elevenProgressFill"></div></div>
-        </div>
-        <div id="elevenStagesContainer" class="stages"></div>
-        <div class="button-group">
-          <button class="btn btn-primary" id="elevenResetBtn">Сбросить все шаги</button>
-          <button class="btn btn-outline" id="elevenExpandBtn">Развернуть инструкции</button>
-        </div>
-        <div id="elevenResultMsg" class="result-message">✅ Ваш голос готов к использованию! Теперь вы можете синтезировать речь с уникальным характером. Не забудьте сохранить настройки голоса для будущих проектов.</div>
-      </div>
-      
-    </div>
-
-    <a href="../index.html" class="try-btn" onclick="showPage(1); return false;" style="margin-top:16px;">Назад</a>
-  </div>
-</div>
-
-<!-- ==================== СТРАНИЦА 8: Химия диалог ==================== -->
-<div id="page8" class="page">
-  <div class="container">
-    <div class="msg-teacher"><span class="label">Учитель:</span> Я делаю слайд-презентацию к уроку по теме "Типы кристаллических решёток" и хочу ее озвучить. Как мне это сделать?</div>
-    <div class="msg-ai"><span class="label">ИИ:</span> Отличная идея! Озвучка сделает материал более доступным и выразительным. Сначала подготовь короткие тексты для каждого слайда – 1–2 предложения, которые поясняют визуальный материал</div>
-    <div class="msg-teacher"><span class="label">Учитель:</span> Хорошо. Например, для слайда «Ионная решётка» я написала: «Ионная кристаллическая решётка состоит из положительных и отрицательных ионов, удерживаемых электростатическими силами»<br>Какой сервис для озвучки текста бесплатный и удобный?</div>
-    <div class="msg-ai"><span class="label">ИИ:</span> Предлагаю <a href="https://elevenlabs.io/" target="_blank" style="color:var(--teal-600); font-weight:700;">ElevenLabs</a> — отличный сервис с естественными голосами</div>
-    <div class="continue-wrapper"><a href="#" class="continue-btn" onclick="showPage(9); return false;">Продолжение</a></div>
-  </div>
-</div>
-
-<!-- ==================== СТРАНИЦА 9: Слайд кристаллы ==================== -->
-<div id="page9" class="page">
-  <div class="container">
-    <h1 class="slide-title">ИОННАЯ РЕШЁТКА</h1>
-    <div class="crystals-row"><div class="crystal-card"><img src="img/kom4.png"></div><div class="crystal-card"><img src="img/kom5.png"></div><div class="crystal-card"><img src="img/kom6.png"></div></div>
-    <div class="speech-bubble"><strong>Хочу озвучить этот слайд</strong></div>
-    <div class="continue-wrapper"><a href="#" class="continue-btn" onclick="showPage(10); return false;">Продолжение</a></div>
-  </div>
-</div>
-
-<!-- ==================== СТРАНИЦА 10: TTS химия ==================== -->
-<div id="page10" class="page">
-  <div class="container">
-    <div class="el-app">
-      <div class="el-sidebar">
-        <div class="el-logo">‖ElevenLabs</div>
-        <div class="el-workspace"><span class="el-workspace-dot"></span>ElevenCreative</div>
-        <div class="el-nav-item"><i class="fa-solid fa-house"></i>Home</div>
-        <div class="el-nav-item"><i class="fa-solid fa-microphone-lines"></i>Voices</div>
-        <div class="el-nav-item"><i class="fa-solid fa-clapperboard"></i>Studio</div>
-        <div class="el-nav-item"><i class="fa-solid fa-diagram-project"></i>Flows</div>
-        <div class="el-nav-item"><i class="fa-solid fa-swatchbook"></i>Templates</div>
-        <div class="el-nav-item"><i class="fa-solid fa-box-archive"></i>Assets</div>
-        <div class="el-nav-label">Pinned</div>
-        <div class="el-nav-item active"><i class="fa-solid fa-headphones"></i>Text to Speech</div>
-        <div class="el-nav-item"><i class="fa-solid fa-wand-magic-sparkles"></i>Sound Effects</div>
-        <div class="el-nav-item"><i class="fa-solid fa-photo-film"></i>Image &amp; Video</div>
-        <div class="el-nav-item"><i class="fa-solid fa-user-large"></i>Voice Isolator</div>
-        <div class="el-nav-item"><i class="fa-solid fa-sliders"></i>Voice Changer</div>
-        <div class="el-nav-item"><i class="fa-solid fa-music"></i>Music</div>
-        <div class="el-nav-item"><i class="fa-solid fa-closed-captioning"></i>Speech to Text</div>
-        <div class="el-nav-item"><i class="fa-solid fa-language"></i>Dubbing</div>
-      </div>
-      <div class="el-main">
-        <div class="el-topbar"><span class="el-topbar-title">Text to Speech</span><span class="el-topbar-actions">Feedback&nbsp;&nbsp;Docs&nbsp;&nbsp;Ask</span></div>
-        <div class="el-textbox">
-          <textarea class="el-textarea" id="typewriter10" rows="6" placeholder="Start typing here or paste any text you want to turn into lifelike speech…"></textarea>
-          <script>(function(){const text10="Ионная кристаллическая решётка состоит из положительных и отрицательных ионов, удерживаемых электростатическими силами";const textarea10=document.getElementById("typewriter10");let index10=0,started10=false;function type10(){if(index10<text10.length){textarea10.value+=text10.charAt(index10);index10++;setTimeout(type10,40);}}const observer10=new MutationObserver(function(){const page10=document.getElementById('page10');if(page10&&page10.classList.contains('active')&&!started10){started10=true;textarea10.value='';index10=0;type10();}});document.addEventListener('DOMContentLoaded',function(){observer10.observe(document.body,{subtree:true,attributes:true,attributeFilter:['class']});});})();</script>
-          <div class="el-generate-row"><button class="el-generate-btn" onclick="document.getElementById('komAudio1').play()"><i class="fa-solid fa-arrow-up"></i></button></div>
-        </div>
-        <div class="el-result-bar">
-          <button class="el-play-btn" onclick="document.getElementById('komAudio1').play()"><i class="fa-solid fa-play"></i></button>
-          <div class="el-waveform"><span style="height:8px"></span><span style="height:6px"></span><span style="height:14px"></span><span style="height:12px"></span><span style="height:12px"></span><span style="height:10px"></span><span style="height:8px"></span><span style="height:22px"></span><span style="height:8px"></span><span style="height:24px"></span><span style="height:18px"></span><span style="height:6px"></span><span style="height:6px"></span><span style="height:8px"></span><span style="height:12px"></span><span style="height:12px"></span><span style="height:22px"></span><span style="height:24px"></span><span style="height:6px"></span><span style="height:22px"></span><span style="height:12px"></span><span style="height:22px"></span><span style="height:18px"></span><span style="height:12px"></span><span style="height:20px"></span><span style="height:24px"></span><span style="height:14px"></span><span style="height:6px"></span><span style="height:10px"></span><span style="height:18px"></span><span style="height:16px"></span><span style="height:14px"></span><span style="height:10px"></span><span style="height:12px"></span><span style="height:16px"></span><span style="height:8px"></span></div>
-          <a href="src/Audio_chem.mp3" download class="el-icon-btn"><i class="fa-solid fa-arrow-down"></i></a>
-        </div>
-        <audio id="komAudio1"><source src="src/Audio_chem.mp3" type="audio/mpeg"></audio>
-        <script>
-          const audioKom1 = document.getElementById('komAudio1');
-          document.addEventListener("visibilitychange", () => { if (document.hidden) { audioKom1.pause(); audioKom1.currentTime = 0; } });
-          window.addEventListener("pagehide", () => { audioKom1.pause(); audioKom1.currentTime = 0; });
-          document.querySelectorAll('a').forEach(link => { link.addEventListener('click', () => { audioKom1.pause(); audioKom1.currentTime = 0; }); });
-        </script>
-      </div>
-      <div class="el-panel">
-        <div class="el-panel-tabs"><span class="el-panel-tab active">Settings</span><span class="el-panel-tab">History</span></div>
-        <div class="el-field-label">Voice</div>
-        <div class="el-voice-card"><span class="el-voice-avatar">Э</span>Эдита</div>
-        <div class="el-field-label">Model</div>
-        <div class="el-model-card"><div class="el-model-top"><span class="el-v2-badge">V2</span>Eleven Multilingual v2</div></div>
-        <div class="el-slider-row"><div class="el-field-label" style="margin-top:0;">Speed</div><div class="el-slider-labels"><span>Slower</span><span>Faster</span></div><div class="el-slider-track"><div class="el-slider-fill" style="width:50%"></div><div class="el-slider-dot" style="left:50%"></div></div></div>
-        <div class="el-slider-row"><div class="el-field-label" style="margin-top:0;">Stability</div><div class="el-slider-labels"><span>More variable</span><span>More stable</span></div><div class="el-slider-track"><div class="el-slider-fill" style="width:70%"></div><div class="el-slider-dot" style="left:70%"></div></div></div>
-        <div class="el-slider-row"><div class="el-field-label" style="margin-top:0;">Similarity</div><div class="el-slider-labels"><span>Low</span><span>High</span></div><div class="el-slider-track"><div class="el-slider-fill" style="width:80%"></div><div class="el-slider-dot" style="left:80%"></div></div></div>
-        <div class="el-slider-row"><div class="el-field-label" style="margin-top:0;">Style Exaggeration</div><div class="el-slider-labels"><span>None</span><span>Exaggerated</span></div><div class="el-slider-track"><div class="el-slider-fill" style="width:5%"></div><div class="el-slider-dot" style="left:5%"></div></div></div>
-        <div class="el-field-label">Output Format</div>
-        <div class="el-output-select">MP3 44.1 kHz (128kbps) <i class="fa-solid fa-chevron-down" style="font-size:0.7rem;"></i></div>
-        <div class="el-toggle-row">Speaker boost<div class="el-toggle"></div></div>
+      <audio id="komAudio_p5"><source src="src/Audio_bio.mp3" type="audio/mpeg"></audio>
+      <div class="audio-ctrl-row">
+        <button class="tts-btn green" onclick="(function(){var a=document.getElementById('komAudio_p5');a.currentTime=0;a.play();})()"><span class="blink-hand">&#9654;</span> Старт аудио</button>
+        <button class="tts-btn red" onclick="(function(){var a=document.getElementById('komAudio_p5');a.pause();a.currentTime=0;})()">&#9632; Стоп</button>
+        <button class="tts-btn" style="background:var(--teal-50);color:var(--teal-700);border:1px solid var(--border);" onclick="showPage(1)"><i class="fas fa-arrow-left"></i> Назад</button>
       </div>
     </div>
-    <div class="continue-wrapper"><a href="#" class="continue-btn" onclick="(function(){var a=document.getElementById('komAudio1');a.pause();a.currentTime=0;showPage(11);})(); return false;">Продолжение</a></div>
   </div>
 </div>
 
-<!-- ==================== СТРАНИЦА 11: Ионная решётка ==================== -->
+<!-- ==================== СТРАНИЦА 11: Ионная решётка (Химия) ==================== -->
 <div id="page11" class="page">
   <div class="container">
-    <h1 class="slide-title">ИОННАЯ РЕШЁТКА</h1>
-    <div class="crystals-row"><div class="crystal-card"><img src="img/kom4.png"><p class="crystal-desc">Каждый ион окружён шестью противоположными – это типичная ионная решётка с координационным числом 6</p></div><div class="crystal-card"><img src="img/kom5.png"><p class="crystal-desc">Координационное число – 8, то есть каждый ион окружён восемью противоположными</p></div><div class="crystal-card"><img src="img/kom6.png"><p class="crystal-desc">Это ионная решётка с высокой симметрией и плотной упаковкой</p></div></div>
-    <audio id="komAudio_p11"><source src="src/Audio_chem.mp3" type="audio/mpeg"></audio>
-    <div class="audio-ctrl-row"><button class="tts-btn green audio-start-btn" onclick="(function(){var a=document.getElementById('komAudio_p11');a.currentTime=0;a.play();})()"><span class="blink-hand">&#9654;</span> Старт аудио</button><button class="tts-btn red audio-stop-btn" onclick="(function(){var a=document.getElementById('komAudio_p11');a.pause();a.currentTime=0;})()">&#9632; Стоп</button></div>
-    <div class="continue-wrapper"><a href="#" class="try-btn" onclick="(function(){var a=document.getElementById('komAudio_p11');a.pause();a.currentTime=0;showPage(13);})(); return false;">Попробовать</a></div>
-  </div>
-</div>
-
-<!-- ==================== СТРАНИЦА 13: Ресурсы химия ==================== -->
-<div id="page13" class="page">
-  <div class="container">
-   
-    <!-- ВСТАВКА ELEVENLABS АЛГОРИТМА -->
-    <div class="eleven-wrapper">
-      <div class="title-screen">
-        <div class="badge-main">Интерактивный алгоритм</div>
-        <h2>Создание идеального голоса в ElevenLabs</h2>
-        <p style="color: var(--ink-soft);">От текстового описания до готового аудио – за несколько минут</p>
+    <div class="slide-white-container">
+      <h1 class="slide-title">ИОННАЯ РЕШЁТКА</h1>
+      <div class="crystals-row">
+        <div class="crystal-card">
+          <img src="img/kom4.png" alt="NaCl">
+          <p class="crystal-desc">Каждый ион окружён шестью противоположными – это типичная ионная решётка с координационным числом 6</p>
+        </div>
+        <div class="crystal-card">
+          <img src="img/kom5.png" alt="CsCl">
+          <p class="crystal-desc">Координационное число – 8, то есть каждый ион окружён восемью противоположными</p>
+        </div>
+        <div class="crystal-card">
+          <img src="img/kom6.png" alt="CaF₂">
+          <p class="crystal-desc">Это ионная решётка с высокой симметрией и плотной упаковкой</p>
+        </div>
       </div>
-
-      <div class="card">
-        <div class="card-header">
-          <h3>Алгоритм: генерация голоса через ElevenLabs</h3>
-          <p>Используйте промпты, чтобы получить голос с нужным характером, тембром и стилем</p>
-          <div class="badge">AI Voice Generator • Voice Design</div>
-          <p style="font-size:0.7rem; opacity:0.8; margin-top:6px;">Нажмите на кружок с номером шага, чтобы отметить его как выполненный</p>
-        </div>
-        <div class="progress-section">
-          <div class="progress-label"><span>Прогресс создания голоса</span><span id="elevenProgressPercent2">0%</span></div>
-          <div class="progress-bar-container"><div class="progress-fill" id="elevenProgressFill2"></div></div>
-        </div>
-        <div id="elevenStagesContainer2" class="stages"></div>
-        <div class="button-group">
-          <button class="btn btn-primary" id="elevenResetBtn2">Сбросить все шаги</button>
-          <button class="btn btn-outline" id="elevenExpandBtn2">Развернуть инструкции</button>
-        </div>
-        <div id="elevenResultMsg2" class="result-message">✅ Ваш голос готов к использованию! Теперь вы можете синтезировать речь с уникальным характером. Не забудьте сохранить настройки голоса для будущих проектов.</div>
+      <audio id="komAudio_p11"><source src="src/Audio_chem.mp3" type="audio/mpeg"></audio>
+      <div class="audio-ctrl-row">
+        <button class="tts-btn green" onclick="(function(){var a=document.getElementById('komAudio_p11');a.currentTime=0;a.play();})()"><span class="blink-hand">&#9654;</span> Старт аудио</button>
+        <button class="tts-btn red" onclick="(function(){var a=document.getElementById('komAudio_p11');a.pause();a.currentTime=0;})()">&#9632; Стоп</button>
+        <button class="tts-btn" style="background:var(--teal-50);color:var(--teal-700);border:1px solid var(--border);" onclick="showPage(1)"><i class="fas fa-arrow-left"></i> Назад</button>
       </div>
     </div>
-
-    <a href="#" class="try-btn" onclick="showPage(1); return false;" style="margin-top:16px;">Назад</a>
   </div>
 </div>
 
-<!-- ==================== СТРАНИЦА 14: География диалог ==================== -->
-<div id="page14" class="page">
-  <div class="container">
-    <div class="msg-teacher"><span class="label">Учитель:</span> Я создаю слайд-презентацию по теме «Строение вулкана» и хочу её озвучить. Как лучше это сделать?</div>
-    <div class="msg-ai"><span class="label">ИИ:</span> Отличный выбор! Озвучка добавит эмоциональную выразительность и поможет ученикам лучше усвоить материал. Начнём с подготовки текста для каждого слайда – короткого, чёткого и понятного</div>
-    <div class="msg-teacher"><span class="label">Учитель:</span> Какой сервис для озвучки текста бесплатный и удобный?</div>
-    <div class="msg-ai"><span class="label">ИИ:</span> Ты можешь попробовать <a href="https://elevenlabs.io/" target="_blank" style="color:var(--teal-600); font-weight:700;">ElevenLabs</a></div>
-    <div class="continue-wrapper"><a href="#" class="continue-btn" onclick="showPage(15); return false;">Продолжение</a></div>
-  </div>
-</div>
-
-<!-- ==================== СТРАНИЦА 15: Слайд вулкан ==================== -->
-<div id="page15" class="page">
-  <div class="container">
-    <img src="img/kom7.png" style="max-width:100%; border-radius:var(--radius);">
-    <div class="speech-bubble" style="margin-top:30px;"><strong>Хочу озвучить вот этот слайд</strong></div>
-    <div class="continue-wrapper"><a href="#" class="continue-btn" onclick="showPage(16); return false;">Продолжение</a></div>
-  </div>
-</div>
-
-<!-- ==================== СТРАНИЦА 16: TTS география ==================== -->
-<div id="page16" class="page">
-  <div class="container">
-    <div class="el-app">
-      <div class="el-sidebar">
-        <div class="el-logo">‖ElevenLabs</div>
-        <div class="el-workspace"><span class="el-workspace-dot"></span>ElevenCreative</div>
-        <div class="el-nav-item"><i class="fa-solid fa-house"></i>Home</div>
-        <div class="el-nav-item"><i class="fa-solid fa-microphone-lines"></i>Voices</div>
-        <div class="el-nav-item"><i class="fa-solid fa-clapperboard"></i>Studio</div>
-        <div class="el-nav-item"><i class="fa-solid fa-diagram-project"></i>Flows</div>
-        <div class="el-nav-item"><i class="fa-solid fa-swatchbook"></i>Templates</div>
-        <div class="el-nav-item"><i class="fa-solid fa-box-archive"></i>Assets</div>
-        <div class="el-nav-label">Pinned</div>
-        <div class="el-nav-item active"><i class="fa-solid fa-headphones"></i>Text to Speech</div>
-        <div class="el-nav-item"><i class="fa-solid fa-wand-magic-sparkles"></i>Sound Effects</div>
-        <div class="el-nav-item"><i class="fa-solid fa-photo-film"></i>Image &amp; Video</div>
-        <div class="el-nav-item"><i class="fa-solid fa-user-large"></i>Voice Isolator</div>
-        <div class="el-nav-item"><i class="fa-solid fa-sliders"></i>Voice Changer</div>
-        <div class="el-nav-item"><i class="fa-solid fa-music"></i>Music</div>
-        <div class="el-nav-item"><i class="fa-solid fa-closed-captioning"></i>Speech to Text</div>
-        <div class="el-nav-item"><i class="fa-solid fa-language"></i>Dubbing</div>
-      </div>
-      <div class="el-main">
-        <div class="el-topbar"><span class="el-topbar-title">Text to Speech</span><span class="el-topbar-actions">Feedback&nbsp;&nbsp;Docs&nbsp;&nbsp;Ask</span></div>
-        <div class="el-textbox">
-          <textarea class="el-textarea" id="typewriter16" rows="6" placeholder="Start typing here or paste any text you want to turn into lifelike speech…"></textarea>
-          <script>(function(){const text16="Перед вами схема строения вулкана. Внутри земной коры находится магма – расплавленные горные породы. Она поднимается по жерлу и выходит наружу в виде лавы через кратер. Вулканический пепел и породы выбрасываются в атмосферу, формируя облако. Иногда магма прорывается через боковой кратер. Всё это – проявление внутренней активности Земли";const textarea16=document.getElementById("typewriter16");let index16=0,started16=false;function type16(){if(index16<text16.length){textarea16.value+=text16.charAt(index16);index16++;setTimeout(type16,40);}}const observer16=new MutationObserver(function(){const page16=document.getElementById('page16');if(page16&&page16.classList.contains('active')&&!started16){started16=true;textarea16.value='';index16=0;type16();}});document.addEventListener('DOMContentLoaded',function(){observer16.observe(document.body,{subtree:true,attributes:true,attributeFilter:['class']});});})();</script>
-          <div class="el-generate-row"><button class="el-generate-btn" onclick="document.getElementById('komAudio2').play()"><i class="fa-solid fa-arrow-up"></i></button></div>
-        </div>
-        <div class="el-result-bar">
-          <button class="el-play-btn" onclick="document.getElementById('komAudio2').play()"><i class="fa-solid fa-play"></i></button>
-          <div class="el-waveform"><span style="height:8px"></span><span style="height:6px"></span><span style="height:14px"></span><span style="height:12px"></span><span style="height:12px"></span><span style="height:10px"></span><span style="height:8px"></span><span style="height:22px"></span><span style="height:8px"></span><span style="height:24px"></span><span style="height:18px"></span><span style="height:6px"></span><span style="height:6px"></span><span style="height:8px"></span><span style="height:12px"></span><span style="height:12px"></span><span style="height:22px"></span><span style="height:24px"></span><span style="height:6px"></span><span style="height:22px"></span><span style="height:12px"></span><span style="height:22px"></span><span style="height:18px"></span><span style="height:12px"></span><span style="height:20px"></span><span style="height:24px"></span><span style="height:14px"></span><span style="height:6px"></span><span style="height:10px"></span><span style="height:18px"></span><span style="height:16px"></span><span style="height:14px"></span><span style="height:10px"></span><span style="height:12px"></span><span style="height:16px"></span><span style="height:8px"></span></div>
-          <a href="src/Audio_geo.mp3" download class="el-icon-btn"><i class="fa-solid fa-arrow-down"></i></a>
-        </div>
-        <audio id="komAudio2"><source src="src/Audio_geo.mp3" type="audio/mpeg"></audio>
-        <script>
-          const audioKom2 = document.getElementById('komAudio2');
-          document.addEventListener("visibilitychange", () => { if (document.hidden) { audioKom2.pause(); audioKom2.currentTime = 0; } });
-          window.addEventListener("pagehide", () => { audioKom2.pause(); audioKom2.currentTime = 0; });
-          document.querySelectorAll('a').forEach(link => { link.addEventListener('click', () => { audioKom2.pause(); audioKom2.currentTime = 0; }); });
-        </script>
-      </div>
-      <div class="el-panel">
-        <div class="el-panel-tabs"><span class="el-panel-tab active">Settings</span><span class="el-panel-tab">History</span></div>
-        <div class="el-field-label">Voice</div>
-        <div class="el-voice-card"><span class="el-voice-avatar">Д</span>Дмитрий</div>
-        <div class="el-field-label">Model</div>
-        <div class="el-model-card"><div class="el-model-top"><span class="el-v2-badge">V2</span>Eleven Multilingual v2</div></div>
-        <div class="el-slider-row"><div class="el-field-label" style="margin-top:0;">Speed</div><div class="el-slider-labels"><span>Slower</span><span>Faster</span></div><div class="el-slider-track"><div class="el-slider-fill" style="width:48%"></div><div class="el-slider-dot" style="left:48%"></div></div></div>
-        <div class="el-slider-row"><div class="el-field-label" style="margin-top:0;">Stability</div><div class="el-slider-labels"><span>More variable</span><span>More stable</span></div><div class="el-slider-track"><div class="el-slider-fill" style="width:65%"></div><div class="el-slider-dot" style="left:65%"></div></div></div>
-        <div class="el-slider-row"><div class="el-field-label" style="margin-top:0;">Similarity</div><div class="el-slider-labels"><span>Low</span><span>High</span></div><div class="el-slider-track"><div class="el-slider-fill" style="width:88%"></div><div class="el-slider-dot" style="left:88%"></div></div></div>
-        <div class="el-slider-row"><div class="el-field-label" style="margin-top:0;">Style Exaggeration</div><div class="el-slider-labels"><span>None</span><span>Exaggerated</span></div><div class="el-slider-track"><div class="el-slider-fill" style="width:10%"></div><div class="el-slider-dot" style="left:10%"></div></div></div>
-        <div class="el-field-label">Output Format</div>
-        <div class="el-output-select">MP3 44.1 kHz (128kbps) <i class="fa-solid fa-chevron-down" style="font-size:0.7rem;"></i></div>
-        <div class="el-toggle-row">Speaker boost<div class="el-toggle"></div></div>
-      </div>
-    </div>
-    <div class="continue-wrapper"><a href="#" class="continue-btn" onclick="(function(){var a=document.getElementById('komAudio2');a.pause();a.currentTime=0;showPage(17);})(); return false;">Продолжение</a></div>
-  </div>
-</div>
-
-<!-- ==================== СТРАНИЦА 17: Строение вулкана ==================== -->
+<!-- ==================== СТРАНИЦА 17: Строение вулкана (География) ==================== -->
 <div id="page17" class="page">
   <div class="container">
-    <h1 class="slide-title">СТРОЕНИЕ ВУЛКАНА</h1>
-<div style="background:#fff; border-radius:20px; padding:20px;">
-
-    <div class="volcano-layout">
+    <div class="slide-white-container">
+      <h1 class="slide-title">СТРОЕНИЕ ВУЛКАНА</h1>
+      <div class="volcano-layout">
         <div class="volcano-left">
-            <p><span class="volcano-term">Жерло</span> – трубообразный канал, по которому магма изливается на поверхность</p><br>
-            <p><span class="volcano-term">Вулканический очаг</span> – подземный резервуар магмы</p>
+          <p><span class="volcano-term">Жерло</span> – трубообразный канал, по которому магма изливается на поверхность</p>
+          <br>
+          <p><span class="volcano-term">Вулканический очаг</span> – подземный резервуар магмы</p>
         </div>
-
-        <div style="flex:1; text-align:center; min-width:620px;">
-            <img src="img/kom7.png" alt="Строение вулкана" style="max-width:100%;">
+        <div style="flex:1; text-align:center; min-width:280px;">
+          <img src="img/kom7.png" alt="Строение вулкана" style="max-width:100%; border-radius:12px;">
         </div>
-
         <div class="volcano-right">
-            <p><span class="volcano-term">Кратер</span> – чашеобразное углубление на плоской вершине вулкана</p><br>
-            <p><span class="volcano-term">Боковой кратер</span> – побочный кратер вулкана, расположенный на его склоне</p>
+          <p><span class="volcano-term">Кратер</span> (от греч. «кратер» – чаша) – чашеобразное углубление на плоской вершине вулкана</p>
+          <br>
+          <p><span class="volcano-term">Боковой кратер</span> – побочный кратер вулкана, расположенный на его склоне и представляющий собой окончание выводного канала, отходящего от центрального жерла</p>
         </div>
+      </div>
+      <div class="volcano-bottom">
+        <p><span class="volcano-term">Вулкан</span> – возвышенность (чаще всего гора конусообразной формы), возникающая над каналами и трещинами в земной коре, по которым на земную поверхность извергаются лава, пепел, горячие газы, пары воды и обломки горных пород</p>
+      </div>
+      <audio id="komAudio_p17"><source src="src/Audio_geo.mp3" type="audio/mpeg"></audio>
+      <div class="audio-ctrl-row">
+        <button class="tts-btn green" onclick="(function(){var a=document.getElementById('komAudio_p17');a.currentTime=0;a.play();})()"><span class="blink-hand">&#9654;</span> Старт аудио</button>
+        <button class="tts-btn red" onclick="(function(){var a=document.getElementById('komAudio_p17');a.pause();a.currentTime=0;})()">&#9632; Стоп</button>
+        <button class="tts-btn" style="background:var(--teal-50);color:var(--teal-700);border:1px solid var(--border);" onclick="showPage(1)"><i class="fas fa-arrow-left"></i> Назад</button>
+      </div>
     </div>
-
-    <div class="volcano-bottom">
-        <p><span class="volcano-term">Вулкан</span> – возвышенность конусообразной формы...</p>
-    </div>
-
-</div>
-    <audio id="komAudio_p17"><source src="src/Audio_geo.mp3" type="audio/mpeg"></audio>
-    <div class="audio-ctrl-row"><button class="tts-btn green audio-start-btn" onclick="(function(){var a=document.getElementById('komAudio_p17');a.currentTime=0;a.play();})()"><span class="blink-hand">&#9654;</span> Старт аудио</button><button class="tts-btn red audio-stop-btn" onclick="(function(){var a=document.getElementById('komAudio_p17');a.pause();a.currentTime=0;})()">&#9632; Стоп</button></div>
-    <div class="continue-wrapper"><a href="#" class="try-btn" onclick="(function(){var a=document.getElementById('komAudio_p17');a.pause();a.currentTime=0;showPage(19);})(); return false;">Попробовать</a></div>
   </div>
 </div>
 
-<!-- ==================== СТРАНИЦА 19: Ресурсы география ==================== -->
-<div id="page19" class="page">
-  <div class="container">
-    
-    <!-- ВСТАВКА ELEVENLABS АЛГОРИТМА -->
-    <div class="eleven-wrapper">
-      <div class="title-screen">
-        <div class="badge-main">Интерактивный алгоритм</div>
-        <h2>Создание идеального голоса в ElevenLabs</h2>
-        <p style="color: var(--ink-soft);">От текстового описания до готового аудио – за несколько минут</p>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <h3>Алгоритм: генерация голоса через ElevenLabs</h3>
-          <p>Используйте промпты, чтобы получить голос с нужным характером, тембром и стилем</p>
-          <div class="badge">AI Voice Generator • Voice Design</div>
-          <p style="font-size:0.7rem; opacity:0.8; margin-top:6px;">Нажмите на кружок с номером шага, чтобы отметить его как выполненный</p>
-        </div>
-        <div class="progress-section">
-          <div class="progress-label"><span>Прогресс создания голоса</span><span id="elevenProgressPercent3">0%</span></div>
-          <div class="progress-bar-container"><div class="progress-fill" id="elevenProgressFill3"></div></div>
-        </div>
-        <div id="elevenStagesContainer3" class="stages"></div>
-        <div class="button-group">
-          <button class="btn btn-primary" id="elevenResetBtn3">Сбросить все шаги</button>
-          <button class="btn btn-outline" id="elevenExpandBtn3">Развернуть инструкции</button>
-        </div>
-        <div id="elevenResultMsg3" class="result-message">✅ Ваш голос готов к использованию! Теперь вы можете синтезировать речь с уникальным характером. Не забудьте сохранить настройки голоса для будущих проектов.</div>
-      </div>
-    </div>
-<a href="#" class="try-btn" onclick="showPage(1); return false;" style="margin-top:16px;">Назад</a>
-  </div>
-</div>
+<!-- ===== ЕДИНАЯ КНОПКА НАЗАД (всегда видна, кроме главной страницы) ===== -->
+<button id="backToStartBtn" class="back-btn-fixed" onclick="goBackToIndex()" style="display:none;">
+  <i class="fas fa-arrow-left"></i> Назад
+</button>
 
 <script>
   function showPage(pageNum) {
     document.querySelectorAll('.page').forEach(page => { page.classList.remove('active'); });
-    document.getElementById('page' + pageNum).classList.add('active');
+    const target = document.getElementById('page' + pageNum);
+    if (target) target.classList.add('active');
     window.scrollTo(0, 0);
     
     // Показываем кнопку "Назад" только НЕ на главной странице (page1)
@@ -1185,212 +441,7 @@ body::before {
   document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('backToStartBtn').style.display = 'none';
   });
-
-  // ==================== ELEVENLABS АЛГОРИТМ (общая функция) ====================
-  function initElevenAlgorithm(containerId, progressPercentId, progressFillId, resetBtnId, expandBtnId, resultMsgId) {
-    const elevenSteps = [
-      {
-        title: "Регистрация и вход в ElevenLabs",
-        instructions: `<p><strong>Действие:</strong> Перейдите на сайт <a href="https://elevenlabs.io" target="_blank">elevenlabs.io</a> и нажмите <strong>«Sign Up»</strong>.</p>
-        <p><strong>Способы регистрации:</strong></p>
-        <ul>
-          <li>Через Google-аккаунт (быстрее всего).</li>
-          <li>Через email (потребуется подтверждение).</li>
-        </ul>
-        <p><strong>Бесплатный тариф:</strong> Даёт возможность создавать до 3 голосов и синтезировать около 10 000 символов в месяц – этого достаточно для тестирования.</p>`
-      },
-      {
-        title: "Выбор инструмента: Voice Design",
-        instructions: `<p>Для начала выберите <strong>«Voice Design»</strong> – это наш основной путь.</p>`
-      },
-      {
-        title: "Написание промпта для голоса (главный секрет)",
-        instructions: `<p><strong>Промпт – это текстовое описание желаемого голоса.</strong> От его качества зависит 80% результата.</p>
-        <p><strong>Структура хорошего промпта:</strong></p>
-        <div class="prompt-example">[ВОЗРАСТ] + [ПОЛ] + [ХАРАКТЕР] + [СТИЛЬ РЕЧИ] + [ЭМОЦИОНАЛЬНЫЙ ОКРАС]</div>
-        <p><strong>Примеры промптов для разных задач:</strong></p>
-        <div class="prompt-example"><strong>Для академической лекции:</strong><br>«Мужской голос, 40–45 лет, спокойный, уверенный, интеллигентный, с лёгкой хрипотцой, умеренно низкий тембр, дикция чёткая, без выраженных эмоций, но с доброжелательной интонацией»</div>
-        <div class="prompt-example"><strong>Для детской аудитории:</strong><br>«Женский голос, 28–32 года, мягкий, тёплый, игривый, с лёгкой улыбкой в голосе, тембр средний, немного звонкий, темп речи умеренный, с выраженной заботой в интонациях»</div>
-        <div class="prompt-example"><strong>Для мотивационного ролика:</strong><br>«Мужской голос, 35 лет, энергичный, вдохновляющий, с низким бархатным тембром, быстрый темп речи, уверенный и страстный, с динамичными интонациями»</div>
-        <div class="tip"><strong>Важно:</strong> Чем детальнее промпт – тем точнее результат. Добавляйте необычные описания: «с лёгкой улыбкой», «убедительный», «с нотками сарказма».</div>`
-      },
-      {
-        title: "Ввод промпта в Voice Design и настройка параметров",
-        instructions: `<p><strong>Куда вводить:</strong> В интерфейсе Voice Design есть поле для текстового описания (обычно называется <strong>«Describe the voice»</strong>).</p>
-        <p><strong>Дополнительные настройки:</strong></p>
-        <ul>
-          <li><strong>Gender (пол)</strong> – мужской / женский / нейтральный.</li>
-          <li><strong>Age (возраст)</strong> – примерно от 20 до 70 лет.</li>
-          <li><strong>Accent (акцент)</strong> – можно выбрать American, British, Australian и другие.</li>
-        </ul>
-        <p><strong>Продвинутые параметры (после генерации):</strong></p>
-        <ul>
-          <li><strong>Stability (стабильность)</strong> – чем выше значение, тем более монотонным и ровным будет голос.</li>
-          <li><strong>Clarity + Similarity</strong> – уровень чёткости и схожести с описанием.</li>
-        </ul>
-        <div class="tip"><strong>Совет:</strong> Начните с базовых настроек, а затем корректируйте их после прослушивания результата.</div>`
-      },
-      {
-        title: "Генерация и прослушивание голоса",
-        instructions: `<p><strong>Что происходит:</strong> После ввода промпта нажмите <strong>«Generate»</strong>. ElevenLabs создаст уникальный голос за 10–30 секунд.</p>
-        <p><strong>Как прослушать:</strong></p>
-        <ul>
-          <li>Введите любой текст в поле синтеза и нажмите <strong>«Play»</strong>.</li>
-          <li>Проверьте, насколько голос соответствует вашему описанию.</li>
-        </ul>
-        <p><strong>Что оценивать:</strong></p>
-        <ul>
-          <li>Соответствие тембру и характеру.</li>
-          <li>Естественность звучания (без роботизированных ноток).</li>
-          <li>Эмоциональную окраску.</li>
-        </ul>
-        <div class="tip"><strong>Если голос не понравился:</strong> Измените промпт и сгенерируйте заново. Иногда нужно 2–3 попытки, чтобы получить идеальный вариант.</div>`
-      },
-      {
-        title: "Корректировка голоса через уточнение промпта",
-        instructions: `<p><strong>Итеративный процесс – ключ к идеальному голосу.</strong></p>
-        <p><strong>Как корректировать:</strong></p>
-        <ul>
-          <li><strong>Слишком высокий/низкий тембр:</strong> добавьте «более низкий» или «более высокий» в промпт.</li>
-          <li><strong>Не хватает эмоций:</strong> уточните «более энергичный», «более доброжелательный».</li>
-          <li><strong>Слишком монотонный:</strong> добавьте «с вариациями тона» или «выразительный».</li>
-          <li><strong>Не подходит акцент:</strong> явно укажите нужный акцент.</li>
-        </ul>
-        <p><strong>Пример уточнения:</strong></p>
-        <div class="prompt-example">Исходный промпт: «Мужской голос, 40 лет, спокойный, уверенный»<br>Уточнённый: «Мужской голос, 40 лет, спокойный, уверенный, <strong>с лёгкой хрипотцой и чуть более низким тембром, выразительный, без монотонности</strong>»</div>
-        <div class="tip"><strong>Важно:</strong> Сохраняйте удачные варианты промптов – они пригодятся для будущих проектов.</div>`
-      },
-      {
-        title: "Сохранение голоса и синтез речи",
-        instructions: `<p><strong>После того как голос вас устраивает:</strong></p>
-        <ul>
-          <li>Нажмите <strong>«Save Voice»</strong> – он появится в вашей библиотеке голосов.</li>
-          <li>Дайте голосу понятное имя (например, «Лектор_Спокойный»).</li>
-        </ul>
-        <p><strong>Синтез речи:</strong></p>
-        <ul>
-          <li>Введите текст для озвучки (до 5000 символов в бесплатной версии).</li>
-          <li>Выберите сохранённый голос.</li>
-          <li>Нажмите <strong>«Generate»</strong>.</li>
-          <li>Скачайте MP3-файл через кнопку <strong>«Download»</strong>.</li>
-        </ul>
-        <div class="tip"><strong>Совет:</strong> Для длинных текстов разбивайте их на части по 2–3 минуты – так качество синтеза будет выше.</div>`
-      }
-    ];
-
-    let completed = new Array(elevenSteps.length).fill(false);
-    let expanded = new Array(elevenSteps.length).fill(false);
-
-    function save() {
-      try {
-        localStorage.setItem('eleven_completed_' + containerId, JSON.stringify(completed));
-        localStorage.setItem('eleven_expanded_' + containerId, JSON.stringify(expanded));
-      } catch(e) {}
-    }
-
-    function load() {
-      try {
-        const savedComp = localStorage.getItem('eleven_completed_' + containerId);
-        if (savedComp) { const p = JSON.parse(savedComp); if (p && p.length === elevenSteps.length) completed = p; }
-        const savedExp = localStorage.getItem('eleven_expanded_' + containerId);
-        if (savedExp) { const p = JSON.parse(savedExp); if (p && p.length === elevenSteps.length) expanded = p; }
-      } catch(e) {}
-    }
-
-    function updateProgress() {
-      const cnt = completed.filter(v => v === true).length;
-      const percent = Math.round((cnt / elevenSteps.length) * 100);
-      const fillEl = document.getElementById(progressFillId);
-      const percentEl = document.getElementById(progressPercentId);
-      if (fillEl) fillEl.style.width = percent + '%';
-      if (percentEl) percentEl.innerText = percent + '%';
-      const resultDiv = document.getElementById(resultMsgId);
-      if (resultDiv) {
-        if (cnt === elevenSteps.length) resultDiv.classList.add('show');
-        else resultDiv.classList.remove('show');
-      }
-    }
-
-    function render() {
-      const container = document.getElementById(containerId);
-      if (!container) return;
-      container.innerHTML = '';
-      elevenSteps.forEach((step, idx) => {
-        const stageDiv = document.createElement('div');
-        stageDiv.className = 'stage' + (completed[idx] ? ' completed' : '') + (expanded[idx] ? ' expanded' : '');
-        
-        const header = document.createElement('div');
-        header.className = 'stage-header';
-        header.onclick = function(e) {
-          if (!e.target.closest('.stage-check')) {
-            expanded[idx] = !expanded[idx];
-            render();
-            save();
-          }
-        };
-        
-        const checkSpan = document.createElement('div');
-        checkSpan.className = 'stage-check';
-        checkSpan.innerHTML = completed[idx] ? '✓' : (idx + 1);
-        checkSpan.onclick = function(e) {
-          e.stopPropagation();
-          completed[idx] = !completed[idx];
-          render();
-          updateProgress();
-          save();
-        };
-        
-        const titleSpan = document.createElement('div');
-        titleSpan.className = 'stage-title';
-        titleSpan.innerHTML = step.title;
-        
-        const expandIcon = document.createElement('div');
-        expandIcon.style.fontSize = '1.2rem';
-        expandIcon.innerHTML = expanded[idx] ? '▲' : '▼';
-        
-        header.appendChild(checkSpan);
-        header.appendChild(titleSpan);
-        header.appendChild(expandIcon);
-        
-        const body = document.createElement('div');
-        body.className = 'stage-body';
-        body.innerHTML = step.instructions;
-        
-        stageDiv.appendChild(header);
-        stageDiv.appendChild(body);
-        container.appendChild(stageDiv);
-      });
-    }
-
-    function reset() {
-      completed = new Array(elevenSteps.length).fill(false);
-      expanded = new Array(elevenSteps.length).fill(false);
-      render();
-      updateProgress();
-      save();
-    }
-
-    function toggleExpandAll() {
-      const allExp = expanded.every(v => v === true);
-      expanded = new Array(elevenSteps.length).fill(!allExp);
-      render();
-      save();
-    }
-
-    load();
-    render();
-    updateProgress();
-    
-    document.getElementById(resetBtnId).addEventListener('click', reset);
-    document.getElementById(expandBtnId).addEventListener('click', toggleExpandAll);
-  }
-
-  // Инициализация всех трёх экземпляров алгоритма
-  document.addEventListener('DOMContentLoaded', function() {
-    initElevenAlgorithm('elevenStagesContainer', 'elevenProgressPercent', 'elevenProgressFill', 'elevenResetBtn', 'elevenExpandBtn', 'elevenResultMsg');
-    initElevenAlgorithm('elevenStagesContainer2', 'elevenProgressPercent2', 'elevenProgressFill2', 'elevenResetBtn2', 'elevenExpandBtn2', 'elevenResultMsg2');
-    initElevenAlgorithm('elevenStagesContainer3', 'elevenProgressPercent3', 'elevenProgressFill3', 'elevenResetBtn3', 'elevenExpandBtn3', 'elevenResultMsg3');
-  });
 </script>
+
 </body>
 </html>
