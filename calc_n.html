@@ -4,28 +4,33 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Расписание — учебная нагрузка (СанПиН РБ)</title>
-<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;700;800&family=Raleway:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;700;800&family=Raleway:wght@400;500;600;700&family=Inter:wght@600;700&display=swap" rel="stylesheet">
 <style>
   :root {
     --t50:#f0fdfc; --t100:#ccfbf7; --t200:#99f6ee; --t300:#5eead4;
     --t400:#2dd4bf; --t500:#14b8a6; --t600:#0d9488; --t700:#0f766e; --t800:#115e59;
     --bg:#f0fdfc; --border:#99f6ee; --text:#134e4a; --muted:#5eada6;
     --shadow:0 4px 20px rgba(20,184,166,0.12);
+
+    /* Единый фирменный стиль для всех демо-страниц */
+    --back-btn-bg:    #12c2b3;
+    --back-btn-hover: #0a9b8f;
+    --title-color:    #0a9b8f;
   }
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
   body{font-family:'Raleway',sans-serif;background:var(--bg);color:var(--text);padding-bottom:60px;}
 
-  .hero{background:linear-gradient(135deg,#0f766e,#14b8a6);padding:24px;}
+  .hero{background:#ffffff;border-bottom:1px solid var(--border);padding:24px;box-shadow:0 2px 12px rgba(20,184,166,0.06);}
   .hero-inner{max-width:1300px;margin:0 auto;}
-  .hero h1{font-family:'Unbounded',sans-serif;font-size:clamp(18px,3vw,26px);color:#fff;margin-bottom:16px;}
+  .hero h1{font-family:'Unbounded',sans-serif;font-size:clamp(18px,3vw,26px);color:var(--title-color);margin-bottom:16px;}
   .hero-controls{display:flex;flex-wrap:wrap;gap:10px;}
-  .ctrl-pill{background:rgba(255,255,255,0.18);padding:7px 14px;border-radius:16px;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:#fff;}
-  .ctrl-pill select{background:#fff;border:none;padding:5px 10px;border-radius:16px;font-family:'Raleway',sans-serif;font-size:13px;font-weight:600;color:var(--t800);outline:none;cursor:pointer;}
+  .ctrl-pill{background:var(--t50);border:1px solid var(--t200);padding:7px 14px;border-radius:16px;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--t800);}
+  .ctrl-pill select{background:#fff;border:1px solid var(--t300);padding:5px 10px;border-radius:16px;font-family:'Raleway',sans-serif;font-size:13px;font-weight:600;color:var(--t800);outline:none;cursor:pointer;}
 
   .app{max-width:1300px;margin:0 auto;padding:18px 16px;}
 
   .toolbar{background:#fff;border-radius:16px;padding:12px 16px;margin-bottom:16px;box-shadow:var(--shadow);border:1px solid var(--border);display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
-  .btn{padding:9px 16px;border:none;border-radius:16px;font-family:'Raleway',sans-serif;font-size:12.5px;font-weight:700;cursor:pointer;background:linear-gradient(135deg,var(--t500),var(--t600));color:#fff;transition:transform .15s;}
+  .btn{padding:9px 16px;border:none;border-radius:16px;font-family:'Raleway',sans-serif;font-size:12.5px;font-weight:700;cursor:pointer;background:var(--t600);color:#fff;transition:transform .15s;}
   .btn:hover{transform:translateY(-1px);}
   .btn-outline{background:#fff;color:var(--t700);border:1.5px solid var(--t300);}
   .tip{font-size:11.5px;color:var(--muted);font-style:italic;padding:4px 12px;background:var(--t50);border-radius:16px;border:1px solid var(--t200);}
@@ -34,19 +39,19 @@
   @media (max-width:900px){.week-grid{grid-template-columns:repeat(2,1fr);}}
   @media (max-width:560px){.week-grid{grid-template-columns:1fr;}}
 
-  .day-card{background:#fff;border-radius:16px;box-shadow:var(--shadow);overflow:hidden;solid #22c55e;}
+  .day-card{background:#fff;border-radius:16px;box-shadow:var(--shadow);overflow:hidden;}
   .day-card.warning-day{border-left-color:#f59e0b;}
   .day-card.critical-day{border-left-color:#ef4444;}
 
-  .day-header{background:linear-gradient(135deg,var(--t600),var(--t500));color:#fff;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;}
-  .day-card.critical-day .day-header{background:linear-gradient(135deg,#991b1b,#ef4444);}
-  .day-card.warning-day .day-header{background:linear-gradient(135deg,#92400e,#f59e0b);}
+  .day-header{background:var(--t600);color:#fff;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;}
+  .day-card.critical-day .day-header{background:#ef4444;}
+  .day-card.warning-day .day-header{background:#f59e0b;}
   .day-header span:first-child{font-family:'Unbounded',sans-serif;font-size:12px;font-weight:700;text-transform:uppercase;}
   .day-badge{background:rgba(255,255,255,0.22);padding:3px 9px;border-radius:16px;font-size:11px;font-weight:700;}
 
   .lessons-list{padding:10px 10px 2px;min-height:60px;}
 
-  .lesson-item{background:var(--t50);border:1px solid var(--t200);border-left:4px solid var(--t400);border-radius:12px;padding:7px 8px;margin-bottom:7px;display:flex;flex-wrap:wrap;align-items:center;gap:5px;}
+  .lesson-item{background:var(--t50);border:1px solid var(--t200);border-radius:16px;padding:7px 8px;margin-bottom:7px;display:flex;flex-wrap:wrap;align-items:center;gap:5px;}
   .lesson-item.hard-lesson{border-left-color:#f59e0b;background:#fffbeb;border-color:#fde68a;}
 
   .lesson-select{flex:2;min-width:120px;background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:5px 8px;font-size:11.5px;font-family:'Raleway',sans-serif;font-weight:600;color:var(--text);outline:none;}
@@ -57,7 +62,7 @@
   .del-lesson{background:none;border:none;font-size:16px;cursor:pointer;color:#fca5a5;font-weight:bold;margin-left:auto;line-height:1;padding:2px 4px;}
   .del-lesson:hover{color:#ef4444;}
 
-  .add-lesson-btn{background:var(--t50);border:1.5px dashed var(--t300);border-radius:12px;padding:7px;text-align:center;font-size:12px;font-weight:600;color:var(--t600);cursor:pointer;margin:6px 10px 10px;}
+  .add-lesson-btn{background:var(--t50);border:1.5px dashed var(--t300);border-radius:16px;padding:7px;text-align:center;font-size:12px;font-weight:600;color:var(--t600);cursor:pointer;margin:6px 10px 10px;}
   .add-lesson-btn:hover{background:var(--t100);}
 
   .stats-panel{background:#fff;border-radius:16px;padding:16px 18px;box-shadow:var(--shadow);border:1px solid var(--border);}
@@ -65,12 +70,12 @@
 
   .chart-bar-container{display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap;justify-content:space-around;margin:14px 0;}
   .chart-day{text-align:center;width:52px;}
-  .bar{background:linear-gradient(0deg,var(--t600),var(--t400));width:36px;margin:0 auto;border-radius:10px 10px 4px 4px;}
-  .bar.max-bar{background:linear-gradient(0deg,#b91c1c,#ef4444);}
+  .bar{background:var(--t500);width:36px;margin:0 auto;border-radius:16px;}
+  .bar.max-bar{background:#ef4444;}
   .day-label{margin-top:6px;font-weight:700;font-size:11px;color:var(--t700);}
   .points-value{font-size:10px;font-weight:700;color:var(--muted);}
 
-  .recommend{background:var(--t50);padding:12px 14px;border-radius:12px;margin-top:12px;font-size:13px;border-left:4px solid var(--t400);line-height:1.6;}
+  .recommend{background:var(--t50);padding:12px 14px;border-radius:16px;margin-top:12px;font-size:13px;}
   .err-text{color:#b91c1c;font-weight:600;}
    .demo-badge {
             display: inline-block;
@@ -79,7 +84,7 @@
             font-size: 0.55rem;
             font-weight: 700;
             padding: 2px 8px;
-            border-radius: 30px;
+            border-radius: 16px;
             margin-left: 8px;
             vertical-align: middle;
             letter-spacing: 0.3px;
@@ -95,12 +100,24 @@
     }
   }
 
+  .back-btn-fixed{
+    position:fixed;bottom:20px;left:20px;
+    background:var(--back-btn-bg);color:#fff;
+    padding:12px 28px;border-radius:12px;
+    text-decoration:none;font-weight:600;font-size:14px;
+    font-family:'Inter',system-ui,sans-serif;
+    box-shadow:0 4px 12px rgba(0,0,0,0.1);
+    transition:all .2s;z-index:100;
+  }
+  .back-btn-fixed:hover{background:var(--back-btn-hover);transform:translateY(-2px);}
+
   @media print{
     .toolbar,.hero-controls{display:none !important;}
     .day-card{break-inside:avoid;}
     .week-grid{display:block;}
     .day-card{margin-bottom:12px;}
     .demo-ribbon{display:none !important;}
+    .back-btn-fixed{display:none !important;}
   }
 </style>
 </head>
@@ -137,6 +154,8 @@
 
 </div>
 
+<a href="index.html" class="back-btn-fixed">← Назад</a>
+
 <script>
   // ====================== СПРАВОЧНИКИ ======================
   const SUBJECTS_BY_CLASS = {
@@ -158,11 +177,11 @@
     "Алгебра":3,"Геометрия":3,"Математика":3,"Физика":3,"Химия":3,
     "Белорусский язык":2,"Русский язык":2,"Литература":2,"Иностранный язык":2,
     "Биология":2,"География":2,"История Беларуси":2,"Всемирная история":2,
-    "Обществоведение":2,"Информатика":2,"Человек и мир":1,"ИЗО":1,"Музыка":1,
+    "Обществоведение":2,"Информатика":2,"Человек и мир":2,"ИЗО":1,"Музыка":1,
     "Трудовое обучение":1,"Физкультура":1
   };
   const MAX_POINTS_BY_CLASS = {5:12,6:13,7:14,8:15,9:16,10:17,11:18};
-  const MAX_LESSONS_BY_CLASS = {5:5,6:6,7:6,8:6,9:6,10:7,11:7};
+  const MAX_LESSONS_BY_CLASS = {5:6,6:6,7:7,8:7,9:7,10:7,11:7};
   const DAYS = [
     { id:"mon", name:"Понедельник", short:"Пн" },
     { id:"tue", name:"Вторник", short:"Вт" },
@@ -212,10 +231,23 @@
     return `${hh}:${mm}`;
   }
 
-  // Пересчитывает время начала всех уроков после fromIndex, отталкиваясь от урока fromIndex
+  // Пересчитывает время начала всех уроков после fromIndex, отталкиваясь от урока fromIndex.
+  // Каждый следующий урок начинается через LESSON_DURATION + BREAK_MIN после начала предыдущего
+  // (например, урок начался в 9:45 → следующий начнётся в 9:45 + 45 мин урока + 10 мин перемены = 10:40).
   function recalcDayTimes(dayId, fromIndex) {
     const lessons = weekSchedule[dayId] || [];
-    for (let i = fromIndex + 1; i < lessons.length; i++) {
+    const start = fromIndex + 1;
+    if (start < 0 || start >= lessons.length) return;
+    // Если удалили самый первый урок, новому первому уроку некуда "приземлиться" —
+    // возвращаем его на время по умолчанию, а дальше считаем цепочкой от него.
+    if (fromIndex < 0) {
+      lessons[0].start = lessons[0].start || "08:30";
+      for (let i = 1; i < lessons.length; i++) {
+        lessons[i].start = addMinutes(lessons[i - 1].start, LESSON_DURATION + BREAK_MIN);
+      }
+      return;
+    }
+    for (let i = start; i < lessons.length; i++) {
       lessons[i].start = addMinutes(lessons[i - 1].start, LESSON_DURATION + BREAK_MIN);
     }
   }
