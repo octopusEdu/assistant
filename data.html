@@ -45,17 +45,16 @@ body::before{
 .demo-badge{
   display:inline-block;
   background:#fbbf24;
-  color:#78350f;
+  color:#78350f !important;
   font-family:'Raleway',sans-serif;
   font-weight:900;
   font-size:0.7rem;
   padding:3px 12px;
   border-radius:20px;
   letter-spacing:.4px;
-  margin-left:12px;
   text-transform:uppercase;
+  -webkit-text-fill-color:#78350f !important;
 }
-.demo-badge i{margin-right:4px;}
 
 .setup-card{
   background:var(--surface);
@@ -165,8 +164,8 @@ body::before{
     <div>
       <div class="header-title">
         Верификатор
-        <span class="demo-badge"><i class="fa-solid fa-wand-magic-sparkles"></i>ДЕМО</span>
-      </div>
+		 <span class="demo-badge"><i class="fa-solid fa-wand-magic-sparkles"></i> ДЕМО</span>
+         </div>
       <div class="header-sub">Проверка достоверности • Первоисточники • Статистика заблуждений</div>
     </div>
   </div>
