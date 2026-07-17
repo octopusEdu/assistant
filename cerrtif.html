@@ -283,6 +283,29 @@
         justify-content: center;
       }
     }
+
+    /* Стиль для кнопки "Назад" */
+    .back-link {
+      display: inline-block;
+      margin-top: 30px;
+      padding: 10px 24px;
+      background: #1fb5b8;
+      color: #ffffff;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: 0.2s;
+      border: 1px solid #cbd5e1;
+    }
+    .back-link:hover {
+      background: #cbd5e1;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.05);
+    }
+    .back-wrapper {
+      text-align: left;
+    }
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
@@ -339,6 +362,12 @@
   </div>
 
   <div id="results" class="result"></div>
+
+  <!-- Кнопка "Назад" -->
+  <div class="back-wrapper">
+    <a href="generators.html" class="back-link">← Назад</a>
+  </div>
+
   <footer>Сертификаты создаются в браузере. Выберите шрифт, настройте положение — текст будет чёрным, капсом, без теней.</footer>
 </div>
 
