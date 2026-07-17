@@ -1,35 +1,30 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Демо – Бот-наставник</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js">
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js">
-    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            /* Единый фирменный стиль для всех демо-страниц */
+            --back-btn-bg:    #12c2b3;
+            --back-btn-hover: #0a9b8f;
+            --burgundy:       #0a9b8f;
         }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background: #d9e9e6;
-            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            font-family: 'Inter', system-ui, sans-serif;
             min-height: 100vh;
             padding: 30px 24px;
         }
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-        .vertical-stack {
-            display: flex;
-            flex-direction: column;
-            gap: 28px;
-        }
+        .container { max-width: 1000px; margin: 0 auto; }
+        .vertical-stack { display: flex; flex-direction: column; gap: 28px; }
         .card {
             background: white;
             border-radius: 10px;
@@ -38,21 +33,54 @@
             border: 1px solid rgba(40, 120, 100, 0.2);
         }
         .accent-header {
-            background: linear-gradient(105deg, #0d9488 0%, #2c7a6e 100%);
-            color: white;
+            background: #ffffff;
+            border: 1px solid rgba(40, 120, 100, 0.2);
             border-radius: 16px;
-            padding: 24px 30px;
+            padding: 26px 30px;
+            box-shadow: 0 12px 28px rgba(0, 40, 30, 0.08);
         }
         .accent-header h2 {
-            font-size: 1.7rem;
-            font-weight: 700;
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(1.9rem, 4vw, 2.8rem);
+            font-weight: 800;
+            color: var(--burgundy);
+            letter-spacing: -0.02em;
             display: flex;
             align-items: center;
             gap: 14px;
             margin-bottom: 8px;
         }
+        .accent-header h2 i { color: #0d9488; font-size: 0.75em; }
         .accent-header p {
-            opacity: 0.9;
+            color: #4a6f66;
+        }
+        .demo-banner {
+            background: #fef3c7;
+            border-bottom: 2px solid #f59e0b;
+            padding: 10px 20px;
+            text-align: center;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #92400e;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .demo-banner .badge {
+            background: #f59e0b;
+            color: #fff;
+            padding: 2px 14px;
+            border-radius: 100px;
+            font-size: 0.7rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+        .demo-banner .api-hint {
+            font-weight: 400;
+            color: #78350f;
         }
         .config-grid {
             display: flex;
@@ -73,23 +101,16 @@
             color: #1e6b5c;
             margin-bottom: 8px;
         }
-        .config-item select,
-        .config-item input {
+        select, input {
             width: 100%;
             padding: 12px 18px;
             border-radius: 16px;
             border: 1px solid #c4dbd4;
-            background: #f5faf8;
+            background: white;
             font-size: 0.9rem;
             font-weight: 500;
             font-family: inherit;
             outline: none;
-        }
-        .config-item select:disabled,
-        .config-item input:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-            background: #eef3f0;
         }
         .paragraph-select-group {
             margin-top: 20px;
@@ -102,11 +123,6 @@
             display: block;
             margin-bottom: 8px;
             color: #1a5c4e;
-        }
-        .paragraph-select-group select:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-            background: #e8f0ec;
         }
         .info-note {
             font-size: 0.7rem;
@@ -147,98 +163,97 @@
             padding: 8px 20px;
             border-radius: 16px;
             cursor: pointer;
-            font-size: 0.9rem;
-        }
-        .reset-chat:hover {
-            background: rgba(255, 248, 225, 0.35);
         }
         .chat-messages {
             flex: 1;
-            height: 420px;
+            height: 380px;
             overflow-y: auto;
             padding: 22px 24px;
             display: flex;
             flex-direction: column;
             gap: 14px;
             background: #fefdf7;
-            position: relative;
         }
         .message {
-            max-width: 92%;
+            max-width: 85%;
             padding: 12px 20px;
             border-radius: 16px;
             font-size: 0.9rem;
-            line-height: 1.5;
+            line-height: 1.45;
             word-break: break-word;
         }
-        .message.user-msg {
+        .user-msg {
             align-self: flex-end;
             background: #0d9488;
             color: white;
             border-bottom-right-radius: 6px;
         }
-        .message.bot-msg {
+        .bot-msg {
+            
             background: #eef3f0;
             color: #1a2f3f;
-            border-bottom-left-radius: 6px;
+            
+            position: relative;
         }
-        .message.bot-msg .message-content h1,
-        .message.bot-msg .message-content h2,
-        .message.bot-msg .message-content h3,
-        .message.bot-msg .message-content h4 {
-            margin: 12px 0 6px;
-            color: #0d6b5f;
+        /* НОВЫЙ БЛОК: КНОПКИ БЫСТРОГО ЗАПРОСА */
+        .quick-buttons {
+            background: #f0f7f4;
+            padding: 12px 20px;
+            border-bottom: 1px solid #d4e2dc;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
         }
-        .message.bot-msg .message-content h3 {
-            font-size: 1.05rem;
+        .quick-btn {
+            background: white;
+            border: 1px solid #c4dbd4;
+            border-radius: 16px;
+            padding: 8px 18px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #1a5c4e;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
-        .message.bot-msg .message-content h4 {
-            font-size: 0.95rem;
-        }
-        .message.bot-msg .message-content ul,
-        .message.bot-msg .message-content ol {
-            padding-left: 22px;
-            margin: 6px 0 10px;
-        }
-        .message.bot-msg .message-content li {
-            margin: 4px 0;
-        }
-        .message.bot-msg .message-content p {
-            margin: 6px 0;
-        }
-        .message.bot-msg .message-content code {
-            background: #dce8e2;
-            padding: 1px 8px;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            font-family: 'Consolas', monospace;
-        }
-        .message.bot-msg .message-content pre {
-            background: #dce8e2;
-            padding: 10px 14px;
-            border-radius: 8px;
-            overflow-x: auto;
-            font-family: 'Consolas', monospace;
-            font-size: 0.85rem;
-            margin: 8px 0;
-        }
-        .message.bot-msg .message-content .math {
-            background: #e8f0ec;
-            padding: 2px 10px;
-            border-radius: 6px;
-            font-family: 'Consolas', monospace;
+        .quick-btn i {
             font-size: 0.9rem;
-            display: inline-block;
-            margin: 2px 0;
+            color: #0d9488;
         }
-        .message.bot-msg .message-content .math-block {
-            background: #e8f0ec;
-            padding: 8px 14px;
-            border-radius: 8px;
-            font-family: 'Consolas', monospace;
+        .quick-btn:hover {
+            background: #0d9488;
+            border-color: #0d9488;
+            color: white;
+            transform: translateY(-2px);
+        }
+        .quick-btn:hover i {
+            color: white;
+        }
+        .chat-input-area {
+            display: flex;
+            gap: 12px;
+            padding: 18px 24px;
+            background: white;
+            border-top: 1px solid #ddebe6;
+        }
+        .chat-input-area input {
+            flex: 1;
+            padding: 12px 20px;
+            border-radius: 16px;
+            border: 1px solid #c8ded6;
             font-size: 0.9rem;
-            display: block;
-            margin: 6px 0;
+        }
+        .chat-input-area button {
+            background: #0d9488;
+            border: none;
+            width: 48px;
+            border-radius: 16px;
+            color: white;
+            cursor: pointer;
+            font-size: 1.2rem;
         }
         .typing {
             display: none;
@@ -251,692 +266,451 @@
             margin-left: 24px;
             margin-bottom: 12px;
         }
-        .typing.show {
-            display: block;
-        }
-        .chat-input-area {
-            display: flex;
-            gap: 12px;
-            padding: 18px 24px;
-            background: white;
-            border-top: 1px solid #ddebe6;
-            align-items: center;
-        }
-        .chat-input-area input {
-            flex: 1;
-            padding: 12px 20px;
-            border-radius: 16px;
-            border: 1px solid #c8ded6;
-            font-size: 0.9rem;
-            background: #f9fcfb;
-            transition: border 0.2s;
-        }
-        .chat-input-area input:focus {
-            border-color: #0d9488;
-            outline: none;
-        }
-        .chat-input-area button {
-            background: #0d9488;
-            border: none;
-            width: 48px;
-            height: 48px;
-            border-radius: 16px;
-            color: white;
-            cursor: pointer;
-            font-size: 1.2rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.2s, transform 0.2s;
-            flex-shrink: 0;
-        }
-        .chat-input-area button:hover {
-            background: #0a7a70;
-        }
-        .chat-input-area button:active {
-            transform: scale(0.94);
-        }
-        .chat-input-area button.pulse {
-            animation: pulse-ring 1.8s ease-in-out infinite;
-            position: relative;
-        }
-        .chat-input-area button.pulse::after {
-            content: '';
-            position: absolute;
-            inset: -4px;
-            border-radius: 20px;
-            border: 2px solid #0d9488;
-            opacity: 0;
-            animation: pulse-ring-after 1.8s ease-in-out infinite;
-        }
-        @keyframes pulse-ring {
-            0%,
-            100% {
-                box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.3);
-            }
-            50% {
-                box-shadow: 0 0 0 10px rgba(13, 148, 136, 0);
-            }
-        }
-        @keyframes pulse-ring-after {
-            0%,
-            100% {
-                opacity: 0.5;
-                transform: scale(1);
-            }
-            50% {
-                opacity: 0;
-                transform: scale(1.25);
-            }
-        }
-        .chat-input-area button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            animation: none;
-        }
-        .chat-input-area button:disabled::after {
-            display: none;
-        }
-        .click-cursor {
-            position: fixed;
-            pointer-events: none;
-            z-index: 999;
-            font-size: 1.6rem;
-            color: #0d9488;
-            opacity: 0;
-            transition: opacity 0.2s;
-            font-weight: 700;
-            text-shadow: 0 0 8px rgba(13, 148, 136, 0.3);
-        }
-        .click-cursor.show {
-            opacity: 1;
-        }
-        .click-cursor .click-ripple {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: rgba(13, 148, 136, 0.25);
-            transform: translate(-50%, -50%) scale(0);
-            animation: ripple-pop 0.5s ease-out forwards;
-        }
-        @keyframes ripple-pop {
-            0% {
-                transform: translate(-50%, -50%) scale(0);
-                opacity: 1;
-            }
-            100% {
-                transform: translate(-50%, -50%) scale(2.5);
-                opacity: 0;
-            }
-        }
         .back-btn-fixed {
             position: fixed;
             bottom: 24px;
             left: 24px;
-            background: #1e5f54;
+            background: var(--back-btn-bg);
             color: white;
-            padding: 10px 24px;
-            border-radius: 10px;
+            padding: 12px 28px;
+            border-radius: 12px;
             text-decoration: none;
-            font-weight: 500;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            font-weight: 600;
+            font-size: 14px;
+            font-family: 'Inter', system-ui, sans-serif;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: all 0.2s;
             z-index: 100;
         }
         .back-btn-fixed:hover {
-            background: #164a41;
+            background: var(--back-btn-hover);
+            transform: translateY(-2px);
         }
-        .subject-switch-notice {
-            background: #eaf5f0;
-            padding: 10px 18px;
-            border-radius: 12px;
-            font-size: 0.85rem;
+        .api-info-header {
+            background: #eef7f3;
+            padding: 8px 20px;
+            font-size: 0.7rem;
             color: #1a5c4e;
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 12px;
-            border-left: 4px solid #0d9488;
-            margin: 4px 0 8px;
+            border-bottom: 1px solid #d4e2dc;
         }
-        .subject-switch-notice i {
-            font-size: 1.1rem;
-            color: #0d9488;
+        .api-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        @media (max-width: 600px) {
-            body {
-                padding: 16px 12px;
-            }
-            .card {
-                padding: 18px 16px;
-            }
-            .accent-header {
-                padding: 18px 20px;
-            }
-            .accent-header h2 {
-                font-size: 1.3rem;
-            }
-            .chat-messages {
-                height: 300px;
-                padding: 14px 16px;
-            }
-            .config-grid {
-                gap: 12px;
-            }
-            .chat-input-area {
-                padding: 12px 16px;
-                flex-wrap: wrap;
-            }
-            .chat-input-area input {
-                font-size: 0.85rem;
-                padding: 10px 14px;
-            }
-            .chat-input-area button {
-                width: 44px;
-                height: 44px;
-                font-size: 1rem;
-            }
-            .message {
-                max-width: 96%;
-                font-size: 0.85rem;
-                padding: 10px 14px;
-            }
-
+        #apiStatus {
+            font-weight: 600;
         }
-		.demo-badge {
-            display: inline-block;
-            background: #ff9800;
-            color: #fff;
-            font-size: 0.55rem;
-            font-weight: 700;
-            padding: 2px 8px;
-            border-radius: 30px;
-            margin-left: 8px;
-            vertical-align: middle;
-            letter-spacing: 0.3px;
-        }
-        .card .demo-badge { margin-left: 10px; }
     </style>
 </head>
 <body>
-
-    <div class="container">
-        <div class="vertical-stack">
-
-            <div class="accent-header">
-                <h2><i class="fa-solid fa-wand-magic-sparkles"></i> Бот-наставник <span class="demo-badge">DEMO</span></h2>
-                <p>Автоматическая демонстрация: биология → география → химия. Нажмите «Отправить».</p>
-            </div>
-
-            <div class="card">
-                <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
-                    <i class="fas fa-book-open" style="color:#1e6f5c;font-size:1.6rem;"></i>
-                    <h3 style="color:#1a5c4e;">Настройки учебника <span style="font-weight:400;font-size:0.8rem;color:#6b8f82;">(зафиксированы для демо)</span></h3>
-                </div>
-                <div class="config-grid">
-                    <div class="config-item">
-                        <label><i class="fas fa-layer-group"></i> КЛАСС</label>
-                        <select id="classSelect" disabled>
-                            <option value="9" selected>9 класс</option>
-                        </select>
-                    </div>
-                    <div class="config-item">
-                        <label><i class="fas fa-flask"></i> ПРЕДМЕТ</label>
-                        <select id="subjectSelect" disabled>
-                            <option value="biology" selected>Биология</option>
-                            <option value="geography">География</option>
-                            <option value="chemistry">Химия</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="paragraph-select-group">
-                    <label><i class="fas fa-list-ol"></i> Параграф</label>
-                    <select id="paragraphSelect" disabled>
-                        <option value="§ 13 «Слуховая сенсорная система»" selected>§ 13 «Слуховая сенсорная система»</option>
-                    </select>
-                    <div class="info-note"><i class="fas fa-microchip"></i> Демо-режим: предметы и параграфы меняются автоматически.</div>
-                </div>
-            </div>
-
-            <div class="chat-panel">
-                <div class="chat-header">
-                    <div class="chat-header-title"><i class="fas fa-chalkboard-user"></i> Бот-наставник</div>
-                    <button class="reset-chat" id="resetDemoBtn"><i class="fas fa-undo-alt"></i> Сбросить</button>
-                </div>
-
-                <div class="chat-messages" id="chatMessages">
-                    <div class="message bot-msg">
-                        📘 Добро пожаловать в демо-режим!<br>
-                        Нажмите <strong>«Отправить»</strong> – бот последовательно покажет задания по <strong>биологии</strong>, <strong>географии</strong> и <strong>химии</strong>.
-                    </div>
-                </div>
-
-                <div class="chat-input-area">
-                    <input type="text" id="chatInput" value="Напиши разноуровневые задания" placeholder="Введите запрос...">
-                    <button id="sendBtn" class="pulse" title="Отправить"><i class="fas fa-paper-plane"></i></button>
-                </div>
-
-                <div id="typingIndicator" class="typing"><i class="fas fa-spinner fa-pulse"></i> Бот думает...</div>
-            </div>
-
+<div class="container">
+    <div class="vertical-stack">
+        <div class="demo-banner">
+            <span class="badge">ДЕМО-ВЕРСИЯ</span>
+            <span class="api-hint">⚡ Работает без ключа – встроенные примеры ответов по одному параграфу на каждый предмет</span>
         </div>
-        <a href="index.html" class="back-btn-fixed"><i class="fas fa-arrow-left"></i> Назад</a>
-    </div>
 
-    <div class="click-cursor" id="clickCursor">
-        <i class="fas fa-mouse-pointer"></i>
-        <div class="click-ripple"></div>
-    </div>
+        <div class="accent-header">
+            <h2><i class="fa-solid fa-wand-magic-sparkles"></i> Бот-наставник</h2>
+            <p>Демонстрация по одному параграфу из биологии, химии, географии и предмета «Человек и мир».</p>
+        </div>
 
-    <script>
-        // =====================================================================
-        //  НАСТРОЙКА MARKED
-        // =====================================================================
-        if (window.marked) {
-            marked.setOptions({
-                gfm: true,
-                breaks: true,
-                sanitize: false, // доверяем DOMPurify
-                smartLists: true,
-                smartypants: false
-            });
+        <div class="card">
+               <div class="config-grid">
+                <div class="config-item">
+                    <label><i class="fas fa-layer-group"></i> КЛАСС</label>
+                    <select id="classSelect" disabled></select>
+                </div>
+                <div class="config-item">
+                    <label><i class="fas fa-flask"></i> ПРЕДМЕТ</label>
+                    <select id="subjectSelect">
+                        <option value="biology">Биология</option>
+                        <option value="chemistry">Химия</option>
+                        <option value="geography">География</option>
+                        <option value="him">Человек и мир</option>
+                    </select>
+                </div>
+            </div>
+            <div class="paragraph-select-group">
+                <label><i class="fas fa-list-ol"></i> Параграф</label>
+                <select id="paragraphSelect" disabled></select>
+                <div class="info-note"><i class="fas fa-microchip"></i> Демо-режим: для каждого предмета доступен один параграф-пример.</div>
+            </div>
+        </div>
+
+        <div class="chat-panel">
+            <div class="chat-header">
+                <div class="chat-header-title"><i class="fas fa-chalkboard-user"></i> Бот-наставник</div>
+                <button class="reset-chat" id="clearChatBtn"><i class="fas fa-trash-alt"></i> Очистить</button>
+            </div>
+            <div class="api-info-header">
+                <div class="api-status">
+                    <i class="fas fa-bolt"></i> Статус: <span id="apiStatus">ДЕМО-режим</span>
+                </div>
+                <div><i class="fas fa-database"></i> Встроенные примеры ответов</div>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+                <div class="message bot-msg">
+                    Здравствуйте! Я ИИ-помощник (демо-режим)<br>
+                    Выберите предмет и нажмите одну из кнопок ниже – покажу пример ответа по параграфу.
+                </div>
+            </div>
+            
+            <!-- НОВЫЙ БЛОК: КНОПКИ БЫСТРОГО ЗАПРОСА -->
+            <div class="quick-buttons">
+                <button class="quick-btn" data-query="составь 3 задания по этому параграфу"><i class="fas fa-tasks"></i> 3 задания</button>
+                <button class="quick-btn" data-query="составь пять тестовых заданий разного типа"><i class="fas fa-check-circle"></i> 5 тестов</button>
+                <button class="quick-btn" data-query="составь пять разноуровневых заданий"><i class="fas fa-layer-group"></i> Разноуровн. задания</button>
+                <button class="quick-btn" data-query="объясни тему простым языком"><i class="fas fa-graduation-cap"></i> Простым языком</button>
+                <button class="quick-btn" data-query="сделай краткий конспект этого параграфа"><i class="fas fa-file-alt"></i> Краткий конспект</button>
+            </div>
+            
+            <div class="chat-input-area">
+                <input type="text" id="chatInput" placeholder="Спросите у бота...">
+                <button id="voiceBtn" title="Голосовой ввод"><i class="fas fa-microphone"></i></button>
+                <button id="sendBtn"><i class="fas fa-paper-plane"></i></button>
+            </div>
+            <div id="typingIndicator" class="typing"><i class="fas fa-spinner fa-pulse"></i> Бот думает...</div>
+        </div>
+    </div>
+    <a href="index.html" class="back-btn-fixed"><i class="fas fa-arrow-left"></i>Назад</a>
+</div>
+
+<script>
+    // ========== ДЕМО: ПО ОДНОМУ ПАРАГРАФУ НА КАЖДЫЙ ПРЕДМЕТ ==========
+    const DEMO_TOPICS = {
+        biology:   { grade: 9, title: '§ 13 «Слуховая сенсорная система»' },
+        chemistry: { grade: 7, title: '§ 9 «Валентность»' },
+        geography: { grade: 6, title: '§ 19 «Погода»' },
+        him:       { grade: 5, title: '§ 6 «Солнечная система»' }
+    };
+
+    // ========== БАНК ГОТОВЫХ ОТВЕТОВ ДЛЯ ДЕМО (без API) ==========
+    const DEMO_ANSWERS = {
+        biology: {
+            tasks3: `**3 задания по теме «Слуховая сенсорная система»**
+
+1. Опишите путь звуковой волны от ушной раковины до слуховых рецепторов улитки.
+2. Объясните, почему при резком перепаде давления (например, в самолёте) закладывает уши, и как зевота помогает это исправить.
+3. Сравните функции наружного, среднего и внутреннего уха – заполните таблицу «Отдел уха – строение – функция».`,
+            tests5: `**5 тестовых заданий по теме «Слуховая сенсорная система»**
+
+1. *Выбор одного ответа.* Слуховые рецепторы находятся в: а) барабанной перепонке б) улитке в) слуховой трубе г) ушной раковине
+2. *Верно/неверно.* Слуховая (евстахиева) труба соединяет среднее ухо с носоглоткой.
+3. *Дополните предложение.* Колебания барабанной перепонки передаются на три слуховые косточки: молоточек, ________ и стремечко.
+4. *Соответствие.* Соедините отдел уха (наружное / среднее / внутреннее) с его функцией (улавливание звука / усиление колебаний / преобразование в нервный импульс).
+5. *Краткий ответ.* Почему длительное прослушивание громкой музыки в наушниках вредно для слуха?`,
+            leveled5: `**Разноуровневые задания по теме «Слуховая сенсорная система»**
+
+**Базовый уровень**
+1. Назовите три отдела уха.
+2. Что такое барабанная перепонка?
+
+**Повышенный уровень**
+3. Опишите, как звуковые колебания преобразуются в нервный импульс в улитке.
+4. Объясните роль слуховой трубы в выравнивании давления.
+
+**Высокий уровень**
+5. Предложите и обоснуйте три правила гигиены слуха для подростков, пользующихся наушниками.`,
+            simple: `**Тема простым языком: как мы слышим**
+
+Ушная раковина ловит звук, как воронка, и направляет его в слуховой проход. Звук доходит до барабанной перепонки – тонкой мембраны, которая начинает дрожать. Дрожание передаётся на три крошечные косточки среднего уха, которые усиливают сигнал. Дальше он попадает в улитку – спиральную трубочку внутреннего уха, заполненную жидкостью. Там особые волосковые клетки превращают колебания в электрические сигналы, а слуховой нерв несёт их в мозг, который и «слышит» звук.`,
+            summary: `**Краткий конспект: § 13 «Слуховая сенсорная система»**
+
+- Ухо состоит из трёх отделов: наружное, среднее, внутреннее.
+- Наружное ухо (раковина + слуховой проход) улавливает и направляет звук.
+- Среднее ухо (барабанная перепонка + 3 косточки) усиливает колебания.
+- Слуховая труба выравнивает давление между средним ухом и носоглоткой.
+- Внутреннее ухо (улитка) превращает колебания в нервный импульс.
+- Слуховой нерв передаёт сигнал в кору головного мозга.`
+        },
+        chemistry: {
+            tasks3: `**3 задания по теме «Валентность»**
+
+1. Определите валентность серы в соединениях H₂S, SO₂ и SO₃.
+2. Составьте формулу оксида фосфора, если валентность фосфора равна V.
+3. По формуле Al₂O₃ определите валентность алюминия, зная, что валентность кислорода равна II.`,
+            tests5: `**5 тестовых заданий по теме «Валентность»**
+
+1. *Выбор одного ответа.* Валентность водорода в соединениях всегда равна: а) I б) II в) III г) переменная
+2. *Верно/неверно.* Валентность кислорода в большинстве соединений равна II.
+3. *Дополните предложение.* Валентность – это способность атома элемента присоединять определённое число атомов ________ элемента.
+4. *Соответствие.* Соотнесите формулу (CH₄, CO₂, NH₃) с валентностью центрального атома (IV, IV, III).
+5. *Краткий ответ.* Почему у одного и того же элемента (например, серы) валентность может быть разной?`,
+            leveled5: `**Разноуровневые задания по теме «Валентность»**
+
+**Базовый уровень**
+1. Дайте определение понятию «валентность».
+2. Назовите валентность водорода и кислорода.
+
+**Повышенный уровень**
+3. Составьте формулу вещества по валентностям: N(III) и H(I).
+4. Определите валентность железа в соединении FeCl₃.
+
+**Высокий уровень**
+5. Объясните, почему у углерода в органических соединениях валентность всегда IV, приведите два примера.`,
+            simple: `**Тема простым языком: что такое валентность**
+
+Представьте, что у атома есть «руки», которыми он может держаться за атомы других элементов. Число таких «рук» и есть валентность. У водорода одна «рука» – валентность I, у кислорода две – валентность II. Когда атомы соединяются, все их «руки» должны быть заняты: например, в воде H₂O два атома водорода (по одной «руке» каждый) держатся за один атом кислорода (у которого как раз две «руки»).`,
+            summary: `**Краткий конспект: § 9 «Валентность»**
+
+- Валентность – способность атома присоединять определённое число атомов другого элемента.
+- Валентность водорода принимается равной I, кислорода – обычно II.
+- По валентности можно составлять и проверять химические формулы.
+- Сумма единиц валентности всех атомов одного элемента равна сумме единиц валентности всех атомов другого элемента в соединении.
+- У некоторых элементов (сера, азот, железо) валентность может быть переменной.`
+        },
+        geography: {
+            tasks3: `**3 задания по теме «Погода»**
+
+1. Перечислите основные элементы погоды и укажите приборы для их измерения.
+2. Объясните разницу между понятиями «погода» и «климат».
+3. По данным своих наблюдений за неделю составьте краткий прогноз погоды на завтра.`,
+            tests5: `**5 тестовых заданий по теме «Погода»**
+
+1. *Выбор одного ответа.* Атмосферное давление измеряют с помощью: а) термометра б) барометра в) гигрометра г) флюгера
+2. *Верно/неверно.* Погода – это многолетний режим атмосферных явлений, характерный для данной местности.
+3. *Дополните предложение.* Прибор для измерения направления и силы ветра называется ________.
+4. *Соответствие.* Соедините элемент погоды (температура / осадки / ветер) с прибором для его измерения (термометр / осадкомер / флюгер).
+5. *Краткий ответ.* Почему облачность важна для прогноза погоды?`,
+            leveled5: `**Разноуровневые задания по теме «Погода»**
+
+**Базовый уровень**
+1. Назовите пять элементов погоды.
+2. Каким прибором измеряют температуру воздуха?
+
+**Повышенный уровень**
+3. Опишите, как атмосферное давление влияет на характер погоды.
+4. Объясните, почему погода может меняться в течение одного дня.
+
+**Высокий уровень**
+5. Проанализируйте, какие элементы погоды наиболее важны для сельского хозяйства вашего региона, и обоснуйте ответ.`,
+            simple: `**Тема простым языком: что такое погода**
+
+Погода – это то, что происходит с воздухом за окном прямо сейчас: тепло или холодно, светит солнце или идёт дождь, дует ветер или тихо. Метеорологи наблюдают за несколькими вещами: температурой воздуха, давлением, влажностью, облачностью, осадками и ветром – и по этим данным составляют прогноз на завтра. Погода может меняться быстро, в отличие от климата, который показывает, какая погода типична для места на протяжении многих лет.`,
+            summary: `**Краткий конспект: § 19 «Погода»**
+
+- Погода – состояние атмосферы в данном месте в данный момент времени.
+- Основные элементы погоды: температура, атмосферное давление, влажность, облачность, осадки, ветер.
+- Для наблюдений используют термометр, барометр, гигрометр, флюгер и осадкомер.
+- Данные наблюдений заносят в дневник погоды и используют для составления прогнозов.
+- Погоду важно отличать от климата – многолетнего режима погоды местности.`
+        },
+        him: {
+            tasks3: `**3 задания по теме «Солнечная система»**
+
+1. Перечислите планеты Солнечной системы в порядке удаления от Солнца.
+2. Объясните, чем планеты земной группы отличаются от планет-гигантов.
+3. Опишите, что такое астероиды, кометы и метеориты, и чем они различаются.`,
+            tests5: `**5 тестовых заданий по теме «Солнечная система»**
+
+1. *Выбор одного ответа.* Самая большая планета Солнечной системы: а) Земля б) Сатурн в) Юпитер г) Нептун
+2. *Верно/неверно.* Солнце является звездой, а не планетой.
+3. *Дополните предложение.* Небесное тело, вращающееся вокруг планеты, называется ________.
+4. *Соответствие.* Соотнесите планету (Меркурий / Марс / Сатурн) с её особенностью (ближайшая к Солнцу / красная планета / кольца).
+5. *Краткий ответ.* Почему Плутон сейчас не считается полноценной планетой?`,
+            leveled5: `**Разноуровневые задания по теме «Солнечная система»**
+
+**Базовый уровень**
+1. Сколько планет входит в Солнечную систему?
+2. Что находится в центре Солнечной системы?
+
+**Повышенный уровень**
+3. Сравните планеты земной группы и планеты-гиганты по составу и размеру.
+4. Объясните, почему на Земле есть жизнь, а на других планетах Солнечной системы (пока) не обнаружена.
+
+**Высокий уровень**
+5. Предположите, какие условия необходимы для существования жизни на планете, и оцените по ним ближайшие к Земле планеты.`,
+            simple: `**Тема простым языком: что такое Солнечная система**
+
+Солнечная система – это наш «космический дом». В центре находится звезда – Солнце, а вокруг неё по своим орбитам вращаются восемь планет: сначала маленькие каменистые (Меркурий, Венера, Земля, Марс), а затем огромные газовые гиганты (Юпитер, Сатурн, Уран, Нептун). Кроме планет, вокруг Солнца летают астероиды, кометы и множество мелких обломков. Всё это удерживается вместе притяжением Солнца – самого массивного тела в системе.`,
+            summary: `**Краткий конспект: § 6 «Солнечная система»**
+
+- Солнечная система включает Солнце и восемь планет, вращающихся вокруг него по орбитам.
+- Планеты делятся на земную группу (Меркурий, Венера, Земля, Марс) и планеты-гиганты (Юпитер, Сатурн, Уран, Нептун).
+- Кроме планет, в систему входят их спутники, астероиды, кометы и метеорные тела.
+- Все объекты удерживаются на орбитах силой притяжения Солнца.
+- Земля – единственная известная планета, на которой существует жизнь.`
         }
+    };
 
-        // =====================================================================
-        //  ДАННЫЕ ДЛЯ ДЕМО
-        // =====================================================================
+    function matchDemoKey(query) {
+        const q = query.toLowerCase();
+        if (q.includes('3 задан') || q.includes('три задан')) return 'tasks3';
+        if (q.includes('тест')) return 'tests5';
+        if (q.includes('разноуровн')) return 'leveled5';
+        if (q.includes('прост')) return 'simple';
+        if (q.includes('конспект') || q.includes('кратк')) return 'summary';
+        return null;
+    }
 
-        const DEMO_DATA = [{
-            subject: 'biology',
-            subjectLabel: 'Биология',
-            grade: 9,
-            paragraph: '§ 13 «Слуховая сенсорная система»',
-            displayName: 'Биология, 9 класс, § 13',
-            response: `Задания для 9 класса по теме "Слуховая сенсорная система" (§ 13)
+    function getDemoAnswer(subject, query) {
+        const bank = DEMO_ANSWERS[subject] || DEMO_ANSWERS.biology;
+        const key = matchDemoKey(query) || 'summary';
+        return bank[key] || bank.summary;
+    }
 
-### Уровень А (Базовый)
+    // DOM элементы
+    const classSelect = document.getElementById('classSelect');
+    const subjectSelect = document.getElementById('subjectSelect');
+    const paragraphSelect = document.getElementById('paragraphSelect');
+    const chatMessages = document.getElementById('chatMessages');
+    const chatInput = document.getElementById('chatInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const clearBtn = document.getElementById('clearChatBtn');
+    const typingDiv = document.getElementById('typingIndicator');
+    const apiStatusSpan = document.getElementById('apiStatus');
 
-1. Что такое слуховая сенсорная система? (Краткое определение)
-2. Перечислите основные части наружного уха.
-3. Какова функция среднего уха?
-4. Назовите три слуховые косточки.
-5. Что находится во внутреннем ухе, отвечающее за восприятие звука?
+    let isWaiting = false;
 
-### Уровень Б (Средний)
+    apiStatusSpan.innerHTML = '<i class="fas fa-bolt" style="color:#0d9488;"></i> ДЕМО-режим';
 
-1. Опишите процесс передачи звуковой волны от наружного уха до внутреннего.
-2. Как улитка внутреннего уха преобразует механические колебания в нервные импульсы?
-3. Объясните, как наш мозг интерпретирует звуковые сигналы.
-4. Какие факторы могут привести к нарушению слуха?
-5. Сравните строение и функции наружного, среднего и внутреннего уха.
+    // Обновление параграфа и класса под выбранный предмет (для демо – один параграф на предмет)
+    function updateParagraphSelect() {
+        const subject = subjectSelect.value;
+        const topic = DEMO_TOPICS[subject];
+        if (!topic) return;
+        classSelect.innerHTML = `<option selected>${topic.grade} класс</option>`;
+        paragraphSelect.innerHTML = `<option selected>${topic.title}</option>`;
+    }
 
-### Уровень В (Продвинутый)
+    function getCurrentParagraph() { return paragraphSelect.value || 'не выбран'; }
+    function getSubjectName() {
+        const map = { biology: 'Биология', chemistry: 'Химия', geography: 'География', him: 'Человек и мир' };
+        return map[subjectSelect.value] || 'Предмет';
+    }
 
-1. Разработайте схему, иллюстрирующую путь звука через слуховой анализатор, с указанием всех ключевых структур.
-2. Исследуйте и опишите одно из заболеваний, связанных с нарушением слуха (например, кондуктивная тугоухость, нейросенсорная тугоухость).
-3. Объясните, как слуховая система взаимодействует с другими сенсорными системами (например, вестибулярной) для поддержания равновесия.
-4. Подготовьте краткое сообщение о современных методах диагностики и лечения нарушений слуха.
-5. Проанализируйте, как различные частоты звука воспринимаются разными участками улитки.`
-        }, {
-            subject: 'geography',
-            subjectLabel: 'География',
-            grade: 7,
-            paragraph: '§ 7 «Тихий и Индийский океаны»',
-            displayName: 'География, 7 класс, § 7',
-            response: `### Задание 1 (Базовый уровень)
+    subjectSelect.addEventListener('change', updateParagraphSelect);
+    updateParagraphSelect();
 
-Перечислите три основных вида полезных ископаемых, упомянутых в параграфе, и приведите по одному примеру их использования.
-
-### Задание 2 (Повышенный уровень)
-
-Классифицируйте полезные ископаемые, представленные в параграфе, по их происхождению (например, магматические, осадочные, метаморфические). Объясните, почему такая классификация важна.
-
-### Задание 3 (Высокий уровень)
-
-Выберите один вид полезных ископаемых, добываемых в Беларуси (согласно параграфу), и опишите его значение для экономики страны, а также возможные экологические проблемы, связанные с его добычей и использованием.`
-        }, {
-            subject: 'chemistry',
-            subjectLabel: 'Химия',
-            grade: 9,
-            paragraph: '§ 4 «Типы химических реакций»',
-            displayName: 'Химия, 9 класс, § 4',
-            response: `### Задания по теме "Типы химических реакций" (9 класс)
-
-#### Уровень А (Базовый)
-
-1. **Определите тип химической реакции:**
-
-   \`2H₂ + O₂ → 2H₂O\`
-
-   \`CaCO₃ → CaO + CO₂\`
-
-   \`Zn + CuSO₄ → ZnSO₄ + Cu\`
-
-   \`H₂SO₄ + 2NaOH → Na₂SO₄ + 2H₂O\`
-
-2. **Напишите уравнение реакции, если:**
-   - Синтез оксида магния из магния и кислорода.
-   - Разложение карбоната кальция при нагревании.
-
-#### Уровень Б (Продвинутый)
-
-1. **Составьте уравнения реакций и определите их тип:**
-   - Взаимодействие серной кислоты с гидроксидом калия.
-   - Горение метана.
-   - Взаимодействие железа с раствором хлорида меди(II).
-   - Разложение перманганата калия при нагревании.
-
-2. **Приведите примеры реакций каждого типа** (кроме перечисленных в Уровне А) с участием:
-   - Простых веществ.
-   - Сложных веществ.
-
-#### Уровень В (Высокий)
-
-1. **Закончите уравнения реакций, определите их тип и расставьте коэффициенты:**
-
-   \`P₂O₅ + H₂O →\`
-
-   \`KNO₃ →[t]\`
-
-   \`Cl₂ + KBr →\`
-
-   \`Ba(OH)₂ + H₃PO₄ →\`
-
-2. Опишите, как можно отличить реакции разложения от реакций замещения на конкретных примерах.
-
-3. Приведите примеры экзотермических и эндотермических реакций, относящихся к разным типам.`
-        }];
-
-        // =====================================================================
-        //  DOM + СОСТОЯНИЕ
-        // =====================================================================
-
-        const chatMessages = document.getElementById('chatMessages');
-        const chatInput = document.getElementById('chatInput');
-        const sendBtn = document.getElementById('sendBtn');
-        const typingDiv = document.getElementById('typingIndicator');
-        const resetBtn = document.getElementById('resetDemoBtn');
-        const clickCursor = document.getElementById('clickCursor');
-
-        const subjectSelect = document.getElementById('subjectSelect');
-        const paragraphSelect = document.getElementById('paragraphSelect');
-
-        let isRunning = false;
-        let currentStep = 0;
-        let abortFlag = false;
-
-        // =====================================================================
-        //  ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
-        // =====================================================================
-
-        function addMessage(text, isUser, className = '') {
-            const div = document.createElement('div');
-            div.className = `message ${isUser ? 'user-msg' : 'bot-msg'} ${className}`;
-            if (!isUser && window.marked) {
-                try {
-                    let html = marked.parse(text);
-                    html = DOMPurify.sanitize(html);
-                    div.innerHTML = `<div class="message-content">${html}</div>`;
-                } catch (e) {
-                    div.innerText = text;
-                }
-            } else {
+    // Добавление сообщений
+    function addMessage(text, isUser) {
+        const div = document.createElement('div');
+        div.className = `message ${isUser ? 'user-msg' : 'bot-msg'}`;
+        if (!isUser && window.marked) {
+            try {
+                let html = marked.parse(text);
+                html = DOMPurify.sanitize(html);
+                div.innerHTML = `<div class="message-content">${html}</div>`;
+            } catch(e) {
                 div.innerText = text;
             }
-            chatMessages.appendChild(div);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-            return div;
+        } else {
+            div.innerText = text;
         }
+        chatMessages.appendChild(div);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
 
-        function addSystemNotice(html) {
-            const div = document.createElement('div');
-            div.className = 'subject-switch-notice';
-            div.innerHTML = html;
-            chatMessages.appendChild(div);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-            return div;
-        }
+    function showTyping() { typingDiv.style.display = 'block'; chatMessages.scrollTop = chatMessages.scrollHeight; }
+    function hideTyping() { typingDiv.style.display = 'none'; }
 
-        function showTyping() {
-            typingDiv.classList.add('show');
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
+    // Отправка сообщения (демо: без обращения к API, готовые варианты ответов)
+    function handleSend(messageText = null) {
+        const text = messageText !== null ? messageText : chatInput.value.trim();
+        if (!text || isWaiting) return;
 
-        function hideTyping() {
-            typingDiv.classList.remove('show');
-        }
+        addMessage(text, true);
+        if (messageText === null) chatInput.value = '';
+        isWaiting = true;
+        showTyping();
 
-        function sleep(ms) {
-            return new Promise(r => setTimeout(r, ms));
-        }
+        setTimeout(() => {
+            hideTyping();
+            const reply = getDemoAnswer(subjectSelect.value, text);
+            addMessage(reply, false);
+            isWaiting = false;
+        }, 700 + Math.random() * 500);
+    }
 
-        // =====================================================================
-        //  ЭФФЕКТ ПЕЧАТИ (30 символов/сек) + ПРИМЕНЕНИЕ MARKDOWN ПОСЛЕ
-        // =====================================================================
+    function clearChat() {
+        chatMessages.innerHTML = `<div class="message bot-msg">🗑 Диалог очищен (демо-режим). Нажмите одну из кнопок ниже или задайте вопрос.</div>`;
+    }
 
-        async function typeMessage(text, container) {
-            // Ищем или создаём контейнер для содержимого
-            let target = container.querySelector('.message-content');
-            if (!target) {
-                const wrap = document.createElement('div');
-                wrap.className = 'message-content';
-                container.innerHTML = '';
-                container.appendChild(wrap);
-                target = wrap;
-            }
+    sendBtn.addEventListener('click', () => handleSend());
+    chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleSend(); });
+    clearBtn.addEventListener('click', clearChat);
 
-            const fullText = text;
-            const charsPerSecond = 30;
-            const delay = 1000 / charsPerSecond;
-
-            // Очищаем и печатаем как обычный текст
-            target.innerHTML = '';
-
-            let i = 0;
-            const len = fullText.length;
-
-            while (i < len && !abortFlag) {
-                let chunkSize = Math.floor(charsPerSecond * 0.3) + 1;
-                let end = Math.min(i + chunkSize, len);
-                if (end < len) {
-                    const nextSpace = fullText.indexOf(' ', end);
-                    const nextNewline = fullText.indexOf('\n', end);
-                    let stop = Math.min(
-                        nextSpace !== -1 ? nextSpace : len,
-                        nextNewline !== -1 ? nextNewline : len
-                    );
-                    if (stop > i && stop < i + chunkSize * 2) {
-                        end = stop + 1;
-                    }
-                }
-                const chunk = fullText.substring(i, Math.min(end, len));
-                target.innerHTML += chunk;
-                i = Math.min(end, len);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-                await sleep(delay);
-            }
-
-            if (abortFlag) return;
-
-            // После завершения печати – преобразуем Markdown в HTML
-            try {
-                let rendered = marked.parse(fullText);
-                rendered = DOMPurify.sanitize(rendered);
-                target.innerHTML = rendered;
-            } catch (e) {
-                console.warn('Markdown rendering failed:', e);
-                target.innerHTML = fullText;
-            }
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        // =====================================================================
-        //  АНИМАЦИЯ КУРСОРА (клик по селектору)
-        // =====================================================================
-
-        function showCursorClick(targetElement, callback) {
-            const rect = targetElement.getBoundingClientRect();
-            const cx = rect.left + rect.width / 2;
-            const cy = rect.top + rect.height / 2;
-
-            clickCursor.style.left = (cx - 16) + 'px';
-            clickCursor.style.top = (cy - 16) + 'px';
-            clickCursor.classList.add('show');
-
-            const ripple = clickCursor.querySelector('.click-ripple');
-            ripple.style.animation = 'none';
-            void ripple.offsetWidth;
-            ripple.style.animation = 'ripple-pop 0.5s ease-out forwards';
-
-            setTimeout(() => {
-                clickCursor.classList.remove('show');
-                if (callback) callback();
-            }, 600);
-        }
-
-        // =====================================================================
-        //  СМЕНА ПРЕДМЕТА (визуально + селекторы)
-        // =====================================================================
-
-        function setSubject(index) {
-            const data = DEMO_DATA[index];
-            if (!data) return;
-
-            subjectSelect.value = data.subject;
-
-            const option = document.createElement('option');
-            option.value = data.paragraph;
-            option.textContent = data.paragraph;
-            option.selected = true;
-            paragraphSelect.innerHTML = '';
-            paragraphSelect.appendChild(option);
-        }
-
-        // =====================================================================
-        //  ОСНОВНОЙ ПОТОК ДЕМО (без растворения)
-        // =====================================================================
-
-        async function runDemo() {
-            if (isRunning) return;
-            isRunning = true;
-            abortFlag = false;
-            sendBtn.disabled = true;
-            sendBtn.classList.remove('pulse');
-            chatInput.disabled = true;
-
-            try {
-                chatMessages.innerHTML = `
-                    <div class="message bot-msg">
-                        📘 Демо-режим запущен.<br>
-                        Последовательно будут показаны задания по <strong>биологии</strong>, <strong>географии</strong> и <strong>химии</strong>.
-                    </div>
-                `;
-
-                for (let i = 0; i < DEMO_DATA.length && !abortFlag; i++) {
-                    const data = DEMO_DATA[i];
-
-                    if (i > 0) {
-                        addSystemNotice(`
-                            <i class="fas fa-arrow-right"></i>
-                            Переход к <strong>${data.subjectLabel}</strong>, ${data.grade} класс, ${data.paragraph}
-                        `);
-
-                        await sleep(400);
-                        showCursorClick(subjectSelect, () => {
-                            setSubject(i);
-                        });
-                        await sleep(800);
-                        await sleep(600);
-                    } else {
-                        setSubject(0);
-                        await sleep(300);
-                    }
-
-                    const userQuery = chatInput.value || 'Напиши разноуровневые задания';
-                    addMessage(userQuery, true);
-
-                    await sleep(1000);
-
-                    showTyping();
-                    const botMsgEl = addMessage('', false);
-                    hideTyping();
-
-                    await typeMessage(data.response, botMsgEl);
-
-                    // Пауза перед следующим шагом
-                    await sleep(2000);
-                }
-
-                if (!abortFlag) {
-                    addSystemNotice(`
-                        <i class="fas fa-check-circle" style="color:#0d9488;"></i>
-                        Демонстрация завершена! Нажмите «Сбросить», чтобы повторить.
-                    `);
-                }
-
-            } catch (err) {
-                console.error('Demo error:', err);
-                addMessage('⚠️ Произошла ошибка в демо-режиме. Попробуйте сбросить.', false);
-            }
-
-            isRunning = false;
-            sendBtn.disabled = false;
-            sendBtn.classList.add('pulse');
-            chatInput.disabled = false;
-        }
-
-        // =====================================================================
-        //  СБРОС
-        // =====================================================================
-
-        function resetDemo() {
-            abortFlag = true;
-            isRunning = false;
-            sendBtn.disabled = false;
-            sendBtn.classList.add('pulse');
-            chatInput.disabled = false;
-
-            chatMessages.innerHTML = `
-                <div class="message bot-msg">
-                    Добро пожаловать в демо-режим!<br>
-                    Нажмите <strong>«Отправить»</strong> – бот последовательно покажет задания по <strong>биологии</strong>, <strong>географии</strong> и <strong>химии</strong>.
-                </div>
-            `;
-
-            setSubject(0);
-            clickCursor.classList.remove('show');
-
-            document.querySelectorAll('.subject-switch-notice').forEach(el => el.style.opacity = '1');
-        }
-
-        // =====================================================================
-        //  ИНИЦИАЛИЗАЦИЯ
-        // =====================================================================
-
-        subjectSelect.disabled = true;
-        paragraphSelect.disabled = true;
-        classSelect.disabled = true;
-
-        setSubject(0);
-
-        sendBtn.addEventListener('click', () => {
-            if (isRunning) return;
-            runDemo();
-        });
-
-        chatInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !isRunning) {
-                runDemo();
+    // ========== КНОПКИ БЫСТРОГО ЗАПРОСА ==========
+    const quickButtons = document.querySelectorAll('.quick-btn');
+    quickButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const query = btn.getAttribute('data-query');
+            if (query) {
+                handleSend(query);
             }
         });
+    });
 
-        resetBtn.addEventListener('click', resetDemo);
+    // ========== ГОЛОСОВОЙ ВВОД ==========
+    const voiceBtn = document.getElementById('voiceBtn');
+    let recognition = null;
+    let isListening = false;
 
-        resetDemo();
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognition = new SpeechRecognition();
+        recognition.lang = 'ru-RU';
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
 
-        console.log('✅ Демо-бот загружен. Нажмите «Отправить» для запуска.');
-    </script>
+        recognition.onstart = () => {
+            isListening = true;
+            voiceBtn.style.background = '#e74c3c';
+            voiceBtn.style.color = 'white';
+            voiceBtn.innerHTML = '<i class="fas fa-microphone-slash"></i>';
+        };
 
+        recognition.onend = () => {
+            isListening = false;
+            voiceBtn.style.background = '';
+            voiceBtn.style.color = '';
+            voiceBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+        };
+
+        recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript;
+            chatInput.value = transcript;
+            handleSend(transcript);
+        };
+
+        recognition.onerror = (event) => {
+            console.error('Ошибка распознавания:', event.error);
+            let errorMsg = '';
+            switch(event.error) {
+                case 'no-speech': errorMsg = 'Речь не обнаружена'; break;
+                case 'audio-capture': errorMsg = 'Микрофон не найден'; break;
+                case 'not-allowed': errorMsg = 'Нет доступа к микрофону'; break;
+                default: errorMsg = `Ошибка: ${event.error}`;
+            }
+            addMessage(`🎤 ${errorMsg}. Попробуйте ещё раз.`, false);
+            voiceBtn.style.background = '';
+            voiceBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+            isListening = false;
+        };
+
+        voiceBtn.addEventListener('click', () => {
+            if (isListening) {
+                recognition.stop();
+            } else {
+                try {
+                    recognition.start();
+                } catch(e) {
+                    console.warn('Recognition already started');
+                }
+            }
+        });
+    } else {
+        voiceBtn.disabled = true;
+        voiceBtn.title = 'Голосовой ввод не поддерживается вашим браузером';
+        voiceBtn.style.opacity = '0.5';
+        voiceBtn.style.cursor = 'not-allowed';
+    }
+</script>
 </body>
 </html>
