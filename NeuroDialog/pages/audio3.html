@@ -83,7 +83,7 @@ body {
     color: white;
     border: none;
     padding: 10px 22px;
-    border-radius: 16px;
+    border-radius: 10px;
     cursor: pointer;
     font-size: 16px;
     font-weight: 600;
@@ -104,7 +104,7 @@ body {
     color: white;
     border: none;
     padding: 12px 28px;
-    border-radius: 16px;
+    border-radius: 12px;
     cursor: pointer;
     font-size: 16px;
     font-weight: 600;
@@ -176,6 +176,9 @@ h1 {
     <audio id="audio1">
         <source src="src/kom.mp3" type="audio/mpeg">
     </audio>
+	<div class="nav-row">
+    <button class="nav-btn" onclick="nextSlide()">Далее →</button>
+</div>
 </div>
 
 <!-- ==================== СЛАЙД 2 ==================== -->
@@ -190,6 +193,9 @@ h1 {
     <audio id="audio2">
         <source src="src/kom2.mp3" type="audio/mpeg">
     </audio>
+	<div class="nav-row">
+    <button class="nav-btn" onclick="nextSlide()">Далее →</button>
+</div>
 </div>
 
 <!-- ==================== СЛАЙД 3 ==================== -->
@@ -205,12 +211,11 @@ h1 {
     <audio id="audio3">
         <source src="src/kom3.mp3" type="audio/mpeg">
     </audio>
+	
 </div>
 
 <!-- Навигация -->
-<div class="nav-row">
-    <button class="nav-btn" onclick="nextSlide()">Далее →</button>
-</div>
+
 
 <!-- Точки -->
 <div class="dots">
