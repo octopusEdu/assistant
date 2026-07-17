@@ -29,8 +29,6 @@
     }
     body::before {
       content:''; position: fixed; inset:0;
-      background-image: linear-gradient(rgba(20,184,166,0.06) 1px, transparent 1px),
-                        linear-gradient(90deg, rgba(20,184,166,0.06) 1px, transparent 1px);
       background-size: 36px 36px; pointer-events:none; z-index:0;
     }
     .container { max-width: 1160px; margin:0 auto; padding:32px 24px; position:relative; z-index:1; }
@@ -203,6 +201,29 @@
     @media (max-width:650px) { .tts-algo-stage-body { padding-left:18px; } .tts-algo-title-screen h1 { font-size:1.4rem; } .tts-algo-card-header h1 { font-size:1.2rem; } .tts-algo-stages { padding:10px 14px 14px 14px; } .tts-algo-progress-section { padding:12px 14px 0 14px; } .tts-algo-card-header { padding:14px 16px; } .tts-algo-button-group { margin:0 14px 14px 14px; } .tts-algo-result-message { margin:0 14px 14px 14px; } }
     @media (max-width:760px) { .container { padding:20px 16px; } .choice-grid { flex-direction:column; } .slide-white .images-row { flex-direction:column; align-items:center; } .slide-white .crystals-row { flex-direction:column; align-items:center; } .slide-white .volcano-layout { flex-direction:column; } .slide-white .volcano-layout .volcano-left, .slide-white .volcano-layout .volcano-right { width:100%; } }
 
+
+.back-btn-fixed {
+    position: fixed;
+    bottom: 10px;
+    left: 24px;
+    background: #1bb8b3;
+    backdrop-filter: blur(8px);
+    color: white;
+    text-decoration: none;
+    padding: 12px 28px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.2s;
+    z-index: 100;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    font-family: 'Raleway', sans-serif;
+  }
+  .back-btn-fixed i { margin-right: 8px; }
+  .back-btn-fixed:hover {
+    background: #074844;
+    transform: translateY(-2px);
+  }
     /* === Flat icons helper — убираем лишние градиенты, оставляем монохром === */
     .fa-solid, .fa-regular, .fa-brands { font-style: normal; }
     .choice-icon i { color: var(--teal-600); }
@@ -210,6 +231,7 @@
     .link-card i { color: var(--teal-500); }
     .tts-title i { color: var(--teal-600); }
     .blink-hand i { color: var(--teal-600); }
+	
   </style>
 </head>
 <body>
@@ -225,6 +247,7 @@
       <div class="choice-card" onclick="showPage(15)"><div class="choice-icon"><i class="fa-solid fa-compass"></i></div><h3>География</h3><p>Строение вулкана</p></div>
     </div>
   </div>
+  <a href="../index.html" class="back-btn-fixed"><i class="fas fa-arrow-left"></i> Назад</a>
 </div>
 
 <!-- СТРАНИЦА 3: Слайды биология (белый фон) -->
@@ -500,7 +523,7 @@
         <button class="tts-algo-btn tts-algo-btn-primary" id="ttsAlgoResetBtn">Сбросить все шаги</button>
         <button class="tts-algo-btn tts-algo-btn-outline" id="ttsAlgoExpandBtn">Развернуть инструкции</button>
       </div>
-      <div id="ttsAlgoResultMsg" class="tts-algo-result-message"><i class="fa-regular fa-circle-check"></i> ✅ Ваш аудиофайл готов к использованию! Скачайте MP3 и вставьте в презентацию – студенты оценят качественное озвучивание лекций.</div>
+      <div id="ttsAlgoResultMsg" class="tts-algo-result-message"><i class="fa-regular fa-circle-check"></i> 🗲 Ваш аудиофайл готов к использованию! Скачайте MP3 и вставьте в презентацию.</div>
     </div>
    <a href="../index.html" class="tts-algo-back-link" onclick="hideTTSAlgo();">
     <i class="fa-solid fa-arrow-left"></i>Назад
@@ -534,13 +557,13 @@
 
   function initTTSAlgo() {
     const ttsSteps = [
-      { title: "Переход на сайт и выбор языка / голоса", instructions: `<p><strong>Действие:</strong> Откройте браузер и перейдите на сайт <a href="https://text-to-speech.online/" target="_blank">text-to-speech.online</a>.</p><p><strong>Настройка языка и голоса:</strong></p><ul><li>В выпадающем списке <strong>«Местный» (Locale)</strong> выберите нужный язык. Для озвучки лекций на русском выберите <strong>«Russian (Russia) [ru-RU]»</strong>.</li><li>В списке <strong>«Голос» (Voice)</strong> доступно более 100 вариантов: мужские и женские, с разными стилями.</li><li>Популярные русские голоса: <strong>DmitryNeural (мужской)</strong> и <strong>SvetlanaNeural (женский)</strong>.</li></ul><div class="tts-algo-tip"><strong><i class="fa-regular fa-lightbulb"></i> Совет:</strong> для академических лекций выбирайте голоса с пометкой <strong>«Neural»</strong> – они звучат максимально естественно.</div>` },
-      { title: "Ввод текста для озвучки", instructions: `<p><strong>Куда вставлять текст:</strong> В центральное поле <strong>«Введите текст»</strong>.</p><p><strong>Ограничения:</strong> Бесплатная версия обычно позволяет преобразовывать до <strong>500–1000 символов</strong> за раз.</p><div class="tts-algo-prompt-example"><strong><i class="fa-regular fa-pen"></i> Пример текста для озвучки слайда:</strong><br>«Ионная кристаллическая решётка состоит из положительных и отрицательных ионов, удерживаемых электростатическими силами»</div><div class="tts-algo-warning"><strong><i class="fa-regular fa-triangle-exclamation"></i> Важно:</strong> перед озвучкой проверьте текст на орфографию и пунктуацию.</div>` },
-      { title: "Настройка параметров речи (скорость, подача, стиль)", instructions: `<p><strong>Основные параметры:</strong></p><ul><li><strong>Скорость (Speed):</strong> для лекций оптимально – <strong>0.8–1.0x</strong>.</li><li><strong>Подача (Pitch):</strong> высота тона голоса.</li><li><strong>Стиль (Style):</strong> General, Cheerful, Sad, Serious.</li></ul><div class="tts-algo-tip"><strong><i class="fa-regular fa-lightbulb"></i> Лайфхак:</strong> для сложных тем используйте <strong>скорость 0.8x</strong> и <strong>подачу чуть выше среднего</strong>.</div>` },
-      { title: "Предварительное прослушивание (Preview)", instructions: `<p>Нажмите кнопку <strong>«Играть в ▶»</strong> (зелёная кнопка с иконкой плей).</p><p><strong>Что проверять:</strong></p><ul><li>Правильное произношение сложных терминов.</li><li>Естественность пауз и интонаций.</li><li>Общее звучание голоса.</li></ul>` },
-      { title: "Корректировка параметров по результатам прослушки", instructions: `<p><strong>Что можно скорректировать:</strong></p><ul><li><strong>Скорость:</strong> если голос звучит слишком торопливо – уменьшите.</li><li><strong>Подача:</strong> если монотонно – повысьте.</li><li><strong>Голос:</strong> попробуйте другой.</li><li><strong>Текст:</strong> добавьте паузы с помощью запятых или точек.</li></ul>` },
-      { title: "Скачивание готового MP3-файла", instructions: `<p>Нажмите кнопку <strong>«Скачать ⬇»</strong>.</p><p><strong>Формат файла:</strong> MP3 – универсальный формат для всех плееров и презентаций.</p><div class="tts-algo-tip"><strong><i class="fa-regular fa-gift"></i> Бонус:</strong> переименуйте файл для лёгкого поиска (например, «Слайд_3_Ионная_решетка.mp3»).</div>` },
-      { title: "Интеграция аудио в презентацию (PowerPoint / Google Slides / Canva)", instructions: `<p><strong>PowerPoint:</strong> Вставка → Аудио → Аудио из файла.</p><p><strong>Google Slides:</strong> Вставка → Аудио → Выберите файл из Google Диска.</p><p><strong>Canva:</strong> Загрузите MP3 через «Загрузки» → перетащите на слайд.</p><div class="tts-algo-tip"><strong><i class="fa-regular fa-lightbulb"></i> Совет:</strong> Создайте папку «Аудио к лекции» и сохраняйте все MP3 с понятными именами.</div>` }
+      { title: "Переход на сайт и выбор языка / голоса", instructions: `<p><strong>Действие:</strong> Откройте браузер и перейдите на сайт <a href="https://text-to-speech.online/" target="_blank">text-to-speech.online</a>.</p><p><strong>Настройка языка и голоса:</strong></p><ul><li>В выпадающем списке выберите нужный язык. Для озвучки на русском выберите <strong>«Russian (Russia)»</strong>.</li><li>В списке <strong>«Поиск голоса»</strong> доступно более 100 вариантов: мужские и женские, с разными стилями.</li><li>Популярные русские голоса: <strong>Dmitry (мужской)</strong> и <strong>Svetlana (женский)</strong></li></ul><div class="tts-algo-tip">.<strong>` },
+      { title: "Ввод текста для озвучки", instructions: `<p><strong>Куда вставлять текст:</strong> В центральное поле <strong>«Введите текст»</strong>.</p><p><strong>Ограничения:</strong> Бесплатная версия обычно позволяет преобразовывать до <strong>500–1000 символов</strong> за раз.</p><div class="tts-algo-prompt-example"><strong><i class="fa-solid fa-pen"></i> Пример текста для озвучки слайда:</strong><br>«Ионная кристаллическая решётка состоит из положительных и отрицательных ионов, удерживаемых электростатическими силами»</div><div class="tts-algo-warning"><strong><i class="fa-solid fa-triangle-exclamation"></i> Важно:</strong> перед озвучкой проверьте текст на орфографию и пунктуацию.</div>` },
+      { title: "Настройка параметров речи (скорость, высота тона)", instructions: `<p><strong>Основные параметры:</strong></p><ul><li><strong>Скорость:</strong> для лекций оптимально – <strong>0.8–1.0x</strong>.</li><li><strong>Высота тона:</strong> 10%</li><strong></li></ul><div class="tts-algo-tip"><strong><i class="fa-regular fa-lightbulb"></i> Лайфхак:</strong> для сложных тем используйте <strong>скорость 0.8x</strong> и <strong>высоту тона чуть выше среднего</strong>.</div>` },
+      { title: "Предварительное прослушивание", instructions: `<p>Нажмите кнопку <strong>«Предпросмотр аудио ▶»</strong> (зелёная кнопка с иконкой плей).</p><p><strong>Что проверять:</strong></p><ul><li>Правильное произношение сложных терминов.</li><li>Естественность пауз и интонаций.</li><li>Общее звучание голоса.</li></ul>` },
+      { title: "Корректировка параметров по результатам прослушки", instructions: `<p><strong>Что можно скорректировать:</strong></p><ul><li><strong>Скорость:</strong> если голос звучит слишком торопливо – уменьшите.</li><li><strong>Выстота тона:</strong> если монотонно – повысьте.</li><li><strong>Голос:</strong> попробуйте другой.</li><li><strong>Текст:</strong> добавьте паузы с помощью запятых или точек.</li><li><strong>"Сгенерировать аудио 🗲":</strong> после того, как все готово нажмите "Сгенерировать аудио" (синяя кнопка со знакчком молинии 🗲").</l</ul> ` },
+      { title: "Скачивание готового MP3-файла", instructions: `<p>Нажмите кнопку <strong>«Download MP3»</strong>.</p><p><strong>Формат файла:</strong> MP3 – универсальный формат для всех плееров и презентаций.</p><div class="tts-algo-tip"><strong><i class="fa-solid fa-gift"></i> Бонус:</strong> переименуйте файл для лёгкого поиска (например, «Слайд_3_Ионная_решетка.mp3»).</div>` },
+      { title: "Интеграция аудио в презентацию (PowerPoint / Google Slides / Canva)", instructions: `<p><strong>PowerPoint:</strong> Вставка → Аудио → Аудио из файла.</p><p><strong>Google Slides:</strong> Вставка → Аудио → Выберите файл из Google Диска.</p><p><strong>Canva:</strong> Загрузите MP3 через «Загрузки» → перетащите на слайд.</p><div class="tts-algo-tip"><strong><i class="fa-regular fa-lightbulb"></i> Совет:</strong> Создайте папку «Аудио к занятиям» и сохраняйте все MP3 с понятными именами.</div>` }
     ];
 
     let completed = new Array(ttsSteps.length).fill(false);
