@@ -9,7 +9,7 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      user-select: none; /* prevent accidental selection on icons */
+      user-select: none;
     }
 
     body {
@@ -22,7 +22,6 @@
       overflow-x: hidden;
     }
 
-    /* ========= МОРСКОЙ ФОН (Canvas) ========= */
     #seaCanvas {
       position: fixed;
       top: 0;
@@ -35,7 +34,6 @@
       background: linear-gradient(145deg, #b4dfe5 0%, #6bb5c2 100%);
     }
 
-    /* ========= БУМАЖНЫЙ КОРАБЛИК И РЫБКИ AI (поверх) ========= */
     .paper-boat {
       position: fixed;
       bottom: 8%;
@@ -65,7 +63,7 @@
       backdrop-filter: blur(5px);
       padding: 3px 10px 3px 8px;
       border-radius: 16px;
-     font-size: 11px;
+      font-size: 11px;
       font-weight: 600;
       color: #0a4b54;
       font-family: 'Segoe UI', system-ui;
@@ -74,6 +72,7 @@
       border: 1px solid rgba(0,168,181,0.4);
     }
     .ai-fish svg { width: 16px; height: 12px; filter: drop-shadow(0 1px 1px rgba(0,0,0,0.1)); }
+    
     @keyframes swimLazy {
       0% { transform: translateX(-15px) translateY(0px); opacity: 0.9; }
       25% { transform: translateX(15px) translateY(-6px); }
@@ -87,7 +86,6 @@
       100% { transform: translateX(-20px) translateY(0px); }
     }
 
-    /* ========= ОСНОВНОЙ КОНТЕНТ — компактные блоки ========= */
     .main-content {
       position: relative;
       z-index: 20;
@@ -95,7 +93,6 @@
       margin: 0 auto;
     }
 
-    /* Все карточки — более узкие, изящные */
     .profile-box, .progress-box, .checkin-grid, .certificate {
       background: rgba(255, 255, 255, 0.92);
       backdrop-filter: blur(6px);
@@ -105,7 +102,6 @@
       transition: all 0.2s;
     }
 
-    /* Профиль: компактный, без лишних отступов */
     .profile-box {
       text-align: center;
       padding: 16px 16px 18px 16px;
@@ -140,7 +136,6 @@
       margin-top: 6px;
     }
 
-    /* Прогресс‑бокс — компактный, с меньшими отступами */
     .progress-box {
       padding: 14px 20px;
       margin-bottom: 22px;
@@ -180,7 +175,6 @@
       transform: scale(0.97);
     }
 
-    /* СЕТКА 4x4 — более плотная, картинки заметно мельче, подписи аккуратные */
     .checkin-grid {
       display: grid;
       grid-template-columns: repeat(4, minmax(70px, 1fr));
@@ -209,7 +203,6 @@
       justify-content: center;
     }
 
-    /* Уменьшенные иконки осьминогов */
     .checkin-icon img {
       width: 68px;
       height: 68px;
@@ -239,7 +232,6 @@
       100% { transform: scale(1); }
     }
 
-    /* Компактные подписи под иконками */
     .checkin-label {
       margin-top: 8px;
       font-size: 11px;
@@ -255,7 +247,6 @@
       text-align: center;
     }
 
-    /* Сертификат — узкий */
     .certificate {
       margin-top: 28px;
       padding: 20px 18px;
@@ -283,23 +274,36 @@
       cursor: pointer;
     }
 
+    /* ===== НОВАЯ КРУПНАЯ ЯРКАЯ КНОПКА "НАЗАД" ===== */
     .back-btn {
       position: fixed;
-      bottom: 20px;
-      left: 20px;
-      padding: 7px 20px;
-      background: rgba(0, 110, 110, 0.85);
-      backdrop-filter: blur(8px);
+      bottom: 30px;
+      left: 30px;
+      padding: 10px 24px;
+      background: #24b3a7;
       color: white;
       text-decoration: none;
-      border-radius: 10px;
-      font-weight: bold;
+      border-radius: 16px;
+      font-weight: 600;
       z-index: 99;
-      font-size: 13px;
-      transition: 0.2s;
+      font-size: 18px;
+
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 20px rgba(0, 200, 200, 0.5);
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+      backdrop-filter: blur(4px);
     }
 
-    /* АДАПТИВ: картинки и сетка становятся еще компактнее на маленьких экранах */
+    .back-btn:hover {
+      background: #00f0f0;
+      transform: scale(1.05) translateY(-2px);
+      box-shadow: 0 6px 30px rgba(0, 220, 220, 0.7);
+    }
+
+    .back-btn:active {
+      transform: scale(0.95);
+    }
+
     @media (max-width: 780px) {
       .main-content { max-width: 100%; padding: 0 6px; }
       .checkin-grid { gap: 10px; padding: 14px 12px; }
@@ -311,6 +315,14 @@
       .progress-box { padding: 12px 16px; }
       .ai-fish { font-size: 9px; padding: 2px 6px; white-space: nowrap; }
       .paper-boat { width: 55px; bottom: 6%; left: 2%; }
+
+      .back-btn {
+        bottom: 20px;
+        left: 20px;
+        padding: 12px 24px;
+        font-size: 16px;
+        border-radius: 14px;
+      }
     }
 
     @media (max-width: 560px) {
@@ -318,6 +330,14 @@
       .checkin-icon img { width: 50px; height: 50px; padding: 4px; }
       .checkin-label { font-size: 8px; padding: 2px 4px; }
       .checkin-grid { padding: 12px 8px; }
+
+      .back-btn {
+        bottom: 16px;
+        left: 16px;
+        padding: 10px 20px;
+        font-size: 14px;
+        border-radius: 12px;
+      }
     }
 
     @media (max-width: 480px) {
@@ -325,9 +345,16 @@
       .checkin-label { font-size: 7.5px; }
       .checkin-grid { gap: 6px; }
       .profile-box img { width: 60px !important; }
+
+      .back-btn {
+        bottom: 12px;
+        left: 12px;
+        padding: 8px 16px;
+        font-size: 12px;
+        border-radius: 10px;
+      }
     }
 
-    /* тост */
     #savedToast {
       position: fixed;
       bottom: 70px;
@@ -350,13 +377,18 @@
       opacity: 1;
       transform: translateY(0);
     }
+
+    @keyframes fadeSlide {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
   </style>
 </head>
 <body>
 
   <canvas id="seaCanvas"></canvas>
 
-  <!-- Бумажный кораблик + милые AI-рыбки (декор) -->
+  <!-- Бумажный кораблик -->
   <div class="paper-boat">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 50" width="100%" height="100%">
       <path d="M5,35 L55,35 L45,45 L15,45 Z" fill="#fef9e6" stroke="#cbd5e1" stroke-width="1.2"/>
@@ -367,6 +399,7 @@
     </svg>
   </div>
 
+  <!-- AI-рыбки -->
   <div class="ai-fish fish1" style="top: 12%; left: -15px; animation: swimLazy 18s infinite alternate ease-in-out;"><svg width="14" height="10" viewBox="0 0 14 10"><path d="M1 5 C1 5 3 1 7 1 C11 1 13 5 13 5 C13 5 11 9 7 9 C3 9 1 5 1 5Z" fill="#4db6ac"/><circle cx="9.5" cy="4" r="1" fill="white"/><path d="M1 5 L-1 3 L-1 7 Z" fill="#4db6ac"/></svg>ChatGPT</div>
   <div class="ai-fish fish2" style="top: 28%; left: -25px; animation: swimHorizontal 21s infinite alternate ease-in-out;"><svg width="14" height="10" viewBox="0 0 14 10"><path d="M1 5 C1 5 3 1 7 1 C11 1 13 5 13 5 C13 5 11 9 7 9 C3 9 1 5 1 5Z" fill="#4db6ac"/><circle cx="9.5" cy="4" r="1" fill="white"/><path d="M1 5 L-1 3 L-1 7 Z" fill="#4db6ac"/></svg>Midjourney</div>
   <div class="ai-fish fish3" style="top: 50%; right: -30px; animation: swimLazy 24s infinite alternate-reverse;"><svg width="14" height="10" viewBox="0 0 14 10"><path d="M1 5 C1 5 3 1 7 1 C11 1 13 5 13 5 C13 5 11 9 7 9 C3 9 1 5 1 5Z" fill="#4db6ac"/><circle cx="9.5" cy="4" r="1" fill="white"/><path d="M1 5 L-1 3 L-1 7 Z" fill="#4db6ac"/></svg>Claude</div>
@@ -393,40 +426,42 @@
     <div class="checkin-grid" id="checkinGrid"></div>
 
     <div id="certificate" class="certificate">
-	<img src="octo19.png" alt="octo mascot" style="height: auto; width: 80px;">
+      <img src="octo19.png" alt="octo mascot" style="height: auto; width: 80px;">
       <h2>МОЛОДЕЦ</h2>
       <p id="certName" style="font-weight: 800; font-size: 24px;"></p>
       <p>✨ освоил(а) все 16 навыков цифрового океана ✨</p>
-     
+      <button class="download-btn" id="downloadBtn">📥 Скачать сертификат</button>
     </div>
-    <a href="../index.html" class="back-btn">Назад</a>
+
+    <!-- НОВАЯ КРУПНАЯ ЯРКАЯ КНОПКА "НАЗАД" -->
+    <a href="../index.html" class="back-btn">← Назад</a>
   </div>
 
   <div id="savedToast">✅ Прогресс сохранён</div>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script>
     (function() {
-      // 16 навыков — компактные подписи
       const skills = [
         { id: 1,  label: "Опознаю по картинке",         img: "octo1.png"  },
         { id: 2,  label: "Креатив с Азикой",           img: "octo2.png"  },
         { id: 3,  label: "Рисую ещё круче",            img: "octo3.png"  },
-        { id: 4,  label: "Знаю, что такое промпт",                 img: "octo4.png"  },
-        { id: 5,  label: "Синтезирую речь",                img: "octo5.png"  },
+        { id: 4,  label: "Знаю, что такое промпт",     img: "octo4.png"  },
+        { id: 5,  label: "Синтезирую речь",            img: "octo5.png"  },
         { id: 6,  label: "Мастер анимации",            img: "octo6.png"  },
-        { id: 7,  label: "Пишу тексты как профи",           img: "octo7.png"  },
-        { id: 8,  label: "Мастер диалогов",           img: "octo8.png"  },
-        { id: 9,  label: "Инфографика – сила",                img: "octo9.png"  },
+        { id: 7,  label: "Пишу тексты как профи",      img: "octo7.png"  },
+        { id: 8,  label: "Мастер диалогов",            img: "octo8.png"  },
+        { id: 9,  label: "Инфографика – сила",         img: "octo9.png"  },
         { id: 10, label: "Не тестами едиными",         img: "octo10.png" },
-        { id: 11, label: "Строю 3D модели",                  img: "octo11.png" },
+        { id: 11, label: "Строю 3D модели",            img: "octo11.png" },
         { id: 12, label: "Всё распланирую",            img: "octo12.png" },
-        { id: 13, label: "Что наша жизнь – игра",                   img: "octo13.png" },
+        { id: 13, label: "Что наша жизнь – игра",      img: "octo13.png" },
         { id: 14, label: "Диаграммы +",                img: "octo14.png" },
-        { id: 15, label: "Всё презентую",                  img: "octo15.png" },
-        { id: 16, label: "Плагиат не скрылся",        img: "octo16.png" }
+        { id: 15, label: "Всё презентую",              img: "octo15.png" },
+        { id: 16, label: "Плагиат не скрылся",         img: "octo16.png" }
       ];
 
-      const STORE_KEY_SNAPSHOT = "octo_checkin_snapshot_v3";
+      const STORE_KEY = "octo_checkin_snapshot_v3";
 
       function saveFullProgress() {
         try {
@@ -438,14 +473,13 @@
             if (id) doneIds.push(id);
           });
           const state = { name: name, done: doneIds, version: 3, lastUpdated: Date.now() };
-          localStorage.setItem(STORE_KEY_SNAPSHOT, JSON.stringify(state));
-          localStorage.setItem("octo_profile_name", name);
+          localStorage.setItem(STORE_KEY, JSON.stringify(state));
         } catch(e) { console.warn(e); }
       }
 
       function loadProgressAndRestore() {
         try {
-          const raw = localStorage.getItem(STORE_KEY_SNAPSHOT);
+          const raw = localStorage.getItem(STORE_KEY);
           if (!raw) {
             const oldSnapshot = localStorage.getItem("octo_checkin_snapshot");
             if (oldSnapshot) {
@@ -454,7 +488,9 @@
                 if (oldState && typeof oldState === 'object') restoreFromState(oldState);
                 else restoreFromLegacyKeys();
               } catch(e) { restoreFromLegacyKeys(); }
-            } else { restoreFromLegacyKeys(); }
+            } else {
+              restoreFromLegacyKeys();
+            }
             return;
           }
           const state = JSON.parse(raw);
@@ -476,7 +512,7 @@
       }
 
       function restoreFromLegacyKeys() {
-        const savedName = localStorage.getItem("octo_profile_name") || localStorage.getItem("profile_name");
+        const savedName = localStorage.getItem("octo_profile_name");
         if (savedName) {
           const nameInput = document.getElementById("profileName");
           if (nameInput) nameInput.value = savedName;
@@ -491,6 +527,11 @@
         });
         updateProgressAndCert();
         saveFullProgress();
+        for (let i = 1; i <= 16; i++) {
+          localStorage.removeItem("checkin_" + i);
+          localStorage.removeItem("octo_checkin_" + i);
+        }
+        localStorage.removeItem("octo_checkin_snapshot");
       }
 
       function updateProgressAndCert() {
@@ -500,6 +541,7 @@
         const percent = (doneCount / 16) * 100;
         const fillBar = document.getElementById("progressFill");
         if (fillBar) fillBar.style.width = percent + "%";
+
         const allDone = (doneCount === 16);
         const nameInput = document.getElementById("profileName");
         const userName = nameInput ? nameInput.value.trim() : "";
@@ -572,14 +614,7 @@
           if (!confirm("Сбросить весь прогресс и имя? Навыки обнулятся.")) return;
           document.querySelectorAll(".checkin-icon").forEach(btn => btn.classList.remove("done"));
           if (nameField) nameField.value = "";
-          localStorage.removeItem(STORE_KEY_SNAPSHOT);
-          localStorage.removeItem("octo_checkin_snapshot");
-          localStorage.removeItem("octo_profile_name");
-          localStorage.removeItem("profile_name");
-          for (let i = 1; i <= 16; i++) {
-            localStorage.removeItem("checkin_" + i);
-            localStorage.removeItem("octo_checkin_" + i);
-          }
+          localStorage.removeItem(STORE_KEY);
           updateProgressAndCert();
           saveFullProgress();
           showSavedToast();
@@ -592,8 +627,6 @@
           const certElem = document.getElementById("certificate");
           if (!certElem) return;
           try {
-            const originalOverflow = document.body.style.overflow;
-            document.body.style.overflow = 'hidden';
             const canvas = await html2canvas(certElem, {
               scale: 2.2,
               backgroundColor: "#FFFFFF",
@@ -608,7 +641,6 @@
             link.download = `certificate_${safeName}.png`;
             link.href = canvas.toDataURL("image/png");
             link.click();
-            document.body.style.overflow = originalOverflow;
           } catch (error) {
             alert("Не удалось создать изображение. Попробуйте ещё раз.");
           }
@@ -623,17 +655,19 @@
       });
     })();
 
-    // Анимированный океан (волны, блики) — тот же плавный фон
+    // Анимированный океан
     const canvas = document.getElementById("seaCanvas");
     let ctx = canvas.getContext("2d");
     let width, height;
     let time = 0;
+
     function resizeCanvas() {
       width = window.innerWidth;
       height = window.innerHeight;
       canvas.width = width;
       canvas.height = height;
     }
+
     function drawOcean() {
       const grad = ctx.createLinearGradient(0, 0, 0, height);
       grad.addColorStop(0, "#b4dfe5");
@@ -641,6 +675,7 @@
       grad.addColorStop(1, "#4699a6");
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, width, height);
+
       for (let i = 0; i < 12; i++) {
         ctx.beginPath();
         const yOff = height * (0.6 + i * 0.025);
@@ -654,21 +689,29 @@
         ctx.fillStyle = `rgba(255, 250, 235, ${0.07 - i * 0.003})`;
         ctx.fill();
       }
+
       for (let i = 0; i < 70; i++) {
         ctx.fillStyle = `rgba(255, 255, 210, ${0.2 + Math.sin(time * 0.005 + i) * 0.1})`;
         ctx.beginPath();
-        ctx.arc( (i * 131) % width, (height * 0.4 + Math.sin(time * 0.003 + i) * 12 + i * 7) % height, 2, 0, Math.PI*2);
+        ctx.arc((i * 131) % width, (height * 0.4 + Math.sin(time * 0.003 + i) * 12 + i * 7) % height, 2, 0, Math.PI * 2);
         ctx.fill();
       }
+
       ctx.fillStyle = "rgba(245, 255, 240, 0.06)";
-      for (let s=0;s<12;s++) {
+      for (let s = 0; s < 12; s++) {
         ctx.beginPath();
-        ctx.ellipse(width * (0.1 + Math.sin(time * 0.0004 + s) * 0.3), height * 0.2 + s * 25, 60, 30, 0, 0, Math.PI*2);
+        ctx.ellipse(width * (0.1 + Math.sin(time * 0.0004 + s) * 0.3), height * 0.2 + s * 25, 60, 30, 0, 0, Math.PI * 2);
         ctx.fill();
       }
     }
-    function animateSea() { time++; drawOcean(); requestAnimationFrame(animateSea); }
-    window.addEventListener("resize", () => resizeCanvas());
+
+    function animateSea() {
+      time++;
+      drawOcean();
+      requestAnimationFrame(animateSea);
+    }
+
+    window.addEventListener("resize", resizeCanvas);
     resizeCanvas();
     animateSea();
   </script>
