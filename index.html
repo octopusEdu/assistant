@@ -1,1095 +1,575 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>НейроДиалог – ИИ-тренажёр для учителя</title>
-  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700;800;900&family=Nunito:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <style>
-    :root {
-      --teal-50:  #f0fdfc;
-      --teal-100: #ccfbf1;
-      --teal-200: #99f6e4;
-      --teal-300: #5eead4;
-      --teal-400: #2dd4bf;
-      --teal-500: #14b8a6;
-      --teal-600: #0d9488;
-      --teal-700: #0f766e;
-      --teal-800: #115e59;
-      --teal-900: #134e4a;
-
-      --ink:     #0f2927;
-      --ink-mid: #1f4f4a;
-      --ink-soft:#4a7c75;
-      --muted:   #7fb5b0;
-      --border:  #a5d8d3;
-      --border-light: #cef2ef;
-
-      --bg:      #edfafa;
-      --surface: #ffffff;
-      --surface2:#f4fefe;
-
-      --yellow:  #f59e0b;
-      --pink:    #ec4899;
-      --indigo:  #6366f1;
-      --green:   #10b981;
-      --orange:  #f97316;
-      --red:     #ef4444;
-
-      --radius:  20px;
-      --shadow:  0 4px 24px rgba(13,148,136,0.10);
-      --shadow-lg: 0 12px 40px rgba(13,148,136,0.16);
-    }
-    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      font-family: 'Nunito', sans-serif;
-      background: var(--bg);
-      color: var(--ink);
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-
-    body::before {
-      content:'';
-      position: fixed; inset:0;
-      background-image:
-        linear-gradient(rgba(20,184,166,0.06) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(20,184,166,0.06) 1px, transparent 1px);
-      background-size: 36px 36px;
-      pointer-events:none; z-index:0;
-    }
-
-    .screen { display:none; position:relative; z-index:1; }
-    .screen.active { display:block; }
-
-    .landing {
-      max-width: 1160px;
-      margin: 0 auto;
-      padding: 36px 24px 80px;
-    }
-
-    .hero {
-      text-align: center;
-      padding: 40px 0 44px;
-      animation: fadeDown .7s ease both;
-    }
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: var(--teal-100);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 6px 20px;
-      font-size: .72rem;
-      font-weight: 800;
-      color: var(--teal-700);
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      margin-bottom: 20px;
-    }
-    .hero h1 {
-      font-family: 'Raleway', sans-serif;
-      font-size: clamp(2rem, 5vw, 3.2rem);
-      font-weight: 900;
-      line-height: 1.1;
-      background: linear-gradient(135deg, #0d9488 0%, #0891b2 50%, #059669 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 14px;
-    }
-    .hero p {
-      font-size: 1.05rem;
-      color: var(--ink-soft);
-      max-width: 560px;
-      margin: 0 auto 28px;
-      line-height: 1.65;
-    }
-    .hero-cta {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: linear-gradient(135deg, var(--teal-600), #0891b2);
-      color: white;
-      padding: 13px 32px;
-      border-radius: 16px;
-      font-weight: 800;
-      font-size: .95rem;
-      border: none;
-      cursor: pointer;
-      box-shadow: 0 6px 24px rgba(13,148,136,0.30);
-      transition: all .2s;
-      text-decoration: none;
-    }
-    .hero-cta:hover { transform:translateY(-2px); box-shadow: 0 10px 32px rgba(13,148,136,0.38); }
-
-    .bento {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      grid-auto-rows: auto;
-      gap: 16px;
-    }
-
-    .back-btn {
-      position: fixed;
-      bottom: 24px;
-      left: 24px;
-      padding: 10px 26px;
-      background: rgba(0, 120, 120, 0.8);
-      backdrop-filter: blur(8px);
-      color: white;
-      text-decoration: none;
-      border-radius: 12px;
-      font-weight: bold;
-      z-index: 99;
-      transition: 0.2s;
-    }
-
-    .bento-card {
-      background: var(--surface);
-      border: 1px solid var(--border-light);
-      border-radius: var(--radius);
-      padding: 22px 20px 18px;
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
-      transition: all .25s cubic-bezier(.34,1.56,.64,1);
-      box-shadow: var(--shadow);
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .bento-card::after {
-      content:'';
-      position:absolute;
-      inset:0;
-      background: linear-gradient(135deg, rgba(13,148,136,0.04), transparent);
-      opacity:0;
-      transition: opacity .2s;
-    }
-    .bento-card:hover {
-      transform: translateY(-4px) scale(1.01);
-      box-shadow: var(--shadow-lg);
-      border-color: var(--border);
-    }
-    .bento-card:hover::after { opacity:1; }
-
-    .card-wide  { grid-column: span 2; }
-    .card-tall  { grid-row: span 2; }
-
-    .card-teal   { border-top: 4px solid var(--teal-500); }
-    .card-yellow { border-top: 4px solid var(--yellow); }
-    .card-indigo { border-top: 4px solid var(--indigo); }
-    .card-green  { border-top: 4px solid var(--green); }
-    .card-pink   { border-top: 4px solid var(--pink); }
-    .card-orange { border-top: 4px solid var(--orange); }
-    .card-red    { border-top: 4px solid var(--red); }
-    .card-cyan   { border-top: 4px solid #06b6d4; }
-    .card-purple { border-top: 4px solid #8b5cf6; }
-    .card-rose   { border-top: 4px solid #f43f5e; }
-    .card-blue   { border-top: 4px solid #3b82f6; }
-    .card-amber  { border-top: 4px solid #f59e0b; }
-    .card-lime   { border-top: 4px solid #84cc16; }
-    .card-fuchsia{ border-top: 4px solid #d946ef; }
-    .card-sky    { border-top: 4px solid #0ea5e9; }
-    .card-emerald{ border-top: 4px solid #059669; }
-
-    /* ===== АКТИВНАЯ КАРТОЧКА - ЯРКО-ЖЁЛТАЯ ПОДСВЕТКА С ПУЛЬСАЦИЕЙ (как Менделеев) ===== */
-    .card-highlight {
-      border: 3px solid #ffd700 !important;
-      box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.3), var(--shadow) !important;
-      animation: pulse-gold 2s ease-in-out infinite;
-      background: linear-gradient(145deg, #ffffff, #fffde7) !important;
-      position: relative;
-      z-index: 2;
-    }
-    .card-highlight .card-title {
-      color: #b8860b !important;
-    }
-    .card-highlight .card-icon i {
-      color: #ffd700 !important;
-      text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
-    }
-    .card-highlight .card-example-chip {
-      background: #fff8e1 !important;
-      border-color: #ffd700 !important;
-      color: #b8860b !important;
-    }
-    .card-highlight .card-arrow {
-      background: #ffd700 !important;
-      color: #7a5a00 !important;
-    }
-    .card-highlight:hover .card-arrow {
-      background: #f5a623 !important;
-      color: white !important;
-    }
-
-    @keyframes pulse-gold {
-      0% { box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.25), 0 8px 30px rgba(255, 215, 0, 0.15); border-color: #ffd700; }
-      50% { box-shadow: 0 0 0 8px rgba(255, 215, 0, 0.5), 0 12px 40px rgba(255, 215, 0, 0.35); border-color: #f5a623; }
-      100% { box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.25), 0 8px 30px rgba(255, 215, 0, 0.15); border-color: #ffd700; }
-    }
-    .card-highlight:hover {
-      animation: pulse-gold 0.8s ease-in-out infinite;
-    }
-
-    /* ===== СТИЛЬ ДЛЯ ДЕМО⛔-ЧИПА (красный на бирюзовом, как в образце) ===== */
-    .demo-chip-red {
-      background: #0d9488 !important;
-      color: #ff1744 !important;
-      font-weight: 800 !important;
-      border: 2px solid #ff1744 !important;
-      border-radius: 30px !important;
-      padding: 2px 12px !important;
-      font-size: 0.65rem !important;
-      display: inline-block;
-      animation: pulse-demo 1.8s ease-in-out infinite;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    @keyframes pulse-demo {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.6; }
-    }
-
-    .demo-chip-red-small {
-      background: #0d9488 !important;
-      color: #fff157 !important;
-      font-weight: 700 !important;
-     
-      border-radius: 20px !important;
-      padding: 1px 10px !important;
-      font-size: 0.55rem !important;
-      display: inline-block;
-      text-transform: uppercase;
-    }
-
-    .card-icon {
-      font-size: 2.4rem;
-      line-height: 1;
-    }
-    .card-title {
-      font-family: 'Raleway', sans-serif;
-      font-weight: 800;
-      font-size: 1.05rem;
-      color: var(--ink);
-      line-height: 1.2;
-    }
-    .card-desc {
-      font-size: .78rem;
-      color: var(--ink-soft);
-      line-height: 1.5;
-      flex: 1;
-    }
-    .card-examples {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
-      margin-top: 4px;
-    }
-    .card-example-chip {
-      font-size: .67rem;
-      font-weight: 700;
-      padding: 3px 9px;
-      border-radius: 20px;
-      background: var(--surface2);
-      border: 1px solid var(--border-light);
-      color: var(--ink-soft);
-    }
-    .card-arrow {
-      position: absolute;
-      bottom: 16px;
-      right: 18px;
-      width: 30px; height: 30px;
-      background: var(--teal-100);
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: .9rem;
-      color: var(--teal-700);
-      transition: all .2s;
-    }
-    .bento-card:hover .card-arrow {
-      background: var(--teal-600);
-      color: white;
-      transform: translateX(3px);
-    }
-
-    .card-featured {
-      background: linear-gradient(135deg, var(--teal-600) 0%, #0891b2 100%);
-      color: white;
-      border: none;
-    }
-    .card-featured .card-title { color: white; }
-    .card-featured .card-desc  { color: rgba(255,255,255,.82); }
-    .card-featured .card-tag   { background: rgba(255,255,255,.2); color: white; border:1px solid rgba(255,255,255,.3); }
-    .card-featured .card-arrow { background: rgba(255,255,255,.2); color: white; }
-    .card-featured:hover .card-arrow { background: white; color: var(--teal-700); }
-    .card-featured .card-example-chip { background: rgba(255,255,255,.15); border-color: rgba(255,255,255,.25); color: rgba(255,255,255,.9); }
-
-    .card-color-1 { background: linear-gradient(135deg, #f0fdfc, #ccfbf1); border-top: 4px solid #14b8a6; }
-    .card-color-2 { background: linear-gradient(135deg, #fef3c7, #fde68a); border-top: 4px solid #f59e0b; }
-    .card-color-3 { background: linear-gradient(135deg, #ede9fe, #c4b5fd); border-top: 4px solid #8b5cf6; }
-    .card-color-4 { background: linear-gradient(135deg, #fce7f3, #f9a8d4); border-top: 4px solid #ec4899; }
-    .card-color-5 { background: linear-gradient(135deg, #dbeafe, #93c5fd); border-top: 4px solid #3b82f6; }
-    .card-color-6 { background: linear-gradient(135deg, #dcfce7, #86efac); border-top: 4px solid #22c55e; }
-    .card-color-7 { background: linear-gradient(135deg, #fef2f2, #fca5a5); border-top: 4px solid #ef4444; }
-    .card-color-8 { background: linear-gradient(135deg, #fdf2f8, #fbcfe8); border-top: 4px solid #f472b6; }
-
-    .dialog-screen {
-      max-width: 860px;
-      margin: 0 auto;
-      padding: 24px 20px 80px;
-    }
-    .dialog-header {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin-bottom: 24px;
-      animation: fadeDown .4s ease both;
-    }
-    .back-btn-small {
-      display: flex; align-items: center; gap: 6px;
-      padding: 8px 18px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      font-family: 'Nunito', sans-serif;
-      font-size: .82rem;
-      font-weight: 700;
-      color: var(--ink-soft);
-      cursor: pointer;
-      transition: all .2s;
-      text-decoration: none;
-    }
-    .back-btn-small:hover { border-color: var(--teal-500); color: var(--teal-700); background: var(--teal-50); }
-
-    .dialog-topic-badge {
-      display: flex; align-items: center; gap: 8px;
-      font-size: .82rem;
-      font-weight: 700;
-      color: var(--teal-700);
-    }
-    .dialog-topic-icon { font-size: 1.3rem; }
-
-    .chat-win {
-      background: var(--surface);
-      border: 1px solid var(--border-light);
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: var(--shadow-lg);
-    }
-    .chat-topbar {
-      display: flex; align-items: center; gap: 10px;
-      padding: 13px 20px;
-      background: var(--surface2);
-      border-bottom: 1px solid var(--border-light);
-    }
-    .dot { width:10px; height:10px; border-radius:50%; }
-    .dot.r { background:#ff5f57; }
-    .dot.y { background:#febc2e; }
-    .dot.g { background:#28c840; }
-    .topbar-title {
-      margin-left: 8px;
-      font-size: .75rem; font-weight: 800;
-      color: var(--muted);
-      text-transform: uppercase; letter-spacing: .6px;
-    }
-    .topbar-live {
-      margin-left: auto;
-      display: flex; align-items: center; gap: 5px;
-      font-size: .72rem; font-weight: 800; color: var(--teal-600);
-    }
-    .topbar-live::before {
-      content:''; width:7px; height:7px;
-      background: var(--teal-500); border-radius:50%;
-      animation: blink 1.4s ease infinite;
-    }
-
-    .chat-msgs {
-      padding: 24px 20px;
-      display: flex; flex-direction: column; gap: 14px;
-      min-height: 180px;
-    }
-    .msg { display:flex; gap:11px; animation: msgIn .35s cubic-bezier(.34,1.56,.64,1) both; }
-    .avatar {
-      width:36px; height:36px; border-radius:50%;
-      display:flex; align-items:center; justify-content:center;
-      font-size:1.1rem; flex-shrink:0; margin-top:2px;
-    }
-    .msg-body { flex:1; }
-    .msg-name {
-      font-size:.68rem; font-weight:800;
-      letter-spacing:.6px; text-transform:uppercase; margin-bottom:5px;
-    }
-    .msg-name.ai { color:var(--teal-600); }
-    .msg-name.teacher { color:#059669; }
-    .bubble {
-      padding:12px 16px; border-radius:14px;
-      font-size:.91rem; line-height:1.6;
-      display:inline-block; max-width:100%;
-    }
-    .bubble.ai {
-      background: var(--teal-50);
-      border:1px solid var(--border-light);
-      color: var(--ink);
-      border-radius:4px 14px 14px 14px;
-    }
-    .bubble.teacher {
-      background:#f0fdf9;
-      border:1px solid #a7f3d0;
-      color:#065f46;
-      border-radius:14px 4px 14px 14px;
-    }
-
-    .choices { padding:0 20px 22px; display:flex; flex-direction:column; gap:9px; }
-    .choice {
-      display:flex; align-items:center; gap:12px;
-      padding:13px 17px;
-      background:var(--surface2);
-      border:1px solid var(--border-light);
-      border-radius:13px;
-      cursor:pointer;
-      font-family:'Nunito',sans-serif;
-      font-size:.89rem; font-weight:600;
-      color:var(--ink);
-      text-align:left; width:100%;
-      transition: all .2s;
-      position:relative;
-    }
-    .choice:hover {
-      border-color:var(--teal-400);
-      transform:translateX(5px);
-      box-shadow:-4px 0 0 var(--teal-400), 0 4px 16px rgba(13,148,136,0.10);
-      background:var(--teal-50);
-    }
-    .choice-ico { font-size:1.25rem; flex-shrink:0; }
-    .choice-arrow { margin-left:auto; color:var(--muted); font-size:.85rem; transition:all .2s; }
-    .choice:hover .choice-arrow { color:var(--teal-600); transform:translateX(3px); }
-
-    .nav-bottom { display:flex; gap:9px; flex-wrap:wrap; padding:0 20px 22px; }
-    .nav-btn {
-      display:inline-flex; align-items:center; gap:6px;
-      padding:9px 19px;
-      background:transparent;
-      border:1px solid var(--border);
-      border-radius:16px;
-      color:var(--muted);
-      font-family:'Nunito',sans-serif;
-      font-size:.8rem; font-weight:700;
-      cursor:pointer; transition:all .2s;
-    }
-    .nav-btn:hover { border-color:var(--teal-500); color:var(--teal-600); background:var(--teal-50); }
-
-    .preview-card {
-      background: linear-gradient(135deg, #f0fdfc 0%, #e6f9f7 100%);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 20px 22px;
-      margin: 4px 20px 0;
-      box-shadow: var(--shadow);
-      animation: fadeUp .45s ease both;
-    }
-    .preview-header {
-      display:flex; align-items:center; gap:12px; margin-bottom:14px;
-    }
-    .preview-logo {
-      width:46px; height:46px; border-radius:12px;
-      display:flex; align-items:center; justify-content:center;
-      font-size:1.5rem; flex-shrink:0;
-    }
-    .preview-title { font-size:1.1rem; font-weight:900; color:var(--ink); margin-bottom:2px; }
-    .preview-sub   { font-size:.7rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; }
-    .preview-desc  { font-size:.86rem; line-height:1.6; color:var(--ink-mid); margin-bottom:14px; }
-    .mini-dialog { display:flex; flex-direction:column; gap:8px; margin-bottom:16px; }
-    .mini-msg { display:flex; gap:8px; align-items:flex-start; }
-    .mini-avatar { width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0;margin-top:1px; }
-    .mini-bubble { padding:8px 12px; border-radius:10px; font-size:.78rem; line-height:1.5; }
-    .mini-bubble.ai { background:var(--teal-50); border:1px solid var(--border-light); border-radius:3px 10px 10px 10px; }
-    .mini-bubble.t  { background:#f0fdf9; border:1px solid #a7f3d0; border-radius:10px 3px 10px 10px; }
-
-    .preview-chips { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:16px; }
-    .p-chip { padding:3px 11px; border-radius:16px; font-size:.67rem; font-weight:800; }
-    .chip-free   { background:rgba(5,150,105,.10); color:#065f46; border:1px solid rgba(5,150,105,.22); }
-    .chip-paid   { background:rgba(245,158,11,.10); color:#92400e; border:1px solid rgba(245,158,11,.22); }
-    .chip-ru     { background:rgba(8,145,178,.10);  color:#0c4a6e; border:1px solid rgba(8,145,178,.22); }
-    .chip-web    { background:rgba(13,148,136,.10); color:#134e4a; border:1px solid rgba(13,148,136,.22); }
-
-    .prompt-box {
-      background:#f0fdfc; border:1px solid var(--border); border-radius:11px;
-      padding:12px 15px; margin-bottom:16px;
-    }
-    .prompt-label { font-size:.65rem;font-weight:800;color:var(--teal-600);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;display:flex;align-items:center;gap:5px; }
-    .prompt-text  { font-family:'JetBrains Mono',monospace;font-size:.76rem;color:var(--ink-mid);line-height:1.6; }
-
-    .open-link {
-      display:inline-flex; align-items:center; gap:7px;
-      background:linear-gradient(135deg, var(--teal-600), #0891b2);
-      color:white; text-decoration:none;
-      padding:10px 22px; border-radius:16px;
-      font-size:.83rem; font-weight:700;
-      box-shadow:0 4px 18px rgba(13,148,136,.24);
-      transition:all .2s;
-    }
-    .open-link:hover { transform:translateY(-2px); box-shadow:0 8px 26px rgba(13,148,136,.36); }
-
-    .gloss-btn {
-      position:fixed; bottom:24px; right:24px;
-      background:linear-gradient(135deg, var(--teal-600), #0891b2);
-      color:white; border:none; border-radius:50%;
-      width:52px;height:52px; font-size:1.3rem;
-      cursor:pointer; box-shadow:0 4px 18px rgba(13,148,136,.35);
-      transition:all .2s; z-index:200;
-      display:flex;align-items:center;justify-content:center;
-    }
-    .gloss-btn:hover { transform:scale(1.1); box-shadow:0 8px 26px rgba(13,148,136,.48); }
-    .gloss-panel {
-      position:fixed; bottom:88px; right:24px;
-      width:310px; max-height:400px; overflow-y:auto;
-      background:white; border:1px solid var(--border);
-      border-radius:16px; padding:18px;
-      box-shadow:0 12px 40px rgba(13,148,136,.16);
-      z-index:199; display:none;
-    }
-    .gloss-panel.open { display:block; animation:fadeUp .25s ease both; }
-    .gloss-panel h3 { font-size:.8rem;font-weight:800;color:var(--teal-600);text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px; }
-    .gloss-item { margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--border-light); }
-    .gloss-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
-    .gloss-term { font-size:.8rem;font-weight:800;color:#92400e;margin-bottom:3px; }
-    .gloss-def  { font-size:.72rem;color:var(--muted);line-height:1.5; }
-
-    @keyframes fadeDown { from{opacity:0;transform:translateY(-18px)} to{opacity:1;transform:translateY(0)} }
-    @keyframes fadeUp   { from{opacity:0;transform:translateY(14px)}  to{opacity:1;transform:translateY(0)} }
-    @keyframes msgIn    { from{opacity:0;transform:translateY(8px) scale(.97)} to{opacity:1;transform:translateY(0) scale(1)} }
-    @keyframes blink    { 0%,100%{opacity:1} 50%{opacity:.3} }
-    @keyframes cardIn   { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
-
-    .bento-card { animation:cardIn .5s ease both; }
-    .bento-card:nth-child(1)  { animation-delay:0.03s; }
-    .bento-card:nth-child(2)  { animation-delay:0.06s; }
-    .bento-card:nth-child(3)  { animation-delay:0.09s; }
-    .bento-card:nth-child(4)  { animation-delay:0.12s; }
-    .bento-card:nth-child(5)  { animation-delay:0.15s; }
-    .bento-card:nth-child(6)  { animation-delay:0.18s; }
-    .bento-card:nth-child(7)  { animation-delay:0.21s; }
-    .bento-card:nth-child(8)  { animation-delay:0.24s; }
-    .bento-card:nth-child(9)  { animation-delay:0.27s; }
-    .bento-card:nth-child(10) { animation-delay:0.30s; }
-    .bento-card:nth-child(11) { animation-delay:0.33s; }
-    .bento-card:nth-child(12) { animation-delay:0.36s; }
-    .bento-card:nth-child(13) { animation-delay:0.39s; }
-    .bento-card:nth-child(14) { animation-delay:0.42s; }
-    .bento-card:nth-child(15) { animation-delay:0.45s; }
-    .bento-card:nth-child(16) { animation-delay:0.48s; }
-
-    ::-webkit-scrollbar{width:5px}
-    ::-webkit-scrollbar-track{background:var(--teal-50)}
-    ::-webkit-scrollbar-thumb{background:var(--border);border-radius:10px}
-
-    @media(max-width:860px){
-      .bento{grid-template-columns:repeat(2,1fr);}
-      .card-wide{grid-column:span 2;}
-    }
-    @media(max-width:540px){
-      .bento{grid-template-columns:1fr;}
-      .card-wide{grid-column:span 1;}
-      .gloss-panel{width:calc(100vw - 48px);}
-    }
-    .my-icon { color: #0891b2; }
-    .progress-wrap { display: none; }
-
-    .toast {
-      position: fixed;
-      bottom: 100px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #1f1f1f;
-      color: white;
-      padding: 12px 28px;
-      border-radius: 30px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-      z-index: 300;
-      animation: fadeUp 0.25s ease both;
-      pointer-events: none;
-      white-space: nowrap;
-    }
-    @media (max-width: 600px) { .toast { white-space: normal; max-width: 90%; } }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Естественный выбор – ИИ помощник учителя</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Raleway:wght@700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #1e293b;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            transition: background 0.3s, color 0.2s;
+            background: #0a2f44;
+        }
+        body.light { background: #b2dfdb; }
+        .ocean-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            transition: background 0.3s;
+        }
+        body .ocean-bg { background: linear-gradient(145deg, #0a2f44 0%, #0c4e6e 100%); }
+        body.light .ocean-bg { background: linear-gradient(145deg, #80cbc4 0%, #4db6ac 100%); }
+        .wave-svg {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 120px;
+            pointer-events: none;
+        }
+        .wave-svg svg { width: 100%; height: 100%; display: block; }
+        @keyframes waveAnim { 0% { transform: translateX(0); } 50% { transform: translateX(-25px); } 100% { transform: translateX(0); } }
+        @keyframes waveAnim2 { 0% { transform: translateX(0); } 50% { transform: translateX(25px); } 100% { transform: translateX(0); } }
+        .wave-layer1 { animation: waveAnim 12s ease-in-out infinite; }
+        .wave-layer2 { animation: waveAnim2 15s ease-in-out infinite; opacity: 0.6; }
+        .paper-boat {
+            position: fixed;
+            bottom: 35px;
+            left: 0;
+            width: 70px;
+            height: 50px;
+            opacity: 0.6;
+            z-index: 1;
+            pointer-events: none;
+            animation: boatMove 45s linear infinite;
+        }
+        @keyframes boatMove { 0% { transform: translateX(-120px) translateY(0px) rotate(0deg); } 50% { transform: translateX(55vw) translateY(-6px) rotate(1.5deg); } 100% { transform: translateX(110vw) translateY(0px) rotate(0deg); } }
+        .fish {
+            position: fixed;
+            font-size: 14px;
+            padding: 6px 12px;
+            background: rgba(255,255,255,0.7);
+            border-radius: 20px;
+            backdrop-filter: blur(4px);
+            white-space: nowrap;
+            pointer-events: none;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .fish1 { bottom: 40px; left: 0; animation: fishMoveL 38s linear infinite; }
+        @keyframes fishMoveL { 0% { transform: translateX(-150px); } 100% { transform: translateX(110vw); } }
+        .fish2 { bottom: 60px; right: 0; animation: fishMoveR2 52s linear infinite; }
+        @keyframes fishMoveR2 { 0% { transform: translateX(160px); } 100% { transform: translateX(-110vw); } }
+        .fish3 { bottom: 95px; left: 0; animation: fishMoveL3 32s linear infinite; }
+        @keyframes fishMoveL3 { 0% { transform: translateX(-180px); } 100% { transform: translateX(110vw); } }
+        .fish4 { bottom: 110px; right: 0; animation: fishMoveR4 40s linear infinite; }
+        @keyframes fishMoveR4 { 0% { transform: translateX(200px); } 100% { transform: translateX(-110vw); } }
+        .fish5 { bottom: 140px; left: 0; animation: fishMoveL5 45s linear infinite; }
+        @keyframes fishMoveL5 { 0% { transform: translateX(-200px); } 100% { transform: translateX(110vw); } }
+        .fish6 { bottom: 150px; right: 0; animation: fishMoveR6 48s linear infinite; }
+        @keyframes fishMoveR6 { 0% { transform: translateX(180px); } 100% { transform: translateX(-110vw); } }
+        .fish7 { bottom: 180px; left: 0; animation: fishMoveL7 50s linear infinite; }
+        @keyframes fishMoveL7 { 0% { transform: translateX(-160px); } 100% { transform: translateX(110vw); } }
+        .fish8 { bottom: 25px; right: 0; animation: fishMoveR8 55s linear infinite; }
+        @keyframes fishMoveR8 { 0% { transform: translateX(140px); } 100% { transform: translateX(-110vw); } }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 28px 24px 100px;
+            position: relative;
+            z-index: 2;
+        }
+        .header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; margin-bottom: 32px; padding-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.3); }
+        body.light .header { border-bottom-color: rgba(0,0,0,0.1); }
+        .logo-area { display: flex; align-items: center; gap: 14px; }
+        .logo-text h1 { font-family: 'Raleway', sans-serif; font-size: 2.5rem; font-weight: 900; background: linear-gradient(135deg, #ffffff 0%, #cffafe 100%); background-clip: text; -webkit-background-clip: text; color: transparent; margin-bottom: 4px; }
+        .logo-text h3 { font-family: 'Raleway', sans-serif; font-size: 1.4rem; font-weight: 900; background: linear-gradient(135deg, #ffffff 0%, #cffafe 100%); background-clip: text; -webkit-background-clip: text; color: transparent; margin-bottom: 4px; }
+        body.light .logo-text h1 { background: linear-gradient(135deg, #00695c 0%, #004d40 100%); background-clip: text; -webkit-background-clip: text; color: transparent; text-shadow: none; }
+        .logo-text p { font-size: 0.8rem; font-weight: 500; color: #cbd5e1; }
+        body.light .logo-text p { color: #2c3e50; }
+        .header-actions { display: flex; gap: 18px; align-items: center; }
+        .menu-btn, .theme-toggle, .user-avatar { background: rgba(255,255,255,0.2); border-radius: 50%; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; font-size: 1.3rem; backdrop-filter: blur(4px); color: white; }
+        body.light .menu-btn, body.light .theme-toggle, body.light .user-avatar { background: rgba(255,255,255,0.7); color: #00695c; }
+        .side-menu {
+            position: fixed;
+            top: 0;
+            left: -380px;
+            width: 340px;
+            height: 100vh;
+            background: white;
+            z-index: 1000;
+            transition: left 0.3s ease;
+            padding: 28px 20px;
+            box-shadow: 4px 0 30px rgba(0,0,0,0.2);
+            overflow-y: auto;
+            color: #1e293b;
+        }
+        .side-menu.open { left: 0; }
+        .menu-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; display: none; }
+        .menu-overlay.open { display: block; }
+        .close-menu { position: absolute; top: 20px; right: 20px; font-size: 1.8rem; cursor: pointer; color: #0d9488; }
+        .menu-header { font-size: 1.3rem; font-weight: 700; margin: 20px 0 15px 0; color: #0f766e; }
+        .menu-item { padding: 12px 16px; margin: 8px 0; background: #f0fdfa; border-radius: 20px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 14px; font-weight: 500; color: #1e293b; }
+        .menu-item:hover { background: #14b8a6; color: white; transform: translateX(8px); }
+        .fact-bar { background: rgba(255,255,255,0.85); backdrop-filter: blur(4px); border-radius: 16px; padding: 12px 24px; margin-bottom: 40px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        body.light .fact-bar { background: rgba(255,255,255,0.9); }
+        .fact-refresh { background: #0d9488; border: none; padding: 6px 16px; border-radius: 40px; cursor: pointer; color: white; }
+        .mondrian-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 20px;
+            align-items: stretch;
+        }
+        .card, .prompt-library {
+            background: white;
+            border-radius: 24px;
+            padding: 24px;
+            transition: all 0.25s ease;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+            border: 1px solid rgba(13, 148, 136, 0.2);
+            display: flex;
+            flex-direction: column;
+        }
+        .card:hover, .prompt-library:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 35px rgba(0,0,0,0.15);
+        }
+        .card-bot { grid-column: span 1; }
+        .card-neuro { grid-column: span 1; }
+        .card-azilka { grid-column: span 1; }
+        .prompt-block {
+            grid-column: span 3;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            padding: 24px;
+            background: transparent;
+            box-shadow: none;
+            border: none;
+        }
+        .prompt-block .prompt-library {
+            grid-column: span 1;
+            background: white;
+            border: 1px solid rgba(13, 148, 136, 0.2);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+        }
+        .prompt-block .prompt-library:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 35px rgba(0,0,0,0.15);
+        }
+        /* Убираем лишние стили для prompt-block как контейнера */
+        .prompt-block.prompt-block {
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            padding: 0;
+        }
+        .prompt-block.prompt-block:hover {
+            transform: none;
+            box-shadow: none;
+        }
+        
+        @media (max-width: 900px) {
+            .mondrian-grid { grid-template-columns: 1fr 1fr; }
+            .card-bot, .card-neuro, .card-azilka { grid-column: span 1; }
+            .prompt-block { grid-column: span 2; grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 600px) {
+            .mondrian-grid { grid-template-columns: 1fr; }
+            .card, .prompt-block { grid-column: span 1; }
+            .prompt-block { grid-template-columns: 1fr; }
+            .logo-text h1 { font-size: 1.8rem; }
+            .container { max-width: 100%; }
+        }
+        .card h3, .prompt-library h3 {
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+            color: #0f766e;
+        }
+        .card p, .prompt-library p {
+            opacity: 0.8;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            color: #334155;
+            flex: 1;
+        }
+        .btn-card {
+            display: inline-block;
+            background: #0d9488;
+            padding: 8px 20px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.2s;
+            color: white;
+            border: none;
+            align-self: flex-start;
+            margin-top: auto;
+        }
+        .btn-card:hover { background: #14b8a6; }
+        .toast-msg { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #0d9488; color: white; padding: 12px 24px; border-radius: 60px; opacity: 0; transition: 0.2s; z-index: 200; pointer-events: none; font-weight: 500; white-space: nowrap; }
+        @media (max-width: 640px) { .container { padding: 16px; } .toast-msg { white-space: normal; width: 90%; text-align: center; } }
+        .icon-video { width: 110px; height: 95px; background: #ffffff; border-radius: 12px; overflow: hidden; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
+        .icon-video img { width: 80px; height: auto; display: block; }
+        .api-section { background: rgba(14,158,158,0.06); border: 1px solid rgba(14,158,158,0.22); border-radius: 10px; padding: 11px 13px; margin-bottom: 13px; }
+        .api-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 5px; display: flex; align-items: center; gap: 5px; }
+        .api-input-wrap { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+        .api-input { flex: 1; min-width: 120px; background: #f7fdfd; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px 11px; font-size: 0.8rem; font-family: 'Inter', sans-serif; outline: none; }
+        .api-input:focus { border-color: #0d9488; box-shadow: 0 0 0 3px rgba(14,158,158,0.12); }
+        .api-toggle { background: none; border: 1px solid #cbd5e1; border-radius: 6px; padding: 7px 9px; cursor: pointer; font-size: 0.75rem; transition: all 0.15s; white-space: nowrap; }
+        .api-toggle:hover { border-color: #0d9488; }
+        .api-hint { font-size: 0.68rem; color: #475569; margin-top: 4px; word-break: break-word; }
+        .api-hint a { color: #0d9488; text-decoration: none; word-break: break-all; }
+        .api-buttons { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+        .api-buttons button { background: #0d9488; color: #fff; border: none; padding: 4px 12px; border-radius: 6px; cursor: pointer; font-size: 0.7rem; white-space: nowrap; }
+        .api-buttons button:nth-child(2) { background: #ffb6c1; color: #7a2040; }
+        .api-buttons button:nth-child(3) { background: #ccc; color: #333; }
+        .azilka-chat { position: fixed; width: 360px; height: 70vh; background: #ffffff; border-radius: 12px; box-shadow: 0 12px 28px rgba(0,0,0,0.3); display: flex; flex-direction: column; z-index: 10000; overflow: hidden; bottom: 20px; right: 20px; cursor: default; }
+        .azilka-header { background: #0d9488; color: white; padding: 12px 16px; font-size: 18px; font-weight: 600; display: flex; justify-content: space-between; align-items: center; cursor: grab; user-select: none; border-radius: 12px 12px 0 0; }
+        .azilka-header:active { cursor: grabbing; }
+        .azilka-close { background: #ff8c00; border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 20px; font-weight: bold; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .azilka-close:hover { background: #e07b00; }
+        .azilka-messages { flex: 1; padding: 12px; overflow-y: auto; background: #f5f7fa; }
+        .azilka-message { max-width: 80%; padding: 10px 14px; margin-bottom: 10px; border-radius: 12px; line-height: 1.35; font-size: 15px; }
+        .azilka-message.user { background: #d1f1ff; margin-left: auto; }
+        .azilka-message.bot { background: #ffffff; border: 1px solid #e5e5e5; }
+        .azilka-input-area { display: flex; padding: 10px; background: #ffffff; border-top: 1px solid #ddd; }
+        .azilka-input-area input { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #ccc; font-size: 15px; }
+        .azilka-send { margin-left: 8px; padding: 0 16px; background: #ffa500; color: white; border: none; border-radius: 8px; font-size: 18px; cursor: pointer; }
+        .azilka-floating-btn { position: fixed; right: 20px; bottom: 20px; background: #0d9488; color: white; border: none; border-radius: 50%; width: 58px; height: 58px; font-size: 28px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 9999; display: flex; align-items: center; justify-content: center; }
+        .demo-badge {
+            display: inline-block;
+            background: #ff9800;
+            color: #fff;
+            font-size: 0.55rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 30px;
+            margin-left: 8px;
+            vertical-align: middle;
+            letter-spacing: 0.3px;
+        }
+        .card .demo-badge { margin-left: 10px; }
+    </style>
 </head>
 <body>
-
-<!-- ═══════════════════════════════════════════
-  SCREEN 0 – LANDING / BENTO (только Аудио)
-════════════════════════════════════════════ -->
-<div class="screen active" id="screenLanding">
-<div class="landing">
-
-  <div class="hero">
-    <div class="hero-badge"><span><i class="fa-solid fa-network-wired"></i></span> НейроДиалог · ИИ-тренажёр</div>
-    <h1>ИИ-инструменты<br>для учителя – в формате диалога</h1>
-    <p>Выбери тему – и ИИ-ассистент проведёт тебя по нужному сервису: покажет пример, даст промпт и объяснит каждый шаг.</p>
-    <a class="hero-cta" href="#bento" onclick="document.getElementById('bento').scrollIntoView({behavior:'smooth'})">
-     <i class="fa-solid fa-rocket rocket-icon"></i> Выбрать тему и начать
-    </a>
-  </div>
-
-  <div class="bento" id="bento">
-
-    <!-- 1. АНИМАЦИИ (на первом месте) -->
-    <div class="bento-card card-indigo" onclick="showDemoToast()">
-      <div class="card-icon"><i class="fa-solid fa-spinner my-icon"></i></div>
-      <div class="card-title">Анимации <span class="demo-chip-red-small">ДЕМО⛔</span></div>
-      <div class="card-desc">Создавай интерактивные анимации биологических, химических и географических процессов с помощью DeepSeek или Алиса AI.</div>
-      <div class="card-examples">
-        <span class="card-example-chip">DeepSeek · Алиса</span>
-        <span class="card-example-chip">Интерактив</span>
-      </div>
-      <div class="card-arrow">→</div>
-    </div>
-
-    <!-- 2. АУДИО – С ЯРКО-ЖЁЛТОЙ ПУЛЬСИРУЮЩЕЙ ПОДСВЕТКОЙ (как Менделеев) НА ВТОРОМ МЕСТЕ -->
-    <div class="bento-card card-wide card-teal card-highlight" onclick="openDialog('audio')">
-      <div class="card-icon"><i class="fa-solid fa-headphones my-icon"></i></div>
-      <div class="card-title">Аудио <span class="demo-chip-red">ДОСТУПНО</span></div>
-      <div class="card-desc">Озвучивание учебных материалов. Превращай текст в качественную речь с помощью ИИ – бесплатно и за минуты.</div>
-      <div class="card-examples">
-        <span class="card-example-chip">Text-to-Speech / синтез речи</span>
-        <span class="card-example-chip">Озвучка слайдов</span>
-      </div>
-      <div class="card-arrow">→</div>
-    </div>
-
-    <!-- 3. ВИДЕО -->
-    <div class="bento-card card-rose" onclick="showDemoToast()">
-      <div class="card-icon"><i class="fa-solid fa-video my-icon"></i></div>
-      <div class="card-title">Видео <span class="demo-chip-red-small">ДЕМО⛔</span></div>
-      <div class="card-desc">Генерация учебных видео с помощью ИИ: создавай анимированные объяснения, визуализации процессов и видеоролики для уроков.</div>
-      <div class="card-examples">
-        <span class="card-example-chip">Hailuo AI</span>
-        <span class="card-example-chip">Kling AI</span>
-        <span class="card-example-chip">Анимация</span>
-      </div>
-      <div class="card-arrow">→</div>
-    </div>
-
-    <!-- 4. ВИЗУАЛИЗАЦИЯ -->
-    <div class="bento-card card-pink" onclick="showDemoToast()">
-      <div class="card-icon"><i class="fa-solid fa-image my-icon"></i></div>
-      <div class="card-title">Визуализация <span class="demo-chip-red-small">ДЕМО⛔</span></div>
-      <div class="card-desc">Генерация учебных иллюстраций с помощью ИИ. Создавай уникальные картинки для уроков по описанию на русском языке.</div>
-      <div class="card-examples">
-        <span class="card-example-chip">Qwen AI</span>
-        <span class="card-example-chip">Canva AI</span>
-      </div>
-      <div class="card-arrow">→</div>
-    </div>
-
-    <!-- 5. ДИАГРАММЫ И ГРАФИКИ -->
-    <div class="bento-card card-cyan" onclick="showDemoToast()">
-      <div class="card-icon"><i class="fa-solid fa-chart-column my-icon"></i></div>
-      <div class="card-title">Диаграммы и графики <span class="demo-chip-red-small">ДЕМО⛔</span></div>
-      <div class="card-desc">Загрузи Excel-файл с данными – ИИ построит диаграммы, интерпретирует и объяснит данные классу. Flourish. Datawrapper.</div>
-      <div class="card-examples">
-        <span class="card-example-chip">Excel-данные</span>
-        <span class="card-example-chip">Chartist.js</span>
-        <span class="card-example-chip">Интерпретация</span>
-      </div>
-      <div class="card-arrow">→</div>
-    </div>
-
-    <!-- 6. ДИАЛОГИ -->
-    <div class="bento-card card-purple" onclick="showDemoToast()">
-      <div class="card-icon"><i class="fa-solid fa-comments my-icon"></i></div>
-      <div class="card-title">Диалоги <span class="demo-chip-red-small">ДЕМО⛔</span></div>
-      <div class="card-desc">Общайся с ИИ-персонажами, создавай диалоги для уроков, ролевые игры и живые обсуждения с нейросетью.</div>
-      <div class="card-examples">
-        <span class="card-example-chip">Character.AI</span>
-        <span class="card-example-chip">Ролевые игры</span>
-        <span class="card-example-chip">Диалоги</span>
-      </div>
-      <div class="card-arrow">→</div>
-    </div>
-
-    <!-- 7. ИГРЫ -->
-    <div class="bento-card card-orange" onclick="showDemoToast()">
-      <div class="card-icon"><i class="fa-solid fa-dice my-icon"></i></div>
-      <div class="card-title">Игры <span class="demo-chip-red-small">ДЕМО⛔</span></div>
-      <div class="card-desc">Создавай HTML-игры для класса с ИИ: викторины, квесты, тренажёры без знания программирования.</div>
-      <div class="card-examples">
-        <span class="card-example-chip">DeepSeek</span>
-        <span class="card-example-chip">HTML-игры</span>
-      </div>
-      <div class="card-arrow">→</div>
-    </div>
-
-    <!-- 8. ИДЕНТИФИКАЦИЯ -->
-    <div class="bento-card card-teal" onclick="showDemoToast()">
-      <div class="card-icon"><i class="fa-solid fa-magnifying-glass my-icon"></i></div>
-      <div class="card-title">Идентификация объектов <span class="demo-chip-red-small">ДЕМО⛔</span></div>
-      <div class="card-desc">Распознавание растений, минералов, объектов по фото – ИИ определяет и объясняет.</div>
-      <div class="card-examples">
-        <span class="card-example-chip">Фото → название</span>
-      </div>
-      <div class="card-arrow">→</div>
-    </div>
-
-    <!-- 9. ИНФОГРАФИКА -->
-    <div class="bento-card card-tall card-featured" onclick="showDemoToast()">
-      <div class="card-icon"><i class="fa-solid fa-chart-pie"></i></div>
-      <div class="card-title">Инфографика <span class="demo-chip-red-small">ДЕМО⛔</span></div>
-      <div class="card-desc">Образовательные инфографики и ментальные карты за минуты. ИИ сам предложит структуру, иконки и дизайн по описанию темы.</div>
-      <div class="card-examples">
-        <span class="card-example-chip">Ментальные карты</span>
-        <span class="card-example-chip">Схемы</span>
-        <span class="card-example-chip">Lovart AI</span>
-        <span class="card-example-chip">VisualGPT</span>
-      </div>
-      <div class="card-arrow">→</div>
-    </div>
-
-    <!-- 10. КИМ -->
-    <div class="bento-card card-wide card-green" onclick="showDemoToast()">
-      <div class="card-icon"><i class="fa-solid fa-list-check my-icon"></i></div>
-      <div class="card-title">Контрольно-измерительные материалы <span class="demo-chip-red-small">ДЕМО⛔</span></div>
-      <div class="card-desc">Тесты, задания, вопросы по любой теме – ИИ создаёт контрольно-измерительные материалы по параграфу учебника за секунды. С примерами по биологии, географии и химии.</div>
-      <div class="card-examples">
-        <span class="card-example-chip">Любая тема</span>
-      </div>
-      <div class="card-arrow">→</div>
-    </div>
-
-    <!-- 11. МОДЕЛИРОВАНИЕ -->
-    <div class="bento-card card-indigo" onclick="showDemoToast()">
-      <div class="card-icon"><i class="fa-solid fa-cube my-icon"></i></div>
-      <div class="card-title">Моделирование <span class="demo-chip-red-small">ДЕМО⛔</span></div>
-      <div class="card-desc">Создание 3D-моделей молекул, клеток, геологических объектов для наглядного показа на уроке.</div>
-      <div class="card-examples">
-        <span class="card-example-chip">Молекулы</span>
-        <span class="card-example-chip">3D-просмотр</span>
-      </div>
-      <div class="card-arrow">→</div>
-    </div>
-
-    <!-- 12. СТАТЬИ -->
-    <div class="bento-card card-wide card-cyan" onclick="showDemoToast()">
-      <div class="card-icon"><i class="fa-solid fa-file-lines my-icon"></i></div>
-      <div class="card-title">Статьи <span class="demo-chip-red-small">ДЕМО⛔</span></div>
-      <div class="card-desc">Поиск научных статей и публикаций с помощью Perplexity и Semantic Scholar. Быстрый обзор исследований.</div>
-      <div class="card-examples">
-        <span class="card-example-chip">Perplexity</span>
-        <span class="card-example-chip">Semantic Scholar</span>
-      </div>
-      <div class="card-arrow">→</div>
-    </div>
-
-    <!-- 13. ПРЕЗЕНТАЦИИ -->
-    <div class="bento-card card-wide card-yellow" onclick="showDemoToast()">
-      <div class="card-icon"><i class="fa-solid fa-display my-icon"></i></div>
-      <div class="card-title">Презентации <span class="demo-chip-red-small">ДЕМО⛔</span></div>
-      <div class="card-desc">Создавай слайды с ИИ за 30 секунд: Gamma.app, Canva AI, Beautiful.ai.</div>
-      <div class="card-examples">
-        <span class="card-example-chip">Gamma.app</span>
-        <span class="card-example-chip">Canva AI</span>
-      </div>
-      <div class="card-arrow">→</div>
-    </div>
-
-    <!-- 14. ПЛАН-КОНСПЕКТ -->
-    <div class="bento-card card-wide card-green" onclick="showDemoToast()">
-      <div class="card-icon"><i class="fa-solid fa-list-ul my-icon"></i></div>
-      <div class="card-title">План-конспект урока <span class="demo-chip-red-small">ДЕМО⛔</span></div>
-      <div class="card-desc">Генерируй готовый план-конспект урока. Любая тема.</div>
-      <div class="card-examples">
-        <span class="card-example-chip">Фотосинтез</span>
-        <span class="card-example-chip">Magicschool AI</span>
-      </div>
-      <div class="card-arrow">→</div>
-    </div>
-
-    <!-- 15. ТЕКСТ -->
-    <div class="bento-card card-wide card-pink" onclick="showDemoToast()">
-      <div class="card-icon"><i class="fa-solid fa-highlighter my-icon"></i></div>
-      <div class="card-title">Текст <span class="demo-chip-red-small">ДЕМО⛔</span></div>
-      <div class="card-desc">Адаптируй научные тексты под уровень класса, создавай аннотации, объяснения, краткие пересказы.</div>
-      <div class="card-examples">
-        <span class="card-example-chip">Адаптация</span>
-        <span class="card-example-chip">Аннотации</span>
-        <span class="card-example-chip">Пересказ</span>
-      </div>
-      <div class="card-arrow">→</div>
-    </div>
-
-    <!-- 16. РАБОЧИЕ ЛИСТЫ -->
-    <div class="bento-card card-purple" onclick="showDemoToast()">
-      <div class="card-icon"><i class="fa-solid fa-pen-to-square my-icon"></i></div>
-      <div class="card-title">Рабочие листы <span class="demo-chip-red-small">ДЕМО⛔</span></div>
-      <div class="card-desc">Генерация заданий, кроссвордов, упражнений по любой теме за минуты.</div>
-      <div class="card-examples">
-        <span class="card-example-chip">To-teach.ai</span>
-        <span class="card-example-chip">TeachShare</span>
-        <span class="card-example-chip">Интерактив</span>
-      </div>
-      <div class="card-arrow">→</div>
-    </div>
-
-    <!-- 17. ЭКСПРЕСС-АНАЛИЗАТОР -->
-    <div class="bento-card card-red" onclick="showDemoToast()">
-      <div class="card-icon"><i class="fa-solid fa-bolt my-icon"></i></div>
-      <div class="card-title">Экспресс-анализ <span class="demo-chip-red-small">ДЕМО⛔</span></div>
-      <div class="card-desc">Проверка текста на оригинальность и качество. ИИ даёт мгновенную обратную связь.</div>
-      <div class="card-examples">
-        <span class="card-example-chip">Антиплагиат</span>
-        <span class="card-example-chip">Разбор ошибок</span>
-      </div>
-      <div class="card-arrow">→</div>
-    </div>
-
-  </div><!-- /bento -->
-</div><!-- /landing -->
-<a href="../index.html" class="back-btn">Назад</a>
-</div><!-- /screenLanding -->
-
-
-<!-- ═══════════════════════════════════════════
-  SCREEN 1 – DIALOG (только Аудио)
-════════════════════════════════════════════ -->
-<div class="screen" id="screenDialog">
-<div class="dialog-screen">
-
-  <div class="dialog-header">
-    <button class="back-btn-small" onclick="goHome()">← Все темы</button>
-    <div class="dialog-topic-badge">
-      <span class="dialog-topic-icon" id="topicIcon"></span>
-      <span id="topicTitle"></span>
-    </div>
-  </div>
-
-  <div class="chat-win">
-    <div class="chat-topbar">
-      <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
-      <span class="topbar-title">НейроДиалог · ИИ-ассистент</span>
-      <span class="topbar-live">онлайн</span>
-    </div>
-    <div class="chat-msgs" id="chatMsgs"></div>
-    <div class="choices"  id="choices"></div>
-    <div class="nav-bottom" id="navBottom"></div>
-  </div>
-
+<div class="ocean-bg">
+    <div class="wave-svg wave-layer1"><svg viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0,64 C150,96 250,32 400,64 C550,96 650,32 800,64 C950,96 1050,32 1200,64 L1200,120 L0,120 Z" fill="rgba(255,255,240,0.25)"/></svg></div>
+    <div class="wave-svg wave-layer2"><svg viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0,80 C200,110 300,50 500,80 C700,110 800,50 1000,80 C1100,95 1150,80 1200,80 L1200,120 L0,120 Z" fill="rgba(255,255,240,0.18)"/></svg></div>
 </div>
-</div><!-- /screenDialog -->
 
-
-<!-- GLOSSARY -->
-<button class="gloss-btn" onclick="toggleGloss()" title="Словарь терминов">📖</button>
-<div class="gloss-panel" id="glossPanel">
-  <h3>📖 Словарь ИИ-терминов</h3>
-  <div class="gloss-item"><div class="gloss-term">Промпт (Prompt)</div><div class="gloss-def">Запрос или инструкция, которую вы даёте ИИ. Чем точнее промпт – тем лучше результат.</div></div>
-  <div class="gloss-item"><div class="gloss-term">Генеративный ИИ</div><div class="gloss-def">ИИ, создающий новый контент: тексты, изображения, аудио, видео – на основе обученных нейросетей.</div></div>
-  <div class="gloss-item"><div class="gloss-term">LLM</div><div class="gloss-def">Large Language Model – большая языковая модель. Основа ChatGPT, Claude, Gemini и других ИИ-ассистентов.</div></div>
-  <div class="gloss-item"><div class="gloss-term">TTS (Text-to-Speech)</div><div class="gloss-def">Синтез речи – преобразование текста в устную речь. Используется для озвучки учебных материалов.</div></div>
-  <div class="gloss-item"><div class="gloss-term">Диффузионная модель</div><div class="gloss-def">Тип нейросети для генерации изображений (DALL·E, Midjourney). Создаёт картинки из текстового описания.</div></div>
-  <div class="gloss-item"><div class="gloss-term">Мультимодальность</div><div class="gloss-def">Способность ИИ работать с текстом, изображениями, аудио и видео одновременно.</div></div>
-  <div class="gloss-item"><div class="gloss-term">КИМ</div><div class="gloss-def">Контрольно-измерительные материалы – тесты, задания, вопросы для проверки знаний учащихся.</div></div>
-  <div class="gloss-item"><div class="gloss-term">RAG</div><div class="gloss-def">Retrieval-Augmented Generation – ИИ перед ответом ищет информацию в базе документов. Повышает точность.</div></div>
+<div id="menuOverlay" class="menu-overlay"></div>
+<div id="sideMenu" class="side-menu">
+    <div class="close-menu" id="closeMenuBtn">&times;</div>
+    <div class="api-section">
+        <div class="api-label"><span>🔑</span> API-ключ Gen API</div>
+        <div class="api-input-wrap">
+            <input class="api-input" id="apiKeyInput" type="password" placeholder="Введите ваш API-ключ Gen API" autocomplete="off" disabled/>
+            <button class="api-toggle" onclick="toggleApiVisibility(this)" disabled>👁 Показать</button>
+        </div>
+        <div id="apiKeyStatus" style="font-size:0.68rem;margin-top:4px;min-height:16px; color: #888;">🔒 В оригинале необходимо ввести ключ</div>
+        <div class="api-buttons">
+            <button disabled>💾 Сохранить ключ</button>
+            <button disabled>🔍 Проверить ключ</button>
+            <button disabled>🗑️ Очистить</button>
+        </div>
+        <div style="margin-top: 8px; font-size: 0.7rem; color: #ff6b6b; background: #ffeeee; padding: 4px 8px; border-radius: 6px;">⚡ Демо-режим: поле ввода отключено</div>
+    </div>
+    <div class="menu-header"><i class="fas fa-tools"></i> Инструменты<span class="demo-badge">DEMO</span></div>
+    <div class="menu-item" onclick="location.href='calc.html'"><i class="fas fa-calculator"></i> Калькулятор среднего балла</div>
+    <div class="menu-item" onclick="location.href='calc_n.html'"><i class="fa-solid fa-table"></i> Калькулятор нагрузки</div>
+    <div class="menu-item" onclick="location.href='navik.html'"><i class="fas fa-microphone-alt"></i>Голосовые команды</div>
+    <div class="menu-item" onclick="location.href='situation.html'"><i class="fas fa-dice-d6"></i> Рандомайзер ситуаций </div>
+    <div class="menu-item" onclick="location.href='auto_match.html'"><i class="fa-solid fa-wand-magic-sparkles"></i> Автопроверка заданий</div>
+    <div class="menu-item" onclick="location.href='chain_mez.html'"><i class="fas fa-link"></i> Межпредметный навигатор</div>
+	<div class="menu-item" onclick="location.href='agent_p.html'"><i class="fa-solid fa-bolt"></i>ИИ-провокатор</div>
+	<div class="menu-item" onclick="location.href='gen_lit.html'"><i class="fa-solid fa-book"></i>Умный библиограф</div>
+    <div class="menu-item" onclick="location.href='data.html'"><i class="fa-solid fa-magnifying-glass"></i> Верификатор</div>
+	<div class="menu-item" onclick="location.href='Trainer/start_trainer.html'"><i class="fa-solid fa-brain"></i> Сборник тренажёров</div>
 </div>
+
+<div class="container">
+    <div class="header">
+        <div class="logo-area">
+            <div class="header-logo"><div class="icon-video"><img src="ico.png" alt="LOGO"></div></div>
+            <div class="logo-text"><h1>OctopusEDU</h1><h3>Естественный выбор</h3><p>Многорукий помощник учителя</p></div>
+        </div>
+        <div class="header-actions">
+            <div class="menu-btn" id="menuBtn"><i class="fas fa-bars"></i></div>
+            <div class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></div>
+            <div class="user-avatar" onclick="location.href='Check/match.html'"><i class="fas fa-user"></i></div>
+        </div>
+    </div>
+
+	<div class="fact-bar">
+		<div class="fact-text"><i class="fas fa-lightbulb" style="color:#f4c430"></i> <span id="factOfDay">Главное: ИИ не заменяет учителя. Он забирает рутину, чтобы вы успели главное</span></div>
+        <button class="fact-refresh" id="refreshFactBtn"><i class="fas fa-sync-alt"></i> Другой факт</button>
+    </div>
+
+    <div class="mondrian-grid">
+        <!-- Первый ряд: три карточки по 1 колонке -->
+        <div class="card card-bot" data-action="chatbot">
+            <h3><div class="card-icon"><i class="fas fa-comment-dots"></i></div>Бот-наставник <span class="demo-badge">DEMO</span></h3>
+            <p>Помощник по биологии, химии, географии. Объяснит сложные темы и подберёт задания</p>
+            <div class="btn-card" onclick="location.href='bot.html'">Спросить сейчас <i class="fas fa-arrow-right"></i></div>
+        </div>
+        <div class="card card-neuro" data-action="neurodialog">
+            <h3><div class="card-icon"><i class="fas fa-brain"></i></div>Нейродиалог <span class="demo-badge">DEMO</span></h3>
+            <p>Тренажёр-словарь по ИИ-сервисам для учителя: как подготовить изображение, как написать статью и др.</p>
+            <div class="btn-card" onclick="location.href='NeuroDialog/index.html'">Начать тренировку <i class="fas fa-microchip"></i></div>
+        </div>
+        <div class="card card-azilka" id="azilkaCardTrigger">
+            <h3><div class="card-icon"><i class="fas fa-feather-alt"></i></div>Азилка <span class="demo-badge">DEMO</span></h3>
+            <p>Креативный бот для идей уроков, кейсов, викторин и нестандартных заданий</p>
+            <div class="btn-card">Придумать новое <i class="fas fa-lightbulb"></i></div>
+        </div>
+        
+        <!-- Второй ряд: два блока внутри контейнера, растянутые на всю ширину -->
+        <div class="prompt-block">
+            <div class="prompt-library" onclick="location.href='prompmts.html'" id="promptLibraryBlock">
+                <h3><i class="fas fa-book-open"></i> Библиотека промптов <span class="demo-badge">DEMO</span></h3>
+                <p>Набор тематически организованных запросов, которые можно использовать для разных задач при подготовке к уроку, на уроке</p>
+                <div class="btn-card" style="margin-top: 8px;">Исследовать <i class="fa-solid fa-magnifying-glass"></i></div>
+            </div>
+            <div class="prompt-library" id="generatorsBlock" onclick="location.href='generators.html'">
+                <h3><i class="fas fa-cogs"></i> Генераторы для современного урока <span class="demo-badge">DEMO</span></h3>
+                <p>Создавайте визуальные опоры, календарные планы, варианты проверочных работ и AI-отчёты – всё за минуты с помощью интеллектуальных инструментов.</p>
+                <div class="btn-card" style="margin-top: 8px;">Создавать <i class="fa-solid fa-wand-magic-sparkles"></i></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="toastMsg" class="toast-msg">✨ Готово</div>
+<div class="paper-boat"><svg viewBox="0 0 60 50"><path d="M5,35 L55,35 L45,45 L15,45 Z" fill="#f0f0f0" stroke="#cbd5e1" stroke-width="1"/><path d="M30,10 L18,35 L42,35 Z" fill="#ffffff" stroke="#94a3b8" stroke-width="1"/></svg></div>
+
+<div class="fish fish1"><svg width="14" height="10"><path d="M1 5 C1 5 3 1 7 1 C11 1 13 5 13 5 C13 5 11 9 7 9 C3 9 1 5 1 5Z" fill="#4db6ac" opacity="0.8"/><circle cx="9.5" cy="4" r="1" fill="white"/><path d="M1 5 L-1 3 L-1 7 Z" fill="#4db6ac" opacity="0.8"/></svg>ChatGPT</div>
+<div class="fish fish2"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5 C1 5 3 1 7 1 C11 1 13 5 13 5 C13 5 11 9 7 9 C3 9 1 5 1 5Z" fill="#4db6ac" opacity="0.8"/><circle cx="9.5" cy="4" r="1" fill="white"/><path d="M1 5 L-1 3 L-1 7 Z" fill="#4db6ac" opacity="0.8"/></svg>Grok</div>
+<div class="fish fish3"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5 C1 5 3 1 7 1 C11 1 13 5 13 5 C13 5 11 9 7 9 C3 9 1 5 1 5Z" fill="#4db6ac" opacity="0.8"/><circle cx="9.5" cy="4" r="1" fill="white"/><path d="M1 5 L-1 3 L-1 7 Z" fill="#4db6ac" opacity="0.8"/></svg>Claude</div>
+<div class="fish fish4"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5 C1 5 3 1 7 1 C11 1 13 5 13 5 C13 5 11 9 7 9 C3 9 1 5 1 5Z" fill="#4db6ac" opacity="0.8"/><circle cx="9.5" cy="4" r="1" fill="white"/><path d="M1 5 L-1 3 L-1 7 Z" fill="#4db6ac" opacity="0.8"/></svg>Copilot</div>
+<div class="fish fish5"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5 C1 5 3 1 7 1 C11 1 13 5 13 5 C13 5 11 9 7 9 C3 9 1 5 1 5Z" fill="#4db6ac" opacity="0.8"/><circle cx="9.5" cy="4" r="1" fill="white"/><path d="M1 5 L-1 3 L-1 7 Z" fill="#4db6ac" opacity="0.8"/></svg>DeepSeek</div>
+<div class="fish fish6"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5 C1 5 3 1 7 1 C11 1 13 5 13 5 C13 5 11 9 7 9 C3 9 1 5 1 5Z" fill="#4db6ac" opacity="0.8"/><circle cx="9.5" cy="4" r="1" fill="white"/><path d="M1 5 L-1 3 L-1 7 Z" fill="#4db6ac" opacity="0.8"/></svg>Алиса AI</div>
+<div class="fish fish7"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5 C1 5 3 1 7 1 C11 1 13 5 13 5 C13 5 11 9 7 9 C3 9 1 5 1 5Z" fill="#4db6ac" opacity="0.8"/><circle cx="9.5" cy="4" r="1" fill="white"/><path d="M1 5 L-1 3 L-1 7 Z" fill="#4db6ac" opacity="0.8"/></svg>Napkin.ai</div>
+<div class="fish fish8"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5 C1 5 3 1 7 1 C11 1 13 5 13 5 C13 5 11 9 7 9 C3 9 1 5 1 5Z" fill="#4db6ac" opacity="0.8"/><circle cx="9.5" cy="4" r="1" fill="white"/><path d="M1 5 L-1 3 L-1 7 Z" fill="#4db6ac" opacity="0.8"/></svg>Gemini</div>
+
+<div class="azilka-chat" id="azilkaChat" style="display: none;">
+    <div class="azilka-header" id="azilkaDragHandle"><span>🙃 Азилка</span><button class="azilka-close" id="azilkaCloseBtn">✕</button></div>
+    <div class="azilka-messages" id="azilkaMessages"><div class="azilka-message bot">Привет! Я Азилка. Что за творческая задача? Говори кратко, я выдам идею или пошу́чу 🙃</div></div>
+    <div class="azilka-input-area"><input type="text" id="azilkaInput" placeholder="Спросить совет или прикол..." autocomplete="off"><button class="azilka-send" id="azilkaSendBtn">➤</button></div>
+</div>
+<button class="azilka-floating-btn" id="azilkaToggleBtn"><i class="fa-regular fa-face-grin"></i></button>
 
 <script>
-// ═══════════════════════════════════════════════
-//  DIALOG DATA (только Аудио)
-// ═══════════════════════════════════════════════
-const topics = {
-audio: {
-  icon: '🎧', title: 'Аудиоконтент',
-  tree: {
-    start: {
-      ai: 'Привет! Рад помочь с созданием аудиоматериалов. Что именно нужно сделать?',
-      teacher: 'Озвучить слайды для презентации',
-      ai2: 'Отлично! Я знаю как это сделать! Для синтеза речи есть несколько вариантов. Что для тебя важнее?',
-      choices: [
-        { text: 'Бесплатно и быстро', icon: '🎙', next: 'result_tts_free' },
-        { text: 'Качественный голос с настройками', icon: '🎙', next: 'result_elevenlabs' }
-      ]
-    },
-    result_tts_free: { preview: 'tts_free' },
-    result_elevenlabs: { preview: 'elevenlabs' }
-  }
-},
-};
+    // === Константа для ключа (демо-режим — отключено) ===
+    const API_KEY_STORAGE_KEY = 'gen_api_key';
+    
+    // === МЕНЮ ===
+    const menuBtn = document.getElementById('menuBtn');
+    const sideMenu = document.getElementById('sideMenu');
+    const menuOverlay = document.getElementById('menuOverlay');
+    function openMenu() { sideMenu.classList.add('open'); menuOverlay.classList.add('open'); }
+    function closeMenu() { sideMenu.classList.remove('open'); menuOverlay.classList.remove('open'); }
+    menuBtn.addEventListener('click', openMenu);
+    document.getElementById('closeMenuBtn').addEventListener('click', closeMenu);
+    menuOverlay.addEventListener('click', closeMenu);
 
-// ═══════════════════════════════════════════════
-//  PREVIEWS (только для Аудио)
-// ═══════════════════════════════════════════════
-const previews = {
-  tts_free:{ title:'TTS Online – Бесплатно', 
-  logo:'🗣', logoBg:'#e6e6e6', chips:['chip-web','chip-free','chip-ru'], 
-  labels:['Веб','Бесплатно','Русский'], 
-  desc:'Самый быстрый способ озвучить учебный текст.', 
-  link:'pages/audio3.html', linkLabel:'Открыть пример', 
-  how:'pages/audio.html', howLabel:'Как это сделать' },
-  elevenlabs:{ title:'ElevenLabs – Профессиональный голос', 
-  logo:'🗣', 
-  logoBg:'#e6e6e6', chips:['chip-web','chip-paid','chip-ru'], 
-  labels:['Веб','10 000 символов/мес бесплатно','Русский'], 
-  desc:'Отличное качество синтеза речи. Позволяет генерировать голос по выбору пользователя.', 
-  link:'pages/audio4.html', linkLabel:'Открыть пример', how:'pages/audio2.html', 
-  howLabel:'Как это сделать' },
-};
+    // === ТЕМА ===
+    const themeToggle = document.getElementById('themeToggle');
+    if(localStorage.getItem('theme') === 'light') document.body.classList.add('light');
+    themeToggle.innerHTML = document.body.classList.contains('light') ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+    themeToggle.addEventListener('click', () => {
+        document.body.classList.toggle('light');
+        const isLight = document.body.classList.contains('light');
+        localStorage.setItem('theme', isLight ? 'light' : 'dark');
+        themeToggle.innerHTML = isLight ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+    });
 
-// ═══════════════════════════════════════════════
-//  ENGINE
-// ═══════════════════════════════════════════════
-let currentTopic = null;
+    // === ФАКТЫ ===
+    const facts = [
+  "80% рутины учителя можно делегировать ИИ. Начни с одного промпта",
+  "Проверочная работа на 3 варианта – за 30 секунд",
+  "Персональный ИИ-ассистент помогает учителю работать в 3–5 раз быстрее при подготовке материалов",
+  "Визуальную опору к уроку нейросеть сделает быстрее, чем вы найдёте картинку",
+  "Учитель тратит до 10 часов в неделю на проверку заданий. ИИ может взять на себя половину",
+  "Лучшие промпты экономят до 30 минут на создание одного урока",
+  "Ролевая игра: пусть бот сыграет Вернадского, Дарвина или профессора 2150",
+  "Химическую реакцию бот объяснит на примерах из жизни",
+  "Климатограммы: нейросеть расшифрует и покажет закономерности",
+  "Почему кровь красная, а вены синие? Бот объяснит за минуту",
+  "Схему пищеварительной системы нейросеть нарисует и подпишет за вас",
+  "Почему в пустыне холодно ночью? ИИ даст 3 объяснения",
+  "Идеи для викторин и кейсов: нейросеть генерирует их за 10 секунду",
+  "Лучший способ запомнить информацию — объяснять её боту. ИИ-наставник может быть учеником!",
+  "Мнемотехники для биологических терминов – попроси у бота",
+  "Учитель задаёт 400 вопросов в день. ИИ может придумать ещё 400 новых",
+  "10 необычных адаптаций животных для урока – готово",
+  "Нейросеть проверит текст на логику, а не только орфографию",
+  "Учитель тратит 40% времени на то, что можно делегировать нейросети. Начни с малого — одного промпта в день",
+  "Сделай изображение к уроку: чем конкретнее запрос, тем лучше результат",
+  "ИИ пишет вариант проверочной работы за 30 секунд",
+  "Расшифровка устного ответа ученика в текст + анализ занимает минуту",
+  "План урока в таблицу – одним сообщением",
+  "ИИ умеет объяснять сложное простыми словами (попроси «для 7 класса»)",
+  "Скучную тему можно превратить в детективную историю",
+  "Викторину по параграфу нейросеть придумает за 20 секунд",
+  "Кейс для урока – от двух строчек до полноценного разбора",
+  "«Что если» по теме: 10 неожиданных вопросов от ИИ",
+  "Карточки для парной работы: 10 штук за 1 промпт",
+  "Инфографика по правилу или процессу – нейросеть сделает схему",
+  "Список литературы по теме с аннотациями – автоматически",
+  "Таблица «знаю – хочу узнать – узнал» заполняется ИИ за вас",
+  "Домашнее задание с выбором формата (тест, эссе, проект)",
+  "Как написать статью? Начни с промпта: «я учитель, моя тема…»",
+  "Сделай 3 уровня сложности из одного вопроса",
+  "Аналогии из жизни: бот подберёт, если их нет в учебнике",
+  "Календарный план – за 2 минуты в AI-генераторе",
+  "Проверочная работа с ответами и критериями – готово",
+  "Визуальная опора: опиши – ИИ нарисует схему",
+  "AI-отчёт: загрузи данные – получи текст",
+  "10 идей для внеклассного мероприятия за один запрос",
+  "Расшифровка устного ответа ученика + анализ – за минуту",
+  "Подписи к учебным картинкам: нейросеть сделает за 5 секунд",
+  "Нейросеть подскажет, как объяснить тему ученику с трудностями",
+  "80% времени учителя уходит на рутину. ИИ может сократить её до 20%",
+  
+];
+    let factIndex = 0;
+    document.getElementById('refreshFactBtn').addEventListener('click', () => {
+        factIndex = (factIndex + 1) % facts.length;
+        document.getElementById('factOfDay').innerText = facts[factIndex];
+        showToast('🔄 Новый факт дня!', 1000);
+    });
+    function showToast(msg, dur=1500) {
+        const toast = document.getElementById('toastMsg');
+        toast.innerText = msg;
+        toast.style.opacity = '1';
+        setTimeout(() => toast.style.opacity = '0', dur);
+    }
 
-function openDialog(topicId) {
-  if (topicId !== 'audio') { showDemoToast(); return; }
-  currentTopic = topicId;
-  const topic = topics[topicId];
-  if (!topic) return;
-
-  document.getElementById('topicIcon').textContent  = topic.icon;
-  document.getElementById('topicTitle').textContent = topic.title;
-  document.getElementById('chatMsgs').innerHTML    = '';
-  document.getElementById('choices').innerHTML     = '';
-  document.getElementById('navBottom').innerHTML   = '';
-
-  showScreen('screenDialog');
-  window.scrollTo({top:0, behavior:'smooth'});
-
-  const node = topic.tree['start'];
-  if (node.ai) addAI(node.ai);
-  if (node.teacher) addTeacher(node.teacher);
-  if (node.ai2) addAI(node.ai2);
-  if (node.teacher2) addTeacher(node.teacher2);
-  if (node.ai3) addAI(node.ai3);
-  renderChoices(node.choices, topicId);
-}
-
-function goHome() {
-  showScreen('screenLanding');
-  window.scrollTo({top:0, behavior:'smooth'});
-}
-
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-}
-
-function addAI(text) {
-  const msgs = document.getElementById('chatMsgs');
-  const div = document.createElement('div');
-  div.className = 'msg';
-  div.innerHTML = `<div class="avatar ai"><i class="fa-solid fa-robot" style="color:#000;"></i></div><div class="msg-body"><div class="msg-name ai">ИИ-ассистент</div><div class="bubble ai">${text}</div></div>`;
-  msgs.appendChild(div);
-  scrollChat();
-}
-
-function addTeacher(text) {
-  const msgs = document.getElementById('chatMsgs');
-  const div = document.createElement('div');
-  div.className = 'msg';
-  div.innerHTML = `<div class="avatar teacher"><i class="fa-solid fa-face-meh"></i></div><div class="msg-body"><div class="msg-name teacher">Учитель</div><div class="bubble teacher">${text}</div></div>`;
-  msgs.appendChild(div);
-  scrollChat();
-}
-
-function renderChoices(choices, topicId) {
-  const area = document.getElementById('choices');
-  area.innerHTML = '';
-  choices.forEach(c => {
-    const btn = document.createElement('button');
-    btn.className = 'choice';
-    btn.innerHTML = `<span class="choice-ico">${c.icon}</span><span>${c.text}</span><span class="choice-arrow">→</span>`;
-    btn.onclick = () => pickChoice(c, topicId || currentTopic);
-    area.appendChild(btn);
-  });
-}
-
-function pickChoice(choice, topicId) {
-  addTeacher(choice.text);
-  document.getElementById('choices').innerHTML = '';
-
-  const tid = topicId || currentTopic;
-  const topic = topics[tid];
-  const node  = topic.tree[choice.next];
-  if (!node) return;
-
-  if (node.ai) addAI(node.ai);
-  if (node.preview) {
-    showPreview(node.preview);
-    showRestartBtn();
-  } else if (node.choices) {
-    renderChoices(node.choices, tid);
-  } else {
-    showRestartBtn();
-  }
-}
-
-function showPreview(previewId) {
-  const p = previews[previewId];
-  if (!p) { showRestartBtn(); return; }
-
-  const msgs = document.getElementById('chatMsgs');
-  const card = document.createElement('div');
-  card.className = 'preview-card';
-
-  const chipsHtml = p.chips.map((c,i) => `<span class="p-chip ${c}">${p.labels[i]}</span>`).join('');
-  const promptHtml = p.prompt ? `<div class="prompt-box"><div class="prompt-label">⌨️ Готовый промпт – скопируй и используй</div><div class="prompt-text">${p.prompt.replace(/\n/g,'<br>')}</div></div>` : '';
-  let linksHtml = `<a href="${p.link}" target="_blank" class="open-link"> ${p.linkLabel}</a>`;
-  if (p.how) linksHtml += ` <a href="${p.how}" target="_blank" class="open-link" style="background:#cc0099;"> ${p.howLabel}</a>`;
-
-  card.innerHTML = `
-    <div class="preview-header">
-      <div class="preview-logo" style="background:${p.logoBg}">${p.logo}</div>
-      <div><div class="preview-title">${p.title}</div><div class="preview-sub"></div></div>
-    </div>
-    <div class="preview-desc">${p.desc}</div>
-    <div class="preview-chips">${chipsHtml}</div>
-    ${promptHtml}
-    <div style="display: flex; gap: 10px; flex-wrap: wrap;">${linksHtml}</div>
-  `;
-
-  msgs.appendChild(card);
-  scrollChat();
-  showRestartBtn();
-}
-
-function showRestartBtn() {
-  const nav = document.getElementById('navBottom');
-  nav.innerHTML = `<button class="nav-btn" onclick="openDialog(currentTopic)">↻ Начать заново</button><button class="nav-btn" onclick="goHome()">← Все темы</button>`;
-}
-
-function scrollChat() {
-  setTimeout(() => {
-    const msgs = document.getElementById('chatMsgs');
-    msgs.scrollTop = msgs.scrollHeight;
-    window.scrollTo({top:document.body.scrollHeight, behavior:'smooth'});
-  }, 80);
-}
-
-function toggleGloss() {
-  document.getElementById('glossPanel').classList.toggle('open');
-}
-
-// ═══════════════════════════════════════════════
-//  DEMO TOAST (красный на бирюзовом фоне как в образце)
-// ═══════════════════════════════════════════════
-function showDemoToast() {
-  const existing = document.querySelector('.toast');
-  if (existing) existing.remove();
-  const toast = document.createElement('div');
-  toast.className = 'toast';
-  toast.style.background = '#0d9488';
-  toast.style.color = '#fafafa';
-  toast.style.border = '2px solid #ff1744';
-  toast.style.fontWeight = '700';
-  toast.textContent = '⛔ Вы используете ДЕМО-версию. За подробностями обращайтесь к разработчикам';
-  document.body.appendChild(toast);
-  setTimeout(() => toast.remove(), 3000);
-}
+    // === API КЛЮЧ – ДЕМО-РЕЖИМ (все функции отключены) ===
+    function toggleApiVisibility(btn) {
+        showToast('⛔ Демо-режим: ввод API-ключа отключён', 1500);
+    }
+    
+    function saveApiKey() {
+        showToast('⛔ Демо-режим: сохранение ключа отключено', 1500);
+    }
+    
+    function clearApiKey() {
+        showToast('⛔ Демо-режим: очистка ключа отключена', 1500);
+    }
+    
+    function testApiKey() {
+        showToast('⛔ Демо-режим: проверка ключа отключена', 1500);
+    }
+    
+    // Переопределяем navigate для демо
+    function navigateWithApiKey(url) {
+        showToast('⛔ Демо-режим: переход по ссылке ' + url, 1500);
+        window.location.href = url;
+    }
+    
+    // Переопределяем клики по карточкам и меню
+    document.querySelectorAll('.menu-item, .btn-card, #generatorsBlock, #promptLibraryBlock').forEach(el => {
+        if(el.getAttribute('onclick')) {
+            const originalOnclick = el.getAttribute('onclick');
+            if(originalOnclick && originalOnclick.includes('location.href')) {
+                const urlMatch = originalOnclick.match(/location\.href='([^']+)'/);
+                if(urlMatch) {
+                    el.setAttribute('data-url', urlMatch[1]);
+                    el.removeAttribute('onclick');
+                    el.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const url = el.getAttribute('data-url');
+                        showToast('⛔ Демо-режим: переход к ' + url, 1500);
+                        window.location.href = url;
+                    });
+                }
+            }
+        }
+    });
+    
+    // === АЗИЛКА: перемещение ===
+    const chatDiv = document.getElementById('azilkaChat');
+    const dragHandle = document.getElementById('azilkaDragHandle');
+    let isDragging = false;
+    let offsetX = 0, offsetY = 0;
+    dragHandle.addEventListener('mousedown', (e) => {
+        if(e.target.classList.contains('azilka-close')) return;
+        isDragging = true;
+        offsetX = e.clientX - chatDiv.offsetLeft;
+        offsetY = e.clientY - chatDiv.offsetTop;
+        chatDiv.style.cursor = 'grabbing';
+        e.preventDefault();
+    });
+    window.addEventListener('mousemove', (e) => {
+        if(!isDragging) return;
+        let left = e.clientX - offsetX;
+        let top = e.clientY - offsetY;
+        left = Math.min(window.innerWidth - chatDiv.offsetWidth, Math.max(0, left));
+        top = Math.min(window.innerHeight - 50, Math.max(0, top));
+        chatDiv.style.left = left + 'px';
+        chatDiv.style.top = top + 'px';
+        chatDiv.style.right = 'auto';
+        chatDiv.style.bottom = 'auto';
+    });
+    window.addEventListener('mouseup', () => { isDragging = false; chatDiv.style.cursor = ''; });
+    
+    const toggleBtn = document.getElementById('azilkaToggleBtn');
+    const closeChatBtn = document.getElementById('azilkaCloseBtn');
+    toggleBtn.onclick = () => { chatDiv.style.display = 'flex'; };
+    closeChatBtn.onclick = () => { chatDiv.style.display = 'none'; };
+    document.getElementById('azilkaCardTrigger').addEventListener('click', () => { chatDiv.style.display = 'flex'; });
+    
+    // === Логика чата Азилки (демо-режим — отвечает заглушкой) ===
+    const messagesDiv = document.getElementById('azilkaMessages');
+    const inputAz = document.getElementById('azilkaInput');
+    const sendAz = document.getElementById('azilkaSendBtn');
+    
+    function addMessage(text, isBot = false) {
+        const div = document.createElement('div');
+        div.className = 'azilka-message ' + (isBot ? 'bot' : 'user');
+        div.textContent = text;
+        messagesDiv.appendChild(div);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+    
+    async function sendToAzilka(userText) {
+        addMessage(userText, false);
+        setTimeout(() => {
+            addMessage("⛔ Демо-режим. В оригинале здесь был бы ответ от ИИ. Для работы необходимо ввести API-ключ в настройках (боковое меню).", true);
+        }, 400);
+    }
+    
+    sendAz.onclick = () => { 
+        const txt = inputAz.value.trim(); 
+        if(txt) { 
+            inputAz.value = ''; 
+            sendToAzilka(txt); 
+        } 
+    };
+    inputAz.addEventListener('keypress', (e) => { 
+        if(e.key === 'Enter') sendAz.click(); 
+    });
+    window.navigateWithApiKey = navigateWithApiKey;
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('apiKeyStatus').innerHTML = '🔒 В оригинале необходимо ввести ключ';
+    });
 </script>
 </body>
 </html>
