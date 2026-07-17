@@ -6,1409 +6,895 @@
 <title>Демо · Межпредметный навигатор | Биология · Химия · География · Человек и мир</title>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;600;700&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js">
-</script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <style>
-  :root {
-    --t50: #f1fdfc;
-    --t100: #dbf8f2;
-    --t150: #c3f3ea;
-    --t200: #a3ece0;
-    --t300: #72dfd0;
-    --t400: #45cebb;
-    --t500: #2bb5a6;
-    --t600: #1f9a8d;
-    --t700: #1a7d73;
-    --t800: #17635b;
-    --t900: #123c39;
-    --coral: #ff8a68;
-    --coral-dark: #ea6f4c;
-    --coral-bg: #fff1ea;
-    --sand: #ffd9a8;
-    --ink: #123c39;
-    --ink-soft: #4d8480;
-    --bg: #f4fdfb;
-    --card-bg: #ffffff;
-    --border: #cdf0e8;
-    --shadow: 0 4px 20px rgba(43, 181, 166, .10);
-    --shadow-lg: 0 14px 40px rgba(43, 181, 166, .20);
-    --bio-1: #2fb87f;
-    --bio-2: #8fe6b9;
-    --chem-1: #22aed0;
-    --chem-2: #8fe2ef;
-    --geo-1: #1f9d92;
-    --geo-2: #7fe0d1;
-    --hum-1: #3d84c4;
-    --hum-2: #a3cdec;
-  }
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
-  html {
-    scroll-behavior: smooth;
-  }
-  body {
-    background: var(--bg);
-    font-family: 'Raleway', sans-serif;
-    color: var(--ink);
-    min-height: 100vh;
-    padding: 0 0 70px;
-  }
+:root {
+  --t50:  #f1fdfc;
+  --t100: #dbf8f2;
+  --t150: #c3f3ea;
+  --t200: #a3ece0;
+  --t300: #72dfd0;
+  --t400: #45cebb;
+  --t500: #2bb5a6;
+  --t600: #1f9a8d;
+  --t700: #1a7d73;
+  --t800: #17635b;
+  --t900: #123c39;
+  --coral: #ff8a68;
+  --coral-dark: #ea6f4c;
+  --coral-bg: #fff1ea;
+  --sand: #ffd9a8;
+  --ink: #123c39;
+  --ink-soft: #4d8480;
+  --bg: #f4fdfb;
+  --card-bg: #ffffff;
+  --border: #cdf0e8;
+  --shadow: 0 4px 20px rgba(43,181,166,.10);
+  --shadow-lg: 0 14px 40px rgba(43,181,166,.20);
 
-  header {
-    background: var(--t700);
-    padding: 34px 32px 26px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: 0 6px 30px rgba(23, 99, 91, 0.22);
-  }
-  .header-inner {
-    max-width: 1360px;
-    margin: 0 auto;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 16px;
-    justify-content: space-between;
-  }
-  .header-title-wrap {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-  .header-compass-icon {
-    font-size: 28px;
-    color: white;
-    flex-shrink: 0;
-  }
-  .header-title {
-    font-family: 'Unbounded', sans-serif;
-    font-size: clamp(22px, 3vw, 34px);
-    font-weight: 700;
-    color: white;
-    line-height: 1.25;
-  }
-  .header-title span {
-    font-weight: 300;
-    opacity: 0.75;
-    font-size: 0.6em;
-    display: block;
-    margin-top: 2px;
-  }
-  .header-right {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-  .header-count {
-    background: rgba(255, 255, 255, 0.16);
-    color: white;
-    padding: 7px 16px;
-    border-radius: 20px;
-    font-size: 13px;
-    white-space: nowrap;
-  }
-  .demo-badge {
-    background: #ffd93d;
-    color: #5a3e00;
-    padding: 6px 16px;
-    border-radius: 20px;
-    font-weight: 700;
-    font-size: 12px;
-    white-space: nowrap;
-    font-family: 'Unbounded', sans-serif;
-  }
-  .howto-btn {
-    background: var(--coral);
-    color: #4a1f0e;
-    border: none;
-    padding: 8px 18px;
-    border-radius: 20px;
-    font-weight: 700;
-    font-size: 13px;
-    cursor: pointer;
-    white-space: nowrap;
-  }
-  .howto-btn:hover {
-    background: var(--coral-dark);
-    color: white;
-  }
+  --bio-1: #2fb87f; --bio-2: #8fe6b9;
+  --chem-1: #22aed0; --chem-2: #8fe2ef;
+  --geo-1: #1f9d92; --geo-2: #7fe0d1;
+  --hum-1: #3d84c4; --hum-2: #a3cdec;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  font-family: 'Raleway', sans-serif;
+  color: var(--ink);
+  min-height: 100vh;
+  padding: 0 0 70px;
+}
 
-  .onboard-wrap {
-    max-width: 1360px;
-    margin: 22px auto 0;
-    padding: 0 24px;
-  }
-  .onboard {
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    box-shadow: var(--shadow);
-    padding: 24px 28px;
-    display: none;
-  }
-  .onboard.open {
-    display: block;
-    animation: fadein .25s ease;
-  }
-  @keyframes fadein {
-    from {
-      opacity: 0;
-      transform: translateY(-6px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  .onboard h2 {
-    font-family: 'Unbounded', sans-serif;
-    font-size: 17px;
-    color: var(--t800);
-    margin-bottom: 14px;
-  }
-  .onboard-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-    gap: 18px;
-  }
-  .onboard-item {
-    display: flex;
-    gap: 12px;
-  }
-  .onboard-num {
-    font-family: 'Unbounded', sans-serif;
-    font-weight: 700;
-    font-size: 13px;
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    flex-shrink: 0;
-    background: var(--t100);
-    color: var(--t700);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .onboard-item p {
-    font-size: 13.5px;
-    line-height: 1.55;
-    color: var(--ink-soft);
-  }
-  .onboard-item strong {
-    color: var(--ink);
-  }
-  .legend-row {
-    margin-top: 18px;
-    padding-top: 16px;
-    border-top: 1px dashed var(--border);
-    display: flex;
-    flex-wrap: wrap;
-    gap: 18px;
-    align-items: center;
-  }
-  .legend-chip {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    font-size: 12.5px;
-    color: var(--ink-soft);
-  }
-  .legend-dot {
-    width: 11px;
-    height: 11px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-  .legend-dot.content {
-    background: var(--coral);
-  }
-  .legend-dot.operational {
-    background: var(--t500);
-  }
-  .fun-fact {
-    margin-top: 14px;
-    font-size: 12.5px;
-    color: var(--t700);
-    background: var(--t50);
-    border: 1px dashed var(--t300);
-    border-radius: 12px;
-    padding: 10px 14px;
-  }
+header {
+  background: var(--t700);
+  padding: 34px 32px 26px;
+  position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 6px 30px rgba(23,99,91,0.22);
+}
+.header-inner { max-width: 1360px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; gap: 16px; justify-content: space-between; }
+.header-title-wrap { display:flex; align-items:center; gap:14px; }
+.header-compass-icon { font-size:28px; color:white; flex-shrink:0; }
+.header-title {
+  font-family: 'Unbounded', sans-serif;
+  font-size: clamp(22px,3vw,34px);
+  font-weight: 700;
+  color: white;
+  line-height:1.25;
+}
+.header-title span { font-weight: 300; opacity: 0.75; font-size: 0.6em; display: block; margin-top:2px; }
+.header-right { display:flex; align-items:center; gap:10px; }
+.header-count {
+  background: rgba(255,255,255,0.16);
+  color: white;
+  padding: 7px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  white-space:nowrap;
+}
+.demo-badge {
+  background: #ffd93d;
+  color: #5a3e00;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 12px;
+  white-space:nowrap;
+  font-family: 'Unbounded', sans-serif;
+}
+.howto-btn {
+  background: var(--coral);
+  color: #4a1f0e;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  white-space:nowrap;
+}
+.howto-btn:hover { background: var(--coral-dark); color:white; }
 
-  .compass-wrap {
-    max-width: 1360px;
-    margin: 22px auto 0;
-    padding: 0 24px;
-  }
-  .compass-card {
-    background: #ffffff;
-    border: 1px solid var(--border);
-    border-radius: 24px;
-    box-shadow: var(--shadow);
-    padding: 22px 24px 18px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 24px;
-    align-items: center;
-    justify-content: center;
-  }
-  .compass-title-block {
-    flex: 1 1 220px;
-    min-width: 220px;
-  }
-  .compass-title-block h3 {
-    font-family: 'Unbounded', sans-serif;
-    font-size: 16px;
-    color: var(--t800);
-    margin-bottom: 8px;
-  }
-  .compass-title-block p {
-    font-size: 13px;
-    color: var(--ink-soft);
-    line-height: 1.55;
-    margin-bottom: 10px;
-  }
-  .compass-current {
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--coral-dark);
-    background: var(--coral-bg);
-    display: inline-block;
-    padding: 5px 12px;
-    border-radius: 14px;
-  }
-  .compass-svg-holder {
-    flex-shrink: 0;
-    width: 100%;
-    max-width: 440px;
-    aspect-ratio: 1/1;
-    margin: 0 auto;
-  }
-  .compass-svg-holder svg {
-    display: block;
-    width: 100%;
-    height: auto;
-    max-width: 440px;
-    margin: 0 auto;
-  }
-  .ring-seg {
-    cursor: pointer;
-    transition: opacity .15s, filter .15s;
-    stroke: #ffffff;
-    stroke-width: 1.4;
-  }
-  .ring-seg:hover {
-    filter: brightness(1.12);
-  }
-  .ring-seg.active-seg {
-    stroke: var(--coral);
-    stroke-width: 3;
-  }
-  .compass-quad-label {
-    font-family: 'Unbounded', sans-serif;
-    font-size: 12px;
-    font-weight: 700;
-    fill: var(--t900);
-    pointer-events: none;
-  }
-  .compass-ring-label {
-    font-size: 9.5px;
-    fill: var(--ink-soft);
-    pointer-events: none;
-  }
-  .compass-center {
-    cursor: pointer;
-  }
-  .compass-center circle {
-    fill: var(--t700);
-  }
-  .compass-center text {
-    fill: white;
-    font-family: 'Unbounded', sans-serif;
-    font-size: 10.5px;
-    font-weight: 700;
-    pointer-events: none;
-  }
-  .compass-center:hover circle {
-    fill: var(--coral-dark);
-  }
+.onboard-wrap { max-width: 1360px; margin: 22px auto 0; padding: 0 24px; }
+.onboard {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+  padding: 24px 28px;
+  display: none;
+}
+.onboard.open { display: block; animation: fadein .25s ease; }
+@keyframes fadein { from{opacity:0; transform:translateY(-6px);} to{opacity:1; transform:translateY(0);} }
+.onboard h2 { font-family:'Unbounded', sans-serif; font-size:17px; color:var(--t800); margin-bottom:14px; }
+.onboard-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(230px,1fr)); gap:18px; }
+.onboard-item { display:flex; gap:12px; }
+.onboard-num {
+  font-family:'Unbounded', sans-serif; font-weight:700; font-size:13px;
+  width:28px; height:28px; border-radius:50%; flex-shrink:0;
+  background: var(--t100); color: var(--t700); display:flex; align-items:center; justify-content:center;
+}
+.onboard-item p { font-size:13.5px; line-height:1.55; color: var(--ink-soft); }
+.onboard-item strong { color: var(--ink); }
+.legend-row { margin-top:18px; padding-top:16px; border-top:1px dashed var(--border); display:flex; flex-wrap:wrap; gap:18px; align-items:center; }
+.legend-chip { display:flex; align-items:center; gap:7px; font-size:12.5px; color: var(--ink-soft); }
+.legend-dot { width:11px; height:11px; border-radius:50%; flex-shrink:0; }
+.legend-dot.content { background: var(--coral); }
+.legend-dot.operational { background: var(--t500); }
+.fun-fact {
+  margin-top:14px; font-size:12.5px; color: var(--t700); background: var(--t50);
+  border: 1px dashed var(--t300); border-radius: 12px; padding: 10px 14px;
+}
 
-  .filters-wrap {
-    max-width: 1360px;
-    margin: 20px auto 0;
-    padding: 0 24px;
-  }
-  .filters-card {
-    background: white;
-    border-radius: 18px;
-    padding: 20px 24px;
-    box-shadow: var(--shadow);
-    border: 1px solid var(--border);
-    display: flex;
-    flex-wrap: wrap;
-    gap: 22px;
-  }
-  .filter-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .filter-label {
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: .04em;
-    color: var(--t600);
-  }
-  .chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-  }
-  .chip {
-    background: var(--t50);
-    border: 1.5px solid var(--t150);
-    color: var(--t700);
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    user-select: none;
-  }
-  .chip:hover {
-    background: var(--t100);
-    border-color: var(--t400);
-  }
-  .chip.active {
-    background: var(--t500);
-    border-color: var(--t500);
-    color: white;
-  }
-  .search-wrap {
-    display: flex;
-    gap: 8px;
-    flex: 1;
-    min-width: 240px;
-    flex-wrap: wrap;
-  }
-  .search-input {
-    flex: 1;
-    border: 1.5px solid var(--t150);
-    border-radius: 12px;
-    padding: 9px 14px;
-    font-size: 14px;
-    outline: none;
-    font-family: 'Raleway', sans-serif;
-    min-width: 140px;
-  }
-  .search-input:focus {
-    border-color: var(--t500);
-  }
-  .btn {
-    background: var(--t500);
-    color: white;
-    border: none;
-    border-radius: 12px;
-    padding: 9px 18px;
-    font-weight: 600;
-    cursor: pointer;
-    font-size: 13.5px;
-    white-space: nowrap;
-  }
-  .btn:hover {
-    background: var(--t600);
-  }
-  .btn-outline {
-    background: transparent;
-    color: var(--t600);
-    border: 1.5px solid var(--t300);
-  }
-  .btn-outline:hover {
-    background: var(--t50);
-  }
+.compass-wrap { max-width: 1360px; margin: 22px auto 0; padding: 0 24px; }
+.compass-card {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  box-shadow: var(--shadow);
+  padding: 22px 24px 18px;
+  display: flex; flex-wrap: wrap; gap: 24px; align-items: center; justify-content: center;
+}
+.compass-title-block { flex: 1 1 220px; min-width: 220px; }
+.compass-title-block h3 { font-family:'Unbounded', sans-serif; font-size: 16px; color: var(--t800); margin-bottom: 8px; }
+.compass-title-block p { font-size: 13px; color: var(--ink-soft); line-height:1.55; margin-bottom: 10px; }
+.compass-current { font-size: 13px; font-weight: 700; color: var(--coral-dark); background: var(--coral-bg); display:inline-block; padding: 5px 12px; border-radius: 14px; }
+.compass-svg-holder { flex-shrink: 0; }
+.compass-svg-holder svg { display:block; }
+.ring-seg { cursor: pointer; transition: opacity .15s, filter .15s; stroke: #ffffff; stroke-width: 1.4; }
+.ring-seg:hover { filter: brightness(1.12); }
+.ring-seg.active-seg { stroke: var(--coral); stroke-width: 3; }
+.compass-quad-label { font-family:'Unbounded', sans-serif; font-size: 12px; font-weight: 700; fill: var(--t900); pointer-events:none; }
+.compass-ring-label { font-size: 9.5px; fill: var(--ink-soft); pointer-events:none; }
+.compass-center { cursor: pointer; }
+.compass-center circle { fill: var(--t700); }
+.compass-center text { fill: white; font-family:'Unbounded', sans-serif; font-size: 10.5px; font-weight:700; pointer-events:none; }
+.compass-center:hover circle { fill: var(--coral-dark); }
 
-  .results-bar {
-    max-width: 1360px;
-    margin: 16px auto 0;
-    padding: 0 24px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-  .results-count {
-    font-size: 13px;
-    color: var(--ink-soft);
-  }
-  .cards-grid {
-    max-width: 1360px;
-    margin: 14px auto 0;
-    padding: 0 24px;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(390px, 1fr));
-    gap: 20px;
-  }
-  .empty-msg {
-    grid-column: 1/-1;
-    text-align: center;
-    padding: 60px 20px;
-    color: var(--ink-soft);
-    background: white;
-    border-radius: 18px;
-    border: 1px dashed var(--border);
-  }
-  .card {
-    background: white;
-    border-radius: 18px;
-    border: 1px solid var(--border);
-    box-shadow: var(--shadow);
-    overflow: hidden;
-    transition: transform .15s, box-shadow .15s;
-  }
-  .card:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-lg);
-  }
-  .card-top {
-    padding: 16px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    position: relative;
-  }
-  .card-top.subject-биология {
-    background: var(--bio-1);
-  }
-  .card-top.subject-химия {
-    background: var(--chem-1);
-  }
-  .card-top.subject-география {
-    background: var(--geo-1);
-  }
-  .card-top.subject-человекимир {
-    background: var(--hum-1);
-  }
-  .card-subject-badge {
-    font-family: 'Unbounded', sans-serif;
-    font-size: 10px;
-    background: rgba(255, 255, 255, 0.28);
-    color: white;
-    padding: 3px 10px;
-    border-radius: 20px;
-  }
-  .card-class-badge {
-    font-size: 11px;
-    color: white;
-    background: rgba(255, 255, 255, 0.18);
-    padding: 3px 10px;
-    border-radius: 20px;
-  }
-  .card-para {
-    font-family: 'Unbounded', sans-serif;
-    font-size: 24px;
-    font-weight: 700;
-    color: white;
-    line-height: 1;
-    margin-top: 10px;
-  }
-  .card-theme {
-    font-size: 14px;
-    font-weight: 600;
-    color: white;
-    margin-top: 5px;
-  }
-  .card-icon {
-    font-size: 26px;
-    opacity: .9;
-  }
-  .card-body {
-    padding: 16px 20px;
-    max-height: 400px;
-    overflow-y: auto;
-  }
-  .route-line {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 11.5px;
-    color: var(--ink-soft);
-    margin-bottom: 10px;
-    font-weight: 600;
-    flex-wrap: wrap;
-  }
-  .route-line .arrow {
-    color: var(--coral-dark);
-  }
-  .conn {
-    background: var(--t50);
-    border: 1px solid var(--t100);
-    border-radius: 12px;
-    padding: 13px 15px;
-    margin-bottom: 10px;
-  }
-  .conn-head {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-bottom: 6px;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .conn-subject {
-    font-weight: 700;
-    font-size: 13px;
-    color: var(--t700);
-  }
-  .conn-type {
-    font-size: 10px;
-    font-weight: 700;
-    padding: 3px 9px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    white-space: nowrap;
-  }
-  .conn-type .dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-  }
-  .conn-type.meta-content {
-    background: var(--coral-bg);
-    color: var(--coral-dark);
-  }
-  .conn-type.meta-operational {
-    background: var(--t100);
-    color: var(--t700);
-  }
-  .conn-intersection {
-    font-size: 13px;
-    color: #33534f;
-    margin: 6px 0;
-    line-height: 1.5;
-  }
-  .conn-format {
-    font-size: 10px;
-    font-weight: 600;
-    background: var(--t150);
-    color: var(--t800);
-    padding: 3px 9px;
-    border-radius: 8px;
-    display: inline-block;
-    margin-top: 2px;
-  }
-  .conn-task {
-    font-size: 12.5px;
-    background: white;
-    border-left: 3px solid var(--coral);
-    padding: 8px 11px;
-    margin-top: 9px;
-    border-radius: 0 8px 8px 0;
-    line-height: 1.5;
-  }
-  .cross-ref {
-    font-size: 10.5px;
-    background: var(--sand);
-    color: #7a4a1a;
-    padding: 4px 9px;
-    border-radius: 8px;
-    margin-top: 7px;
-    display: inline-block;
-  }
-  .conn-howto {
-    font-size: 12px;
-    color: var(--t800);
-    background: var(--t50);
-    border: 1px dashed var(--t300);
-    padding: 8px 11px;
-    margin-top: 9px;
-    border-radius: 0 8px 8px 8px;
-    line-height: 1.55;
-  }
-  .conn-howto strong {
-    color: var(--t700);
-  }
-  .book-link {
-    font-size: 10.5px;
-    font-weight: 600;
-    color: var(--t700);
-    background: white;
-    border: 1px solid var(--t200);
-    padding: 4px 10px;
-    border-radius: 8px;
-    margin-top: 8px;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    text-decoration: none;
-  }
-  .book-link:hover {
-    background: var(--t50);
-    border-color: var(--t400);
-  }
-  .card-footer {
-    padding: 12px 20px;
-    border-top: 1px solid var(--t100);
-  }
-  .ai-btn {
-    width: 100%;
-    background: var(--t600);
-    color: white;
-    border: none;
-    border-radius: 12px;
-    padding: 10px 14px;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 7px;
-    font-size: 13.5px;
-  }
-  .ai-btn:hover {
-    opacity: 0.9;
-  }
-  .download-card {
-    position: fixed;
-    top: -9999px;
-    left: -9999px;
-    width: 760px;
-    background: white;
-    border-radius: 26px;
-    padding: 30px 34px;
-    font-family: 'Raleway', sans-serif;
-    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.2);
-    z-index: -1;
-    opacity: 0;
-  }
-  .download-card .dl-header {
-    background: var(--t700);
-    border-radius: 20px;
-    padding: 22px 26px;
-    margin-bottom: 22px;
-    color: white;
-  }
-  .download-card .dl-header .dl-eyebrow {
-    font-size: 11px;
-    opacity: .8;
-    letter-spacing: .05em;
-    text-transform: uppercase;
-    margin-bottom: 6px;
-  }
-  .download-card .dl-header h3 {
-    font-family: 'Unbounded', sans-serif;
-    font-size: 23px;
-    margin-bottom: 6px;
-  }
-  .download-card .dl-conn {
-    background: var(--t50);
-    border-left: 4px solid var(--coral);
-    padding: 14px 18px;
-    margin-bottom: 14px;
-    border-radius: 12px;
-  }
-  .download-card .dl-conn h4 {
-    font-size: 14px;
-    color: var(--t800);
-    margin-bottom: 6px;
-  }
-  .download-card .dl-conn p {
-    font-size: 12.5px;
-    color: #33534f;
-    line-height: 1.55;
-    margin-bottom: 4px;
-  }
-  .download-card .dl-task {
-    background: white;
-    border-left: 3px solid var(--coral);
-    padding: 8px 12px;
-    font-size: 12px;
-    margin-top: 6px;
-    border-radius: 0 8px 8px 0;
-  }
-  .download-card .footer-note {
-    margin-top: 20px;
-    padding-top: 14px;
-    border-top: 1px solid var(--t100);
-    text-align: center;
-    font-size: 11px;
-    color: var(--ink-soft);
-  }
-  .back-btn-fixed {
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    padding: 10px 22px;
-    background: var(--t600);
-    color: #fff;
-    font-weight: 700;
-    font-size: 14px;
-    border-radius: 12px;
-    text-decoration: none;
-    box-shadow: 0 4px 14px rgba(23, 99, 91, 0.25);
-    transition: background .15s, transform .1s;
-    z-index: 50;
-  }
-  .back-btn-fixed:hover {
-    background: var(--t700);
-    transform: translateY(-2px);
-  }
-  .toast {
-    position: fixed;
-    bottom: 80px;
-    right: 24px;
-    background: var(--t700);
-    color: #fff;
-    padding: 10px 18px;
-    border-radius: 10px;
-    z-index: 99999;
-    font-size: 14px;
-    box-shadow: var(--shadow-lg);
-  }
-  @media (max-width: 760px) {
-    .compass-card {
-      flex-direction: column;
-    }
-    .compass-svg-holder {
-      max-width: 100%;
-    }
-    .cards-grid {
-      grid-template-columns: 1fr;
-      padding: 0 12px;
-    }
-    .filters-wrap,
-    .results-bar,
-    .compass-wrap,
-    .onboard-wrap {
-      padding: 0 12px;
-    }
-    .header-inner {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-    .header-right {
-      width: 100%;
-      justify-content: flex-start;
-    }
-    .search-wrap {
-      min-width: 100%;
-    }
-    .search-input {
-      min-width: 120px;
-    }
-    .onboard {
-      padding: 16px;
-    }
-    .onboard-grid {
-      grid-template-columns: 1fr;
-    }
-    .filters-card {
-      padding: 16px;
-    }
-    .filter-group {
-      width: 100%;
-    }
-  }
-  @media (max-width: 480px) {
-    header {
-      padding: 16px 12px;
-    }
-    .header-title-wrap {
-      gap: 8px;
-    }
-    .header-compass-icon {
-      font-size: 20px;
-    }
-    .header-title {
-      font-size: clamp(18px, 5vw, 24px);
-    }
-    .header-right .demo-badge,
-    .header-right .howto-btn {
-      font-size: 11px;
-      padding: 5px 12px;
-    }
-    .header-count {
-      font-size: 11px;
-      padding: 4px 12px;
-    }
-    .compass-card {
-      padding: 12px 12px 16px;
-    }
-    .compass-title-block h3 {
-      font-size: 14px;
-    }
-    .compass-current {
-      font-size: 11px;
-      padding: 4px 10px;
-    }
-    .cards-grid {
-      gap: 12px;
-    }
-    .card-top {
-      padding: 12px 14px;
-    }
-    .card-para {
-      font-size: 20px;
-    }
-    .card-body {
-      padding: 12px 14px;
-    }
-    .conn {
-      padding: 10px 12px;
-    }
-    .card-footer {
-      padding: 10px 14px;
-    }
-    .ai-btn {
-      font-size: 12px;
-      padding: 8px 12px;
-    }
-    .back-btn-fixed {
-      bottom: 12px;
-      left: 12px;
-      padding: 8px 16px;
-      font-size: 12px;
-    }
-    .toast {
-      bottom: 70px;
-      right: 12px;
-      font-size: 12px;
-      padding: 8px 14px;
-    }
-  }
+.filters-wrap { max-width: 1360px; margin: 20px auto 0; padding: 0 24px; }
+.filters-card {
+  background: white;
+  border-radius: 18px;
+  padding: 20px 24px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  display: flex; flex-wrap: wrap; gap: 22px;
+}
+.filter-group { display: flex; flex-direction: column; gap: 8px; }
+.filter-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing:.04em; color: var(--t600); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  background: var(--t50);
+  border: 1.5px solid var(--t150);
+  color: var(--t700);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  display:flex; align-items:center; gap:6px;
+}
+.chip:hover { background: var(--t100); border-color: var(--t400); }
+.chip.active { background: var(--t500); border-color: var(--t500); color: white; }
+.search-wrap { display: flex; gap: 8px; flex: 1; min-width: 240px; }
+.search-input {
+  flex: 1;
+  border: 1.5px solid var(--t150);
+  border-radius: 12px;
+  padding: 9px 14px;
+  font-size: 14px;
+  outline: none;
+  font-family:'Raleway',sans-serif;
+}
+.search-input:focus { border-color: var(--t500); }
+.btn {
+  background: var(--t500);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 9px 18px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 13.5px;
+}
+.btn:hover { background: var(--t600); }
+.btn-outline { background: transparent; color: var(--t600); border: 1.5px solid var(--t300); }
+.btn-outline:hover { background: var(--t50); }
+
+.results-bar { max-width: 1360px; margin: 16px auto 0; padding: 0 24px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;}
+.results-count { font-size: 13px; color: var(--ink-soft); }
+.cards-grid {
+  max-width: 1360px;
+  margin: 14px auto 0;
+  padding: 0 24px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(390px, 1fr));
+  gap: 20px;
+}
+.empty-msg { grid-column: 1/-1; text-align: center; padding: 60px 20px; color: var(--ink-soft); background:white; border-radius:18px; border:1px dashed var(--border); }
+.card {
+  background: white;
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transition: transform .15s, box-shadow .15s;
+}
+.card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+.card-top {
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items:flex-start;
+  position:relative;
+}
+.card-top.subject-биология { background: var(--bio-1); }
+.card-top.subject-химия { background: var(--chem-1); }
+.card-top.subject-география { background: var(--geo-1); }
+.card-top.subject-человекимир { background: var(--hum-1); }
+.card-subject-badge {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 10px;
+  background: rgba(255,255,255,0.28);
+  color: white;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+.card-class-badge {
+  font-size: 11px;
+  color: white;
+  background: rgba(255,255,255,0.18);
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+.card-para {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: white;
+  line-height: 1;
+  margin-top: 10px;
+}
+.card-theme { font-size: 14px; font-weight: 600; color: white; margin-top: 5px; }
+.card-icon { font-size:26px; opacity:.9; }
+.card-body { padding: 16px 20px; max-height: 400px; overflow-y: auto; }
+.route-line { display:flex; align-items:center; gap:8px; font-size:11.5px; color:var(--ink-soft); margin-bottom:10px; font-weight:600; }
+.route-line .arrow { color: var(--coral-dark); }
+.conn {
+  background: var(--t50);
+  border: 1px solid var(--t100);
+  border-radius: 12px;
+  padding: 13px 15px;
+  margin-bottom: 10px;
+}
+.conn-head { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; align-items:center; justify-content:space-between; }
+.conn-subject { font-weight: 700; font-size: 13px; color: var(--t700); }
+.conn-type {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 10px;
+  display:flex; align-items:center; gap:5px;
+  white-space:nowrap;
+}
+.conn-type .dot { width:7px; height:7px; border-radius:50%; }
+.conn-type.meta-content { background: var(--coral-bg); color: var(--coral-dark); }
+.conn-type.meta-operational { background: var(--t100); color: var(--t700); }
+.conn-intersection { font-size: 13px; color: #33534f; margin: 6px 0; line-height:1.5; }
+.conn-format {
+  font-size: 10px;
+  font-weight: 600;
+  background: var(--t150);
+  color: var(--t800);
+  padding: 3px 9px;
+  border-radius: 8px;
+  display: inline-block;
+  margin-top: 2px;
+}
+.conn-task {
+  font-size: 12.5px;
+  background: white;
+  border-left: 3px solid var(--coral);
+  padding: 8px 11px;
+  margin-top: 9px;
+  border-radius: 0 8px 8px 0;
+  line-height:1.5;
+}
+.cross-ref {
+  font-size: 10.5px;
+  background: var(--sand);
+  color: #7a4a1a;
+  padding: 4px 9px;
+  border-radius: 8px;
+  margin-top: 7px;
+  display: inline-block;
+}
+.conn-howto {
+  font-size: 12px;
+  color: var(--t800);
+  background: var(--t50);
+  border: 1px dashed var(--t300);
+  padding: 8px 11px;
+  margin-top: 9px;
+  border-radius: 0 8px 8px 8px;
+  line-height: 1.55;
+}
+.conn-howto strong { color: var(--t700); }
+.book-link {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--t700);
+  background: white;
+  border: 1px solid var(--t200);
+  padding: 4px 10px;
+  border-radius: 8px;
+  margin-top: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  text-decoration: none;
+}
+.book-link:hover { background: var(--t50); border-color: var(--t400); }
+.card-footer { padding: 12px 20px; border-top: 1px solid var(--t100); }
+.ai-btn {
+  width: 100%;
+  background: var(--t600);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-size:13.5px;
+}
+.ai-btn:hover { opacity: 0.9; }
+.download-card {
+  position: fixed;
+  top: -9999px;
+  left: -9999px;
+  width: 760px;
+  background: white;
+  border-radius: 26px;
+  padding: 30px 34px;
+  font-family: 'Raleway', sans-serif;
+  box-shadow: 0 24px 48px rgba(0,0,0,0.2);
+  z-index: -1;
+  opacity: 0;
+}
+.download-card .dl-header {
+  background: var(--t700);
+  border-radius: 20px;
+  padding: 22px 26px;
+  margin-bottom: 22px;
+  color: white;
+}
+.download-card .dl-header .dl-eyebrow { font-size:11px; opacity:.8; letter-spacing:.05em; text-transform:uppercase; margin-bottom:6px;}
+.download-card .dl-header h3 {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 23px;
+  margin-bottom: 6px;
+}
+.download-card .dl-conn {
+  background: var(--t50);
+  border-left: 4px solid var(--coral);
+  padding: 14px 18px;
+  margin-bottom: 14px;
+  border-radius: 12px;
+}
+.download-card .dl-conn h4 { font-size:14px; color:var(--t800); margin-bottom:6px; }
+.download-card .dl-conn p { font-size:12.5px; color:#33534f; line-height:1.55; margin-bottom:4px; }
+.download-card .dl-task { background:white; border-left:3px solid var(--coral); padding:8px 12px; font-size:12px; margin-top:6px; border-radius:0 8px 8px 0; }
+.download-card .footer-note {
+  margin-top: 20px;
+  padding-top: 14px;
+  border-top: 1px solid var(--t100);
+  text-align: center;
+  font-size: 11px;
+  color: var(--ink-soft);
+}
+.back-btn-fixed {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  padding: 10px 22px;
+  background: var(--t600);
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  border-radius: 12px;
+  text-decoration: none;
+  box-shadow: 0 4px 14px rgba(23,99,91,0.25);
+  transition: background .15s, transform .1s;
+  z-index: 50;
+}
+.back-btn-fixed:hover { background: var(--t700); transform: translateY(-2px); }
+.toast {
+  position:fixed; bottom:80px; right:24px; background: var(--t700); color:#fff;
+  padding:10px 18px; border-radius:10px; z-index:99999; font-size:14px; box-shadow: var(--shadow-lg);
+}
+@media (max-width: 760px) {
+  .compass-card { flex-direction: column; }
+  .cards-grid { grid-template-columns: 1fr; padding: 0 12px; }
+  .filters-wrap, .results-bar, .compass-wrap, .onboard-wrap { padding: 0 12px; }
+}
 </style>
 </head>
 <body>
 
-  <header>
-    <div class="header-inner">
-      <div class="header-title-wrap">
-        <i class="fa-solid fa-compass header-compass-icon"></i>
-        <div class="header-title">Межпредметный навигатор<span>Биология · Химия · География · Человек и мир</span></div>
+<header>
+  <div class="header-inner">
+    <div class="header-title-wrap">
+      <i class="fa-solid fa-compass header-compass-icon"></i>
+      <div class="header-title">Межпредметный навигатор<span>Биология · Химия · География · Человек и мир</span></div>
+    </div>
+    <div class="header-right">
+      <span class="demo-badge"><i class="fa-solid fa-wand-magic-sparkles"></i> ДЕМО</span>
+      <button class="howto-btn" onclick="toggleOnboard()">Как этим пользоваться?</button>
+      <div class="header-count" id="totalCount">7 параграфов · в полной версии 30+</div>
+    </div>
+  </div>
+</header>
+
+<div class="onboard-wrap">
+  <div class="onboard" id="onboardPanel">
+    <h2>Как читать эту карту</h2>
+    <div class="onboard-grid">
+      <div class="onboard-item">
+        <div class="onboard-num">1</div>
+        <p><strong>Каждая карточка — это параграф учебника.</strong> Внутри неё — «маршрут» к теме из другого предмета, которая пересекается с этой темой по смыслу.</p>
       </div>
-      <div class="header-right">
-        <span class="demo-badge"><i class="fa-solid fa-wand-magic-sparkles"></i> ДЕМО</span>
-        <button class="howto-btn" onclick="toggleOnboard()">Как этим пользоваться?</button>
-        <div class="header-count" id="totalCount">7 параграфов · в полной версии 30+</div>
+      <div class="onboard-item">
+        <div class="onboard-num">2</div>
+        <p><strong>У связи есть два типа.</strong> Коралловая метка — связь по содержанию: тот же факт, объект или явление. Бирюзовая метка — связь по способу работы: тот же метод (опыт, расчёт, проект).</p>
+      </div>
+      <div class="onboard-item">
+        <div class="onboard-num">3</div>
+        <p><strong>Компас-карта ниже — это обзор всей базы.</strong> Сектор — предмет, кольцо — класс (чем дальше от центра, тем старше класс). Ярче сектор — больше в нём найденных связей. Кликните по сектору, чтобы отфильтровать карточки.</p>
+      </div>
+      <div class="onboard-item">
+        <div class="onboard-num">4</div>
+        <p><strong>Нашли нужный параграф?</strong> Нажмите «Скачать карточку маршрута» — сохранится готовая памятка, которую можно переслать коллеге или распечатать.</p>
+      </div>
+      <div class="onboard-item">
+        <div class="onboard-num">5</div>
+        <p><strong>Каждая связь содержит блок «Как связать на практике»</strong> — конкретную методическую подсказку (в каком классе тема идёт раньше, как согласовать календарные планы).</p>
       </div>
     </div>
-  </header>
+    <div class="legend-row">
+      <span class="legend-chip"><span class="legend-dot content"></span>содержательная связь</span>
+      <span class="legend-chip"><span class="legend-dot operational"></span>операционная связь</span>
+      <span class="legend-chip"><i class="fa-solid fa-leaf"></i> Биология&nbsp;&nbsp;<i class="fa-solid fa-flask"></i> Химия&nbsp;&nbsp;<i class="fa-solid fa-compass"></i> География&nbsp;&nbsp;<i class="fa-solid fa-earth-europe"></i> Человек и мир</span>
+    </div>
+    <div class="fun-fact">
+      <i class="fa-solid fa-info-circle"></i> <strong>Это демо-версия.</strong> В полной версии — более 30 параграфов с перекрёстными связями по всем предметам.
+    </div>
+  </div>
+</div>
 
-  <div class="onboard-wrap">
-    <div class="onboard" id="onboardPanel">
-      <h2>Как читать эту карту</h2>
-      <div class="onboard-grid">
-        <div class="onboard-item">
-          <div class="onboard-num">1</div>
-          <p><strong>Каждая карточка — это параграф учебника.</strong> Внутри неё — «маршрут» к теме из другого предмета, которая пересекается с этой темой по смыслу.</p>
-        </div>
-        <div class="onboard-item">
-          <div class="onboard-num">2</div>
-          <p><strong>У связи есть два типа.</strong> Коралловая метка — связь по содержанию: тот же факт, объект или явление. Бирюзовая метка — связь по способу работы: тот же метод (опыт, расчёт, проект).</p>
-        </div>
-        <div class="onboard-item">
-          <div class="onboard-num">3</div>
-          <p><strong>Компас-карта ниже — это обзор всей базы.</strong> Сектор — предмет, кольцо — класс (чем дальше от центра, тем старше класс). Ярче сектор — больше в нём найденных связей. Кликните по сектору, чтобы отфильтровать карточки.</p>
-        </div>
-        <div class="onboard-item">
-          <div class="onboard-num">4</div>
-          <p><strong>Нашли нужный параграф?</strong> Нажмите «Скачать карточку маршрута» — сохранится готовая памятка, которую можно переслать коллеге или распечатать.</p>
-        </div>
-        <div class="onboard-item">
-          <div class="onboard-num">5</div>
-          <p><strong>Каждая связь содержит блок «Как связать на практике»</strong> — конкретную методическую подсказку (в каком классе тема идёт раньше, как согласовать календарные планы).</p>
-        </div>
+<div class="compass-wrap">
+  <div class="compass-card">
+    <div class="compass-title-block">
+      <h3>Компас связей</h3>
+      <p>Наведите курсор на сектор, чтобы увидеть число связей. Кликните — карточки внизу отфильтруются. Клик по центру снимает все фильтры.</p>
+      <div class="compass-current" id="compassCurrent">Показаны все предметы и классы</div>
+    </div>
+    <div class="compass-svg-holder" id="compassHolder"></div>
+  </div>
+</div>
+
+<div class="filters-wrap">
+  <div class="filters-card">
+    <div class="filter-group">
+      <div class="filter-label">Предмет</div>
+      <div class="chips" id="subjectFilters">
+        <span class="chip active" data-subject="all">Все</span>
+        <span class="chip" data-subject="Биология"><i class="fa-solid fa-leaf"></i> Биология</span>
+        <span class="chip" data-subject="Химия"><i class="fa-solid fa-flask"></i> Химия</span>
+        <span class="chip" data-subject="География"><i class="fa-solid fa-compass"></i> География</span>
+        <span class="chip" data-subject="Человек и мир"><i class="fa-solid fa-earth-europe"></i> Человек и мир</span>
       </div>
-      <div class="legend-row">
-        <span class="legend-chip"><span class="legend-dot content"></span>содержательная связь</span>
-        <span class="legend-chip"><span class="legend-dot operational"></span>операционная связь</span>
-        <span class="legend-chip"><i class="fa-solid fa-leaf"></i> Биология&nbsp;&nbsp;<i class="fa-solid fa-flask"></i> Химия&nbsp;&nbsp;<i class="fa-solid fa-compass"></i> География&nbsp;&nbsp;<i class="fa-solid fa-earth-europe"></i> Человек и мир</span>
+    </div>
+    <div class="filter-group">
+      <div class="filter-label">Класс</div>
+      <div class="chips" id="classFilters">
+        <span class="chip active" data-class="all">Все</span>
+        <span class="chip" data-class="5">5</span><span class="chip" data-class="6">6</span><span class="chip" data-class="7">7</span>
+        <span class="chip" data-class="8">8</span><span class="chip" data-class="9">9</span><span class="chip" data-class="10">10</span><span class="chip" data-class="11">11</span>
       </div>
-      <div class="fun-fact">
-        <i class="fa-solid fa-info-circle"></i> <strong>Это демо-версия.</strong> В полной версии — более 30 параграфов с перекрёстными связями по всем предметам.
+    </div>
+    <div class="filter-group" style="flex:1">
+      <div class="filter-label">Поиск по теме или номеру §</div>
+      <div class="search-wrap">
+        <input type="text" class="search-input" id="searchInput" placeholder="например: фотосинтез, кислоты…">
+        <button class="btn" onclick="doSearch()">Найти</button>
+        <button class="btn btn-outline" onclick="resetAll()">Сбросить</button>
       </div>
     </div>
   </div>
+</div>
 
-  <div class="compass-wrap">
-    <div class="compass-card">
-      <div class="compass-title-block">
-        <h3>Компас связей</h3>
-        <p>Наведите курсор на сектор, чтобы увидеть число связей. Кликните — карточки внизу отфильтруются. Клик по центру снимает все фильтры.</p>
-        <div class="compass-current" id="compassCurrent">Показаны все предметы и классы</div>
-      </div>
-      <div class="compass-svg-holder" id="compassHolder"></div>
-    </div>
-  </div>
+<div class="results-bar"><span class="results-count" id="resultCount"></span></div>
+<div class="cards-grid" id="cardsGrid"></div>
+<a href="index.html" class="back-btn-fixed">Назад</a>
 
-  <div class="filters-wrap">
-    <div class="filters-card">
-      <div class="filter-group">
-        <div class="filter-label">Предмет</div>
-        <div class="chips" id="subjectFilters">
-          <span class="chip active" data-subject="all">Все</span>
-          <span class="chip" data-subject="Биология"><i class="fa-solid fa-leaf"></i> Биология</span>
-          <span class="chip" data-subject="Химия"><i class="fa-solid fa-flask"></i> Химия</span>
-          <span class="chip" data-subject="География"><i class="fa-solid fa-compass"></i> География</span>
-          <span class="chip" data-subject="Человек и мир"><i class="fa-solid fa-earth-europe"></i> Человек и мир</span>
-        </div>
-      </div>
-      <div class="filter-group">
-        <div class="filter-label">Класс</div>
-        <div class="chips" id="classFilters">
-          <span class="chip active" data-class="all">Все</span>
-          <span class="chip" data-class="5">5</span><span class="chip" data-class="6">6</span><span class="chip" data-class="7">7</span>
-          <span class="chip" data-class="8">8</span><span class="chip" data-class="9">9</span><span class="chip" data-class="10">10</span><span class="chip" data-class="11">11</span>
-        </div>
-      </div>
-      <div class="filter-group" style="flex:1">
-        <div class="filter-label">Поиск по теме или номеру §</div>
-        <div class="search-wrap">
-          <input type="text" class="search-input" id="searchInput" placeholder="например: фотосинтез, кислоты…">
-          <button class="btn" onclick="doSearch()">Найти</button>
-          <button class="btn btn-outline" onclick="resetAll()">Сбросить</button>
-        </div>
-      </div>
-    </div>
-  </div>
+<div id="downloadCardContainer" class="download-card"></div>
 
-  <div class="results-bar"><span class="results-count" id="resultCount"></span></div>
-  <div class="cards-grid" id="cardsGrid"></div>
-  <a href="#" class="back-btn-fixed">Назад</a>
+<script>
+/* ============================================================
+   ДЕМО-ДАННЫЕ: по одному параграфу на класс (5–11)
+   ============================================================ */
+const allParagraphs = [];
+function addParagraph(subject, cls, number, theme, connections) {
+  allParagraphs.push({ id: allParagraphs.length + 1, subject, class: cls, number, theme, connections });
+}
 
-  <div id="downloadCardContainer" class="download-card"></div>
+const typeMeta = {
+  "исторический контекст": "content",
+  "образ/метафора": "content",
+  "модель/расчёт": "operational",
+  "эксперимент/наблюдение": "operational",
+  "проект": "operational"
+};
+const subjectIcon = {
+  "Биология": '<i class="fa-solid fa-leaf"></i>',
+  "Химия": '<i class="fa-solid fa-flask"></i>',
+  "География": '<i class="fa-solid fa-compass"></i>',
+  "Человек и мир": '<i class="fa-solid fa-earth-europe"></i>'
+};
+const subjectGlyph = {
+  "Биология": "\uf06c",
+  "Химия": "\uf0c3",
+  "География": "\uf14e",
+  "Человек и мир": "\uf7a2"
+};
 
-  <script>
-    /* ============================================================
-       ДЕМО-ДАННЫЕ: по одному параграфу на класс (5–11)
-       ============================================================ */
-    const allParagraphs = [];
+const bookLinks = {
+  "Биология-6": {title:"Лисов Н.Д. «Биология. 6 класс»", url:"#"},
+  "Биология-7": {title:"Лисов Н.Д. «Биология. 7 класс»", url:"#"},
+  "Биология-8": {title:"«Биология. 8 класс»", url:"#"},
+  "Биология-9": {title:"«Биология. 9 класс»", url:"#"},
+  "Биология-10": {title:"«Биология. 10 класс»", url:"#"},
+  "Биология-11": {title:"«Биология. 11 класс»", url:"#"},
+  "Химия-7": {title:"«Химия. 7 класс»", url:"#"},
+  "Химия-8": {title:"«Химия. 8 класс»", url:"#"},
+  "Химия-9": {title:"«Химия. 9 класс»", url:"#"},
+  "Химия-10": {title:"«Химия. 10 класс»", url:"#"},
+  "Химия-11": {title:"«Химия. 11 класс»", url:"#"},
+  "География-6": {title:"«География. 6 класс»", url:"#"},
+  "География-7": {title:"«География. 7 класс»", url:"#"},
+  "География-8": {title:"«География. 8 класс»", url:"#"},
+  "География-9": {title:"«География. 9 класс»", url:"#"},
+  "География-10": {title:"«География. 10 класс»", url:"#"},
+  "География-11": {title:"«География. 11 класс»", url:"#"},
+  "Человек и мир-5": {title:"«Человек и мир. 5 класс»", url:"#"}
+};
+function getBook(subject, cls){
+  const b = bookLinks[subject + "-" + cls];
+  return b || {title: `Пособие «${subject}. ${cls} класс»`, url: "#"};
+}
 
-    function addParagraph(subject, cls, number, theme, connections) {
-      allParagraphs.push({ id: allParagraphs.length + 1, subject, class: cls, number, theme, connections });
-    }
+// === 5 класс: Человек и мир ===
+addParagraph("Человек и мир", 5, "§1", "Природа Земли и человек", [
+  { linkedSubject: "География", linkedClass: 11, linkedTheme: "Глобальные экологические проблемы", intersection: "Загрязнение, вырубка лесов", type: "образ/метафора", format: "дискуссия", task: "Привести 3 примера положительного и 3 отрицательного влияния человека", crossRef: "Учитель географии (11 класс): тема «Глобальные экологические проблемы»", howTo: "В 5 классе закладывается эмоциональное отношение к природе, в 11-м оно превращается в аналитический разбор проблем." }
+]);
 
-    const typeMeta = {
-      "исторический контекст": "content",
-      "образ/метафора": "content",
-      "модель/расчёт": "operational",
-      "эксперимент/наблюдение": "operational",
-      "проект": "operational"
-    };
-    const subjectIcon = {
-      "Биология": '<i class="fa-solid fa-leaf"></i>',
-      "Химия": '<i class="fa-solid fa-flask"></i>',
-      "География": '<i class="fa-solid fa-compass"></i>',
-      "Человек и мир": '<i class="fa-solid fa-earth-europe"></i>'
-    };
-    const subjectGlyph = {
-      "Биология": "\uf06c",
-      "Химия": "\uf0c3",
-      "География": "\uf14e",
-      "Человек и мир": "\uf7a2"
-    };
+// === 6 класс: Биология ===
+addParagraph("Биология", 6, "§1", "Живые организмы", [
+  { linkedSubject: "Химия", linkedClass: 8, linkedTheme: "Органические вещества", intersection: "Белки, жиры, углеводы – основа жизни", type: "эксперимент/наблюдение", format: "лабораторная работа", task: "Обнаружение крахмала в клубне картофеля с помощью йода", crossRef: "Учитель химии (8 класс): тема «Углеводы, их свойства»", howTo: "В 6 классе понятия даются на бытовом уровне, в 8-м — химический разбор. Учителю химии стоит сослаться на опыт с йодом из 6 класса." }
+]);
 
-    const bookLinks = {
-      "Биология-6": { title: "Лисов Н.Д. «Биология. 6 класс»", url: "#" },
-      "Биология-7": { title: "Лисов Н.Д. «Биология. 7 класс»", url: "#" },
-      "Биология-8": { title: "«Биология. 8 класс»", url: "#" },
-      "Биология-9": { title: "«Биология. 9 класс»", url: "#" },
-      "Биология-10": { title: "«Биология. 10 класс»", url: "#" },
-      "Биология-11": { title: "«Биология. 11 класс»", url: "#" },
-      "Химия-7": { title: "«Химия. 7 класс»", url: "#" },
-      "Химия-8": { title: "«Химия. 8 класс»", url: "#" },
-      "Химия-9": { title: "«Химия. 9 класс»", url: "#" },
-      "Химия-10": { title: "«Химия. 10 класс»", url: "#" },
-      "Химия-11": { title: "«Химия. 11 класс»", url: "#" },
-      "География-6": { title: "«География. 6 класс»", url: "#" },
-      "География-7": { title: "«География. 7 класс»", url: "#" },
-      "География-8": { title: "«География. 8 класс»", url: "#" },
-      "География-9": { title: "«География. 9 класс»", url: "#" },
-      "География-10": { title: "«География. 10 класс»", url: "#" },
-      "География-11": { title: "«География. 11 класс»", url: "#" },
-      "Человек и мир-5": { title: "«Человек и мир. 5 класс»", url: "#" }
-    };
+// === 7 класс: Химия ===
+addParagraph("Химия", 7, "§1", "Химия — наука о веществах", [
+  { linkedSubject: "Физика", linkedClass: 8, linkedTheme: "Агрегатные состояния вещества", intersection: "Твёрдое, жидкое, газообразное", type: "эксперимент/наблюдение", format: "демонстрация", task: "Нагреть лёд → вода → пар, зафиксировать температуры", crossRef: "Учитель физики (8 класс): тема «Агрегатные переходы»", howTo: "Химия вводит понятие агрегатных состояний первой, физика через год добавляет количественную часть." }
+]);
 
-    function getBook(subject, cls) {
-      const b = bookLinks[subject + "-" + cls];
-      return b || { title: `Пособие «${subject}. ${cls} класс»`, url: "#" };
-    }
+// === 8 класс: География ===
+addParagraph("География", 8, "§20", "Энергетика. Производство электроэнергии", [
+  { linkedSubject: "Физика", linkedClass: 8, linkedTheme: "Электрический ток. Мощность", intersection: "Принцип работы электростанций", type: "модель/расчёт", format: "исследование", task: "Сравнить КПД тепловой, гидро- и атомной электростанции", crossRef: "Учитель физики (8 класс): тема «Электрический ток. Мощность»", howTo: "Физика даёт понятия тока и мощности раньше географии, ученики на географии уже смогут объяснять КПД через знакомую формулу." }
+]);
 
-    // === 5 класс: Человек и мир ===
-    addParagraph("Человек и мир", 5, "§1", "Природа Земли и человек", [
-      { linkedSubject: "География", linkedClass: 11, linkedTheme: "Глобальные экологические проблемы", intersection: "Загрязнение, вырубка лесов", type: "образ/метафора", format: "дискуссия", task: "Привести 3 примера положительного и 3 отрицательного влияния человека", crossRef: "Учитель географии (11 класс): тема «Глобальные экологические проблемы»", howTo: "В 5 классе закладывается эмоциональное отношение к природе, в 11-м оно превращается в аналитический разбор проблем." }
-    ]);
+// === 9 класс: Биология ===
+addParagraph("Биология", 9, "§11", "Зрительная сенсорная система", [
+  { linkedSubject: "Физика", linkedClass: 8, linkedTheme: "Линзы. Построение изображений", intersection: "Хрусталик работает как линза", type: "модель/расчёт", format: "построение", task: "Построить ход лучей в глазу и в собирающей линзе, сравнить", crossRef: "Учитель физики (8 класс): тема «Линзы. Построение изображений»", howTo: "Линзы изучаются на год раньше зрительной системы — берём готовый чертёж линзы и достраиваем глаз." }
+]);
 
-    // === 6 класс: Биология ===
-    addParagraph("Биология", 6, "§1", "Живые организмы", [
-      { linkedSubject: "Химия", linkedClass: 8, linkedTheme: "Органические вещества", intersection: "Белки, жиры, углеводы – основа жизни", type: "эксперимент/наблюдение", format: "лабораторная работа", task: "Обнаружение крахмала в клубне картофеля с помощью йода", crossRef: "Учитель химии (8 класс): тема «Углеводы, их свойства»", howTo: "В 6 классе понятия даются на бытовом уровне, в 8-м — химический разбор. Учителю химии стоит сослаться на опыт с йодом из 6 класса." }
-    ]);
+// === 10 класс: Химия ===
+addParagraph("Химия", 10, "§39", "Жиры", [
+  { linkedSubject: "Биология", linkedClass: 10, linkedTheme: "Строение клеточной мембраны", intersection: "Строение клеточных мембран", type: "образ/метафора", format: "схема", task: "Нарисовать фосфолипидный бислой с гидрофильными головками", crossRef: "Учитель биологии (10 класс): тема «Строение клеточной мембраны»", howTo: "Химия даёт строение фосфолипида, биология сразу переходит к его функции в мембране." }
+]);
 
-    // === 7 класс: Химия ===
-    addParagraph("Химия", 7, "§1", "Химия — наука о веществах", [
-      { linkedSubject: "Физика", linkedClass: 8, linkedTheme: "Агрегатные состояния вещества", intersection: "Твёрдое, жидкое, газообразное", type: "эксперимент/наблюдение", format: "демонстрация", task: "Нагреть лёд → вода → пар, зафиксировать температуры", crossRef: "Учитель физики (8 класс): тема «Агрегатные переходы»", howTo: "Химия вводит понятие агрегатных состояний первой, физика через год добавляет количественную часть." }
-    ]);
+// === 11 класс: География ===
+addParagraph("География", 11, "§6", "Антропогенное изменение климата", [
+  { linkedSubject: "Химия", linkedClass: 11, linkedTheme: "Экологические проблемы. Парниковый эффект", intersection: "CO₂, метан, их источники", type: "модель/расчёт", format: "исследование", task: "Построить график роста CO₂ по данным NOAA за 50 лет", crossRef: "Учитель химии (11 класс): тема «Экологические проблемы. Парниковый эффект»", howTo: "Химия объясняет механизм парникового эффекта на уровне молекул, география — глобальные тенденции и статистику." }
+]);
 
-    // === 8 класс: География ===
-    addParagraph("География", 8, "§20", "Энергетика. Производство электроэнергии", [
-      { linkedSubject: "Физика", linkedClass: 8, linkedTheme: "Электрический ток. Мощность", intersection: "Принцип работы электростанций", type: "модель/расчёт", format: "исследование", task: "Сравнить КПД тепловой, гидро- и атомной электростанции", crossRef: "Учитель физики (8 класс): тема «Электрический ток. Мощность»", howTo: "Физика даёт понятия тока и мощности раньше географии, ученики на географии уже смогут объяснять КПД через знакомую формулу." }
-    ]);
+document.getElementById("totalCount").textContent = `${allParagraphs.length} параграфов · в полной версии 30+`;
 
-    // === 9 класс: Биология ===
-    addParagraph("Биология", 9, "§11", "Зрительная сенсорная система", [
-      { linkedSubject: "Физика", linkedClass: 8, linkedTheme: "Линзы. Построение изображений", intersection: "Хрусталик работает как линза", type: "модель/расчёт", format: "построение", task: "Построить ход лучей в глазу и в собирающей линзе, сравнить", crossRef: "Учитель физики (8 класс): тема «Линзы. Построение изображений»", howTo: "Линзы изучаются на год раньше зрительной системы — берём готовый чертёж линзы и достраиваем глаз." }
-    ]);
+/* ============================================================
+   СОСТОЯНИЕ И ИНИЦИАЛИЗАЦИЯ
+   ============================================================ */
+let state = { subject:"all", cls:"all", search:"" };
+const CLASSES = [5,6,7,8,9,10,11];
+const SUBJECTS = ["Биология","Химия","География","Человек и мир"];
 
-    // === 10 класс: Химия ===
-    addParagraph("Химия", 10, "§39", "Жиры", [
-      { linkedSubject: "Биология", linkedClass: 10, linkedTheme: "Строение клеточной мембраны", intersection: "Строение клеточных мембран", type: "образ/метафора", format: "схема", task: "Нарисовать фосфолипидный бислой с гидрофильными головками", crossRef: "Учитель биологии (10 класс): тема «Строение клеточной мембраны»", howTo: "Химия даёт строение фосфолипида, биология сразу переходит к его функции в мембране." }
-    ]);
+document.addEventListener("DOMContentLoaded", () => {
+  bindFilters();
+  buildCompass();
+  render();
+  document.getElementById("searchInput").addEventListener("keyup", e=>{ if(e.key==="Enter") doSearch(); });
+});
 
-    // === 11 класс: География ===
-    addParagraph("География", 11, "§6", "Антропогенное изменение климата", [
-      { linkedSubject: "Химия", linkedClass: 11, linkedTheme: "Экологические проблемы. Парниковый эффект", intersection: "CO₂, метан, их источники", type: "модель/расчёт", format: "исследование", task: "Построить график роста CO₂ по данным NOAA за 50 лет", crossRef: "Учитель химии (11 класс): тема «Экологические проблемы. Парниковый эффект»", howTo: "Химия объясняет механизм парникового эффекта на уровне молекул, география — глобальные тенденции и статистику." }
-    ]);
+function toggleOnboard(){
+  document.getElementById("onboardPanel").classList.toggle("open");
+}
 
-    document.getElementById("totalCount").textContent = `${allParagraphs.length} параграфов · в полной версии 30+`;
+/* ============================================================
+   КОМПАС-КАРТА
+   ============================================================ */
+function polar(cx,cy,r,angleDeg){
+  const a = (angleDeg-90) * Math.PI/180;
+  return [cx + r*Math.cos(a), cy + r*Math.sin(a)];
+}
+function ringSegmentPath(cx,cy,r0,r1,a0,a1){
+  const [x0,y0] = polar(cx,cy,r1,a0);
+  const [x1,y1] = polar(cx,cy,r1,a1);
+  const [x2,y2] = polar(cx,cy,r0,a1);
+  const [x3,y3] = polar(cx,cy,r0,a0);
+  const large = (a1-a0) > 180 ? 1 : 0;
+  return `M${x0},${y0} A${r1},${r1} 0 ${large} 1 ${x1},${y1} L${x2},${y2} A${r0},${r0} 0 ${large} 0 ${x3},${y3} Z`;
+}
 
-    /* ============================================================
-       СОСТОЯНИЕ И ИНИЦИАЛИЗАЦИЯ
-       ============================================================ */
-    let state = { subject: "all", cls: "all", search: "" };
-    const CLASSES = [5, 6, 7, 8, 9, 10, 11];
-    const SUBJECTS = ["Биология", "Химия", "География", "Человек и мир"];
+const quadrantAngles = {
+  "Биология": -45,
+  "Химия": 45,
+  "География": 135,
+  "Человек и мир": 225
+};
+const quadrantColor = {
+  "Биология": ["#bdf2d6","#1f9d5f"],
+  "Химия": ["#bdeaf5","#1793b0"],
+  "География": ["#bdeee2","#178f80"],
+  "Человек и мир": ["#c7d9ef","#2f66a3"]
+};
 
-    document.addEventListener("DOMContentLoaded", () => {
-      bindFilters();
-      buildCompass();
-      render();
-      document.getElementById("searchInput").addEventListener("keyup", e => { if (e.key === "Enter") doSearch(); });
+function countFor(subject, cls){
+  return allParagraphs.filter(p => p.subject===subject && p.class===cls).length;
+}
+
+function buildCompass(){
+  const cx=250, cy=250, rInner=54, rOuter=232;
+  const ringWidth = (rOuter-rInner) / CLASSES.length;
+  const maxCount = Math.max(1, ...SUBJECTS.flatMap(s => CLASSES.map(c => countFor(s,c))));
+
+  let svg = `<svg viewBox="0 0 500 500" width="440" height="440" xmlns="http://www.w3.org/2000/svg">`;
+
+  SUBJECTS.forEach(subject => {
+    const a0 = quadrantAngles[subject], a1 = a0+90;
+    const [lo,hi] = quadrantColor[subject];
+    CLASSES.forEach((cls, ci) => {
+      const r0 = rInner + ci*ringWidth, r1 = r0+ringWidth;
+      const count = countFor(subject, cls);
+      const t = count/maxCount;
+      const fill = count===0 ? "#eef8f5" : mixHex(lo, hi, 0.25+t*0.75);
+      const d = ringSegmentPath(cx,cy,r0,r1,a0,a1);
+      const label = count===0 ? `${subject}, ${cls} класс — параграфов пока нет` : `${subject}, ${cls} класс — ${count} связ${count===1?'ь':(count<5?'и':'ей')}`;
+      svg += `<path class="ring-seg" data-subject="${subject}" data-class="${cls}" d="${d}" fill="${fill}" onclick="compassClick('${subject.replace(/'/g,"\\'")}', ${cls})"><title>${label}</title></path>`;
     });
+  });
 
-    function toggleOnboard() {
-      document.getElementById("onboardPanel").classList.toggle("open");
+  CLASSES.forEach((cls, ci) => {
+    const r = rInner + ci*ringWidth + ringWidth/2;
+    const [x,y] = polar(cx,cy,r,45);
+    svg += `<text class="compass-ring-label" x="${x}" y="${y}" text-anchor="middle">${cls}</text>`;
+  });
+
+  const iconR = rOuter + 18;
+  SUBJECTS.forEach(subject => {
+    const mid = quadrantAngles[subject]+45;
+    const [x,y] = polar(cx,cy,iconR,mid);
+    svg += `<text class="compass-quad-label" x="${x}" y="${y}" text-anchor="middle" font-size="16" font-family="'Font Awesome 6 Free'" font-weight="900">${subjectGlyph[subject]}</text>`;
+  });
+
+  svg += `<g class="compass-center" onclick="compassClick('all','all')">
+    <circle cx="${cx}" cy="${cy}" r="${rInner-6}"></circle>
+    <text x="${cx}" y="${cy-4}" text-anchor="middle">ВСЕ</text>
+    <text x="${cx}" y="${cy+11}" text-anchor="middle" font-size="9">связи</text>
+  </g>`;
+
+  svg += `</svg>`;
+  document.getElementById("compassHolder").innerHTML = svg;
+  highlightCompass();
+}
+
+function mixHex(hex1, hex2, t){
+  const c1 = hexToRgb(hex1), c2 = hexToRgb(hex2);
+  const r = Math.round(c1[0]+(c2[0]-c1[0])*t);
+  const g = Math.round(c1[1]+(c2[1]-c1[1])*t);
+  const b = Math.round(c1[2]+(c2[2]-c1[2])*t);
+  return `rgb(${r},${g},${b})`;
+}
+function hexToRgb(hex){
+  hex = hex.replace('#','');
+  return [parseInt(hex.substr(0,2),16), parseInt(hex.substr(2,2),16), parseInt(hex.substr(4,2),16)];
+}
+
+function compassClick(subject, cls){
+  state.subject = subject;
+  state.cls = cls==='all' ? 'all' : cls;
+  updateChips("subjectFilters", subject);
+  updateChips("classFilters", cls==='all' ? 'all' : String(cls));
+  highlightCompass();
+  updateCompassCurrent();
+  render();
+  document.getElementById("cardsGrid").scrollIntoView({behavior:"smooth", block:"start"});
+}
+
+function highlightCompass(){
+  document.querySelectorAll(".ring-seg").forEach(seg=>{
+    const s = seg.getAttribute("data-subject");
+    const c = seg.getAttribute("data-class");
+    const match = (state.subject==='all' || state.subject===s) && (state.cls==='all' || String(state.cls)===c);
+    seg.classList.toggle("active-seg", match && !(state.subject==='all' && state.cls==='all'));
+  });
+}
+
+function updateCompassCurrent(){
+  const el = document.getElementById("compassCurrent");
+  if(state.subject==='all' && state.cls==='all'){ el.textContent = "Показаны все предметы и классы"; return; }
+  let txt = "Показаны: ";
+  txt += state.subject==='all' ? "все предметы" : state.subject;
+  txt += ", ";
+  txt += state.cls==='all' ? "все классы" : `${state.cls} класс`;
+  el.textContent = txt;
+}
+
+/* ============================================================
+   ФИЛЬТРЫ И ПОИСК
+   ============================================================ */
+function bindFilters(){
+  document.querySelectorAll("#subjectFilters .chip").forEach(c=>c.addEventListener("click",()=>{
+    state.subject=c.dataset.subject; updateChips("subjectFilters",c.dataset.subject); highlightCompass(); updateCompassCurrent(); render();
+  }));
+  document.querySelectorAll("#classFilters .chip").forEach(c=>c.addEventListener("click",()=>{
+    state.cls=c.dataset.class; updateChips("classFilters",c.dataset.class); highlightCompass(); updateCompassCurrent(); render();
+  }));
+}
+function updateChips(g,val){
+  document.querySelectorAll(`#${g} .chip`).forEach(c=>{
+    const v=c.dataset.subject||c.dataset.class;
+    c.classList.toggle("active", v===val || (val==='all' && v==='all'));
+  });
+}
+function doSearch(){ state.search=document.getElementById("searchInput").value.trim().toLowerCase(); render(); }
+function resetAll(){
+  state={subject:"all",cls:"all",search:""};
+  document.getElementById("searchInput").value="";
+  updateChips("subjectFilters","all"); updateChips("classFilters","all");
+  highlightCompass(); updateCompassCurrent();
+  render();
+}
+
+/* ============================================================
+   РЕНДЕР КАРТОЧЕК
+   ============================================================ */
+function render(){
+  let list = allParagraphs.filter(p=>{
+    if(state.subject!=="all" && p.subject!==state.subject) return false;
+    if(state.cls!=="all" && p.class!==parseInt(state.cls)) return false;
+    if(state.search){
+      const s=state.search;
+      const inConn = p.connections.some(c => c.linkedTheme.toLowerCase().includes(s) || c.intersection.toLowerCase().includes(s));
+      return p.theme.toLowerCase().includes(s) || p.number.toLowerCase().includes(s) || p.subject.toLowerCase().includes(s) || inConn;
     }
-
-    /* ============================================================
-       КОМПАС-КАРТА
-       ============================================================ */
-    function polar(cx, cy, r, angleDeg) {
-      const a = (angleDeg - 90) * Math.PI / 180;
-      return [cx + r * Math.cos(a), cy + r * Math.sin(a)];
-    }
-
-    function ringSegmentPath(cx, cy, r0, r1, a0, a1) {
-      const [x0, y0] = polar(cx, cy, r1, a0);
-      const [x1, y1] = polar(cx, cy, r1, a1);
-      const [x2, y2] = polar(cx, cy, r0, a1);
-      const [x3, y3] = polar(cx, cy, r0, a0);
-      const large = (a1 - a0) > 180 ? 1 : 0;
-      return `M${x0},${y0} A${r1},${r1} 0 ${large} 1 ${x1},${y1} L${x2},${y2} A${r0},${r0} 0 ${large} 0 ${x3},${y3} Z`;
-    }
-
-    const quadrantAngles = {
-      "Биология": -45,
-      "Химия": 45,
-      "География": 135,
-      "Человек и мир": 225
-    };
-    const quadrantColor = {
-      "Биология": ["#bdf2d6", "#1f9d5f"],
-      "Химия": ["#bdeaf5", "#1793b0"],
-      "География": ["#bdeee2", "#178f80"],
-      "Человек и мир": ["#c7d9ef", "#2f66a3"]
-    };
-
-    function countFor(subject, cls) {
-      return allParagraphs.filter(p => p.subject === subject && p.class === cls).length;
-    }
-
-    function buildCompass() {
-      const container = document.getElementById("compassHolder");
-      const rect = container.getBoundingClientRect();
-      const size = Math.min(rect.width || 440, 440);
-      const cx = 250,
-        cy = 250,
-        rInner = 54,
-        rOuter = 232;
-      const ringWidth = (rOuter - rInner) / CLASSES.length;
-      const maxCount = Math.max(1, ...SUBJECTS.flatMap(s => CLASSES.map(c => countFor(s, c))));
-
-      // Масштабируем viewBox в зависимости от размера
-      const viewBox = `0 0 500 500`;
-      let svg = `<svg viewBox="${viewBox}" width="100%" height="auto" max-width="440px" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto;">`;
-
-      SUBJECTS.forEach(subject => {
-        const a0 = quadrantAngles[subject],
-          a1 = a0 + 90;
-        const [lo, hi] = quadrantColor[subject];
-        CLASSES.forEach((cls, ci) => {
-          const r0 = rInner + ci * ringWidth,
-            r1 = r0 + ringWidth;
-          const count = countFor(subject, cls);
-          const t = count / maxCount;
-          const fill = count === 0 ? "#eef8f5" : mixHex(lo, hi, 0.25 + t * 0.75);
-          const d = ringSegmentPath(cx, cy, r0, r1, a0, a1);
-          const label = count === 0 ? `${subject}, ${cls} класс — параграфов пока нет` :
-            `${subject}, ${cls} класс — ${count} связ${count === 1 ? 'ь' : (count < 5 ? 'и' : 'ей')}`;
-          svg += `<path class="ring-seg" data-subject="${subject}" data-class="${cls}" d="${d}" fill="${fill}" onclick="compassClick('${subject.replace(/'/g, "\\'")}', ${cls})"><title>${label}</title></path>`;
-        });
-      });
-
-      CLASSES.forEach((cls, ci) => {
-        const r = rInner + ci * ringWidth + ringWidth / 2;
-        const [x, y] = polar(cx, cy, r, 45);
-        svg += `<text class="compass-ring-label" x="${x}" y="${y}" text-anchor="middle">${cls}</text>`;
-      });
-
-      const iconR = rOuter + 18;
-      SUBJECTS.forEach(subject => {
-        const mid = quadrantAngles[subject] + 45;
-        const [x, y] = polar(cx, cy, iconR, mid);
-        svg += `<text class="compass-quad-label" x="${x}" y="${y}" text-anchor="middle" font-size="16" font-family="'Font Awesome 6 Free'" font-weight="900">${subjectGlyph[subject]}</text>`;
-      });
-
-      svg += `<g class="compass-center" onclick="compassClick('all','all')">
-        <circle cx="${cx}" cy="${cy}" r="${rInner - 6}"></circle>
-        <text x="${cx}" y="${cy - 4}" text-anchor="middle">ВСЕ</text>
-        <text x="${cx}" y="${cy + 11}" text-anchor="middle" font-size="9">связи</text>
-      </g>`;
-
-      svg += `</svg>`;
-      container.innerHTML = svg;
-      highlightCompass();
-    }
-
-    function mixHex(hex1, hex2, t) {
-      const c1 = hexToRgb(hex1),
-        c2 = hexToRgb(hex2);
-      const r = Math.round(c1[0] + (c2[0] - c1[0]) * t);
-      const g = Math.round(c1[1] + (c2[1] - c1[1]) * t);
-      const b = Math.round(c1[2] + (c2[2] - c1[2]) * t);
-      return `rgb(${r},${g},${b})`;
-    }
-
-    function hexToRgb(hex) {
-      hex = hex.replace('#', '');
-      return [parseInt(hex.substr(0, 2), 16), parseInt(hex.substr(2, 2), 16), parseInt(hex.substr(4, 2), 16)];
-    }
-
-    function compassClick(subject, cls) {
-      state.subject = subject;
-      state.cls = cls === 'all' ? 'all' : cls;
-      updateChips("subjectFilters", subject);
-      updateChips("classFilters", cls === 'all' ? 'all' : String(cls));
-      highlightCompass();
-      updateCompassCurrent();
-      render();
-      document.getElementById("cardsGrid").scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-
-    function highlightCompass() {
-      document.querySelectorAll(".ring-seg").forEach(seg => {
-        const s = seg.getAttribute("data-subject");
-        const c = seg.getAttribute("data-class");
-        const match = (state.subject === 'all' || state.subject === s) && (state.cls === 'all' || String(state.cls) ===
-        c);
-        seg.classList.toggle("active-seg", match && !(state.subject === 'all' && state.cls === 'all'));
-      });
-    }
-
-    function updateCompassCurrent() {
-      const el = document.getElementById("compassCurrent");
-      if (state.subject === 'all' && state.cls === 'all') { el.textContent = "Показаны все предметы и классы"; return; }
-      let txt = "Показаны: ";
-      txt += state.subject === 'all' ? "все предметы" : state.subject;
-      txt += ", ";
-      txt += state.cls === 'all' ? "все классы" : `${state.cls} класс`;
-      el.textContent = txt;
-    }
-
-    /* ============================================================
-       ФИЛЬТРЫ И ПОИСК
-       ============================================================ */
-    function bindFilters() {
-      document.querySelectorAll("#subjectFilters .chip").forEach(c => c.addEventListener("click", () => {
-        state.subject = c.dataset.subject;
-        updateChips("subjectFilters", c.dataset.subject);
-        highlightCompass();
-        updateCompassCurrent();
-        render();
-      }));
-      document.querySelectorAll("#classFilters .chip").forEach(c => c.addEventListener("click", () => {
-        state.cls = c.dataset.class;
-        updateChips("classFilters", c.dataset.class);
-        highlightCompass();
-        updateCompassCurrent();
-        render();
-      }));
-    }
-
-    function updateChips(g, val) {
-      document.querySelectorAll(`#${g} .chip`).forEach(c => {
-        const v = c.dataset.subject || c.dataset.class;
-        c.classList.toggle("active", v === val || (val === 'all' && v === 'all'));
-      });
-    }
-
-    function doSearch() { state.search = document.getElementById("searchInput").value.trim().toLowerCase();
-      render(); }
-
-    function resetAll() {
-      state = { subject: "all", cls: "all", search: "" };
-      document.getElementById("searchInput").value = "";
-      updateChips("subjectFilters", "all");
-      updateChips("classFilters", "all");
-      highlightCompass();
-      updateCompassCurrent();
-      render();
-    }
-
-    /* ============================================================
-       РЕНДЕР КАРТОЧЕК
-       ============================================================ */
-    function render() {
-      let list = allParagraphs.filter(p => {
-        if (state.subject !== "all" && p.subject !== state.subject) return false;
-        if (state.cls !== "all" && p.class !== parseInt(state.cls)) return false;
-        if (state.search) {
-          const s = state.search;
-          const inConn = p.connections.some(c => c.linkedTheme.toLowerCase().includes(s) || c.intersection.toLowerCase()
-            .includes(s));
-          return p.theme.toLowerCase().includes(s) || p.number.toLowerCase().includes(s) || p.subject.toLowerCase()
-            .includes(s) || inConn;
-        }
-        return true;
-      });
-      document.getElementById("resultCount").textContent = `Показано: ${list.length} из ${allParagraphs.length}`;
-      const grid = document.getElementById("cardsGrid");
-      if (!list.length) {
-        grid.innerHTML =
-          `<div class="empty-msg"><i class="fa-solid fa-magnifying-glass"></i> По этому запросу пока ничего нет. Попробуйте другой предмет, класс или снимите фильтры кнопкой «Сбросить».</div>`;
-        return;
-      }
-      grid.innerHTML = list.map(p => {
-        const subjClass = p.subject === 'Человек и мир' ? 'человекимир' : p.subject.toLowerCase();
-        return `<div class="card">
-        <div class="card-top subject-${subjClass}">
-          <div>
-            <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;">
-              <span class="card-subject-badge">${p.subject}</span>
-              <span class="card-class-badge">${p.class} класс</span>
-            </div>
-            <div class="card-para">${p.number}</div>
-            <div class="card-theme">${p.theme}</div>
+    return true;
+  });
+  document.getElementById("resultCount").textContent = `Показано: ${list.length} из ${allParagraphs.length}`;
+  const grid = document.getElementById("cardsGrid");
+  if(!list.length){
+    grid.innerHTML = `<div class="empty-msg"><i class="fa-solid fa-magnifying-glass"></i> По этому запросу пока ничего нет. Попробуйте другой предмет, класс или снимите фильтры кнопкой «Сбросить».</div>`;
+    return;
+  }
+  grid.innerHTML = list.map(p=>{
+    const subjClass = p.subject==='Человек и мир' ? 'человекимир' : p.subject.toLowerCase();
+    return `<div class="card">
+      <div class="card-top subject-${subjClass}">
+        <div>
+          <div style="display:flex;gap:6px;margin-bottom:8px">
+            <span class="card-subject-badge">${p.subject}</span>
+            <span class="card-class-badge">${p.class} класс</span>
           </div>
-          <div class="card-icon">${subjectIcon[p.subject]||'<i class="fa-solid fa-link"></i>'}</div>
+          <div class="card-para">${p.number}</div>
+          <div class="card-theme">${p.theme}</div>
         </div>
-        <div class="card-body">
-          ${p.connections.map(c => {
-            const meta = typeMeta[c.type] || "operational";
-            const metaLabel = meta === "content" ? "по содержанию" : "по способу работы";
-            const book = getBook(c.linkedSubject, c.linkedClass);
-            return `<div class="conn">
-              <div class="route-line">${subjectIcon[p.subject]||''} ${p.subject} (${p.class} кл.) <span class="arrow">→</span> ${subjectIcon[c.linkedSubject]||'<i class="fa-solid fa-book"></i>'} ${c.linkedSubject} (${c.linkedClass} кл.)</div>
-              <div class="conn-head">
-                <span class="conn-subject">${c.linkedTheme}</span>
-                <span class="conn-type meta-${meta}"><span class="dot"></span>${c.type} · ${metaLabel}</span>
-              </div>
-              <div class="conn-intersection">${c.intersection}</div>
-              <span class="conn-format">${c.format}</span>
-              <div class="conn-task"><strong><i class="fa-solid fa-flask-vial"></i> Задание:</strong> ${c.task}</div>
-              ${c.crossRef ? `<div class="cross-ref"><i class="fa-solid fa-paperclip"></i> ${c.crossRef}</div>` : ''}
-              ${c.howTo ? `<div class="conn-howto"><strong><i class="fa-solid fa-puzzle-piece"></i> Как связать на практике:</strong> ${c.howTo}</div>` : ''}
-              <a class="book-link" href="${book.url}" target="_blank" rel="noopener"><i class="fa-solid fa-book"></i> ${book.title}</a>
-            </div>`;
-          }).join("")}
-        </div>
-        <div class="card-footer">
-          <button class="ai-btn" onclick="downloadCard(${p.id})">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 1 1 0 2h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 1 1 0-2h1a7 7 0 0 1 7-7h1V5.73A2 2 0 0 1 10 4a2 2 0 0 1 2-2z"/></svg>
-            Скачать карточку маршрута
-          </button>
-        </div>
-      </div>`;
-      }).join("");
-    }
-
-    /* ============================================================
-       СКАЧИВАНИЕ КАРТОЧКИ
-       ============================================================ */
-    async function downloadCard(id) {
-      const para = allParagraphs.find(p => p.id === id);
-      if (!para) return;
-      showToast('<i class="fa-solid fa-arrows-rotate"></i> Готовлю карточку…');
-      const container = document.getElementById("downloadCardContainer");
-      container.innerHTML = `
-        <div class="dl-header">
-          <div class="dl-eyebrow">Межпредметный навигатор · маршрут связи</div>
-          <h3>${para.number} ${para.theme}</h3>
-          <p>${subjectIcon[para.subject]||''} ${para.subject} · ${para.class} класс</p>
-        </div>
-        ${para.connections.map(c => {
+        <div class="card-icon">${subjectIcon[p.subject]||'<i class="fa-solid fa-link"></i>'}</div>
+      </div>
+      <div class="card-body">
+        ${p.connections.map(c=>{
           const meta = typeMeta[c.type] || "operational";
-          const metaLabel = meta === "content" ? "связь по содержанию" : "связь по способу работы";
+          const metaLabel = meta==="content" ? "по содержанию" : "по способу работы";
           const book = getBook(c.linkedSubject, c.linkedClass);
-          return `<div class="dl-conn">
-            <h4>${subjectIcon[c.linkedSubject]||'<i class="fa-solid fa-book"></i>'} ${c.linkedSubject}, ${c.linkedClass} класс — ${c.linkedTheme} <span style="font-weight:400;color:#4d8480;">(${metaLabel})</span></h4>
-            <p><strong>Что общего:</strong> ${c.intersection}</p>
-            <p><strong>Формат:</strong> ${c.format}</p>
-            <div class="dl-task"><strong>Задание ученику:</strong> ${c.task}</div>
-            ${c.crossRef ? `<p style="margin-top:8px;"><i class="fa-solid fa-paperclip"></i> ${c.crossRef}</p>` : ''}
-            ${c.howTo ? `<p style="margin-top:8px;"><strong>Как связать на практике:</strong> ${c.howTo}</p>` : ''}
-            <p style="margin-top:6px;font-size:11px;color:#4d8480;"><i class="fa-solid fa-book"></i> ${book.title}</p>
+          return `<div class="conn">
+            <div class="route-line">${subjectIcon[p.subject]||''} ${p.subject} (${p.class} кл.) <span class="arrow">→</span> ${subjectIcon[c.linkedSubject]||'<i class="fa-solid fa-book"></i>'} ${c.linkedSubject} (${c.linkedClass} кл.)</div>
+            <div class="conn-head">
+              <span class="conn-subject">${c.linkedTheme}</span>
+              <span class="conn-type meta-${meta}"><span class="dot"></span>${c.type} · ${metaLabel}</span>
+            </div>
+            <div class="conn-intersection">${c.intersection}</div>
+            <span class="conn-format">${c.format}</span>
+            <div class="conn-task"><strong><i class="fa-solid fa-flask-vial"></i> Задание:</strong> ${c.task}</div>
+            ${c.crossRef ? `<div class="cross-ref"><i class="fa-solid fa-paperclip"></i> ${c.crossRef}</div>` : ''}
+            ${c.howTo ? `<div class="conn-howto"><strong><i class="fa-solid fa-puzzle-piece"></i> Как связать на практике:</strong> ${c.howTo}</div>` : ''}
+            <a class="book-link" href="${book.url}" target="_blank" rel="noopener"><i class="fa-solid fa-book"></i> ${book.title}</a>
           </div>`;
-        }).join('')}
-        <div class="footer-note"><i class="fa-solid fa-compass"></i> Межпредметный навигатор · демо-версия</div>
-      `;
-      container.style.position = "fixed";
-      container.style.top = "0";
-      container.style.left = "0";
-      container.style.opacity = "1";
-      container.style.zIndex = "99999";
-      try {
-        if (document.fonts && document.fonts.ready) { await document.fonts.ready; }
-        const canvas = await html2canvas(container, { scale: 2.5, backgroundColor: "#ffffff", logging: false });
-        const link = document.createElement("a");
-        link.download = `${para.subject}_${para.number}_${para.theme.slice(0, 30)}_маршрут.png`;
-        link.href = canvas.toDataURL("image/png");
-        link.click();
-        showToast('<i class="fa-solid fa-circle-check"></i> Карточка скачана!');
-      } catch (e) {
-        showToast('<i class="fa-solid fa-circle-xmark"></i> Не получилось создать карточку.');
-      }
-      container.style.top = "-9999px";
-      container.style.left = "-9999px";
-      container.style.opacity = "0";
-    }
+        }).join("")}
+      </div>
+      <div class="card-footer">
+        <button class="ai-btn" onclick="downloadCard(${p.id})">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 1 1 0 2h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 1 1 0-2h1a7 7 0 0 1 7-7h1V5.73A2 2 0 0 1 10 4a2 2 0 0 1 2-2z"/></svg>
+          Скачать карточку маршрута
+        </button>
+      </div>
+    </div>`;
+  }).join("");
+}
 
-    function showToast(msg) {
-      let t = document.createElement("div");
-      t.className = "toast";
-      t.innerHTML = msg;
-      document.body.appendChild(t);
-      setTimeout(() => t.remove(), 2500);
-    }
+/* ============================================================
+   СКАЧИВАНИЕ КАРТОЧКИ
+   ============================================================ */
+async function downloadCard(id){
+  const para = allParagraphs.find(p=>p.id===id);
+  if(!para) return;
+  showToast('<i class="fa-solid fa-arrows-rotate"></i> Готовлю карточку…');
+  const container = document.getElementById("downloadCardContainer");
+  container.innerHTML = `
+    <div class="dl-header">
+      <div class="dl-eyebrow">Межпредметный навигатор · маршрут связи</div>
+      <h3>${para.number} ${para.theme}</h3>
+      <p>${subjectIcon[para.subject]||''} ${para.subject} · ${para.class} класс</p>
+    </div>
+    ${para.connections.map(c=>{
+      const meta = typeMeta[c.type] || "operational";
+      const metaLabel = meta==="content" ? "связь по содержанию" : "связь по способу работы";
+      const book = getBook(c.linkedSubject, c.linkedClass);
+      return `<div class="dl-conn">
+        <h4>${subjectIcon[c.linkedSubject]||'<i class="fa-solid fa-book"></i>'} ${c.linkedSubject}, ${c.linkedClass} класс — ${c.linkedTheme} <span style="font-weight:400;color:#4d8480;">(${metaLabel})</span></h4>
+        <p><strong>Что общего:</strong> ${c.intersection}</p>
+        <p><strong>Формат:</strong> ${c.format}</p>
+        <div class="dl-task"><strong>Задание ученику:</strong> ${c.task}</div>
+        ${c.crossRef ? `<p style="margin-top:8px;"><i class="fa-solid fa-paperclip"></i> ${c.crossRef}</p>` : ''}
+        ${c.howTo ? `<p style="margin-top:8px;"><strong>Как связать на практике:</strong> ${c.howTo}</p>` : ''}
+        <p style="margin-top:6px;font-size:11px;color:#4d8480;"><i class="fa-solid fa-book"></i> ${book.title}</p>
+      </div>`;
+    }).join('')}
+    <div class="footer-note"><i class="fa-solid fa-compass"></i> Межпредметный навигатор · демо-версия</div>
+  `;
+  container.style.position = "fixed"; container.style.top = "0"; container.style.left = "0"; container.style.opacity = "1"; container.style.zIndex = "99999";
+  try{
+    if(document.fonts && document.fonts.ready){ await document.fonts.ready; }
+    const canvas = await html2canvas(container, { scale: 2.5, backgroundColor: "#ffffff", logging: false });
+    const link = document.createElement("a");
+    link.download = `${para.subject}_${para.number}_${para.theme.slice(0,30)}_маршрут.png`;
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+    showToast('<i class="fa-solid fa-circle-check"></i> Карточка скачана!');
+  }catch(e){
+    showToast('<i class="fa-solid fa-circle-xmark"></i> Не получилось создать карточку.');
+  }
+  container.style.top = "-9999px"; container.style.left = "-9999px"; container.style.opacity = "0";
+}
 
-    // Перестраиваем компас при ресайзе для адаптивности
-    let resizeTimer;
-    window.addEventListener("resize", () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(() => {
-        buildCompass();
-      }, 250);
-    });
-  </script>
+function showToast(msg){
+  let t=document.createElement("div");
+  t.className="toast";
+  t.innerHTML=msg;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(),2500);
+}
+</script>
 </body>
 </html>
