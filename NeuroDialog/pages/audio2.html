@@ -734,19 +734,19 @@ body::before {
             function type() { if (index < text.length) { textarea.value += text.charAt(index); index++; setTimeout(type, 40); } }
             window.addEventListener('load', type);
           </script>
-          <div class="el-generate-row"><button class="el-generate-btn" onclick="document.getElementById('komAudio').play()"><i class="fa-solid fa-arrow-up"></i></button></div>
+          <div class="el-generate-row"><button class="el-generate-btn" onclick="document.getElementById('komAudioBio').play()"><i class="fa-solid fa-arrow-up"></i></button></div>
         </div>
         <div class="el-result-bar">
-          <button class="el-play-btn" onclick="document.getElementById('komAudio').play()"><i class="fa-solid fa-play"></i></button>
+          <button class="el-play-btn" onclick="document.getElementById('komAudioBio').play()"><i class="fa-solid fa-play"></i></button>
           <div class="el-waveform"><span style="height:8px"></span><span style="height:6px"></span><span style="height:14px"></span><span style="height:12px"></span><span style="height:12px"></span><span style="height:10px"></span><span style="height:8px"></span><span style="height:22px"></span><span style="height:8px"></span><span style="height:24px"></span><span style="height:18px"></span><span style="height:6px"></span><span style="height:6px"></span><span style="height:8px"></span><span style="height:12px"></span><span style="height:12px"></span><span style="height:22px"></span><span style="height:24px"></span><span style="height:6px"></span><span style="height:22px"></span><span style="height:12px"></span><span style="height:22px"></span><span style="height:18px"></span><span style="height:12px"></span><span style="height:20px"></span><span style="height:24px"></span><span style="height:14px"></span><span style="height:6px"></span><span style="height:10px"></span><span style="height:18px"></span><span style="height:16px"></span><span style="height:14px"></span><span style="height:10px"></span><span style="height:12px"></span><span style="height:16px"></span><span style="height:8px"></span></div>
-          <a href="pages/src/Audio_bio.mp3" download class="el-icon-btn"><i class="fa-solid fa-arrow-down"></i></a>
+          <a href="src/Audio_bio.mp3" download class="el-icon-btn"><i class="fa-solid fa-arrow-down"></i></a>
         </div>
-        <audio id="komAudio"><source src="pages/src/Audio_bio.mp3" type="audio/mpeg"></audio>
+        <audio id="komAudioBio" src="src/Audio_bio.mp3"></audio>
         <script>
-          const audioKom = document.getElementById('komAudio');
-          document.addEventListener("visibilitychange", () => { if (document.hidden) { audioKom.pause(); audioKom.currentTime = 0; } });
-          window.addEventListener("pagehide", () => { audioKom.pause(); audioKom.currentTime = 0; });
-          document.querySelectorAll('a').forEach(link => { link.addEventListener('click', () => { audioKom.pause(); audioKom.currentTime = 0; }); });
+          const audioBio = document.getElementById('komAudioBio');
+          document.addEventListener("visibilitychange", () => { if (document.hidden) { audioBio.pause(); audioBio.currentTime = 0; } });
+          window.addEventListener("pagehide", () => { audioBio.pause(); audioBio.currentTime = 0; });
+          document.querySelectorAll('a').forEach(link => { link.addEventListener('click', () => { audioBio.pause(); audioBio.currentTime = 0; }); });
         </script>
       </div>
       <div class="el-panel">
@@ -764,7 +764,7 @@ body::before {
         <div class="el-toggle-row">Speaker boost<div class="el-toggle"></div></div>
       </div>
     </div>
-    <div class="continue-wrapper"><a href="#" class="continue-btn" onclick="(function(){var a=document.getElementById('komAudio');a.pause();a.currentTime=0;showPage(5);})(); return false;"><i class="fa-solid fa-arrow-right"></i>Продолжение</a></div>
+    <div class="continue-wrapper"><a href="#" class="continue-btn" onclick="(function(){var a=document.getElementById('komAudioBio');a.pause();a.currentTime=0;showPage(5);})(); return false;"><i class="fa-solid fa-arrow-right"></i>Продолжение</a></div>
   </div>
 </div>
 
@@ -776,9 +776,12 @@ body::before {
       <div class="image-card"><img src="img/kom1.png"><p style="font-weight:normal; font-size: 14px; max-width: 500px;">Маленькая птица стоит в пасти крокодила и выклёвывает остатки пищи и паразитов из его зубов</p><ul class="dash-list" style="text-align: left;"><li>Птица получает пищу – выгоду</li><li>Крокодил получает чистку зубов – тоже выгоду</li><li>Оба участника получают пользу и не вредят друг другу.</li></ul></div>
       <div class="image-card"><img src="img/kom3.png"><p style="font-weight:normal; font-size: 14px; max-width: 500px;">Пример комменсализма, но с элементами конкуренции</p><ul class="dash-list" style="text-align: left;"><li>Львы активно питаются добычей (буйволом).</li><li>Гиены стоят рядом, ожидая, когда смогут получить остатки</li><li>Они не охотились, но хотят воспользоваться результатом охоты львов</li></ul></div>
     </div>
-    <audio id="komAudio_p5"><source src="pages/src/Audio_bio.mp3" type="audio/mpeg"></audio>
-    <div class="audio-ctrl-row"><button class="tts-btn green audio-start-btn" onclick="(function(){var a=document.getElementById('komAudio_p5');a.currentTime=0;a.play();})()"><span class="blink-hand">&#9654;</span> Старт аудио</button><button class="tts-btn red audio-stop-btn" onclick="(function(){var a=document.getElementById('komAudio_p5');a.pause();a.currentTime=0;})()">&#9632; Стоп</button></div>
-    <div class="continue-wrapper"><a href="#" class="try-btn" onclick="(function(){var a=document.getElementById('komAudio_p5');a.pause();a.currentTime=0;showPage(7);})(); return false;"><i class="fa-solid fa-flask"></i> Попробовать</a></div>
+    <audio id="komAudioBio_p5" src="src/Audio_bio.mp3"></audio>
+    <div class="audio-ctrl-row">
+      <button class="tts-btn green audio-start-btn" onclick="playAudio('komAudioBio_p5')"><span class="blink-hand">&#9654;</span> Старт аудио</button>
+      <button class="tts-btn red audio-stop-btn" onclick="stopAudio('komAudioBio_p5')">&#9632; Стоп</button>
+    </div>
+    <div class="continue-wrapper"><a href="#" class="try-btn" onclick="(function(){var a=document.getElementById('komAudioBio_p5');a.pause();a.currentTime=0;showPage(7);})(); return false;"><i class="fa-solid fa-flask"></i> Попробовать</a></div>
   </div>
 </div>
 
@@ -870,19 +873,19 @@ body::before {
         <div class="el-textbox">
           <textarea class="el-textarea" id="typewriter10" rows="6" placeholder="Start typing here or paste any text you want to turn into lifelike speech…"></textarea>
           <script>(function(){const text10="Ионная кристаллическая решётка состоит из положительных и отрицательных ионов, удерживаемых электростатическими силами";const textarea10=document.getElementById("typewriter10");let index10=0,started10=false;function type10(){if(index10<text10.length){textarea10.value+=text10.charAt(index10);index10++;setTimeout(type10,40);}}const observer10=new MutationObserver(function(){const page10=document.getElementById('page10');if(page10&&page10.classList.contains('active')&&!started10){started10=true;textarea10.value='';index10=0;type10();}});document.addEventListener('DOMContentLoaded',function(){observer10.observe(document.body,{subtree:true,attributes:true,attributeFilter:['class']});});})();</script>
-          <div class="el-generate-row"><button class="el-generate-btn" onclick="document.getElementById('komAudio1').play()"><i class="fa-solid fa-arrow-up"></i></button></div>
+          <div class="el-generate-row"><button class="el-generate-btn" onclick="document.getElementById('komAudioChem').play()"><i class="fa-solid fa-arrow-up"></i></button></div>
         </div>
         <div class="el-result-bar">
-          <button class="el-play-btn" onclick="document.getElementById('komAudio1').play()"><i class="fa-solid fa-play"></i></button>
+          <button class="el-play-btn" onclick="document.getElementById('komAudioChem').play()"><i class="fa-solid fa-play"></i></button>
           <div class="el-waveform"><span style="height:8px"></span><span style="height:6px"></span><span style="height:14px"></span><span style="height:12px"></span><span style="height:12px"></span><span style="height:10px"></span><span style="height:8px"></span><span style="height:22px"></span><span style="height:8px"></span><span style="height:24px"></span><span style="height:18px"></span><span style="height:6px"></span><span style="height:6px"></span><span style="height:8px"></span><span style="height:12px"></span><span style="height:12px"></span><span style="height:22px"></span><span style="height:24px"></span><span style="height:6px"></span><span style="height:22px"></span><span style="height:12px"></span><span style="height:22px"></span><span style="height:18px"></span><span style="height:12px"></span><span style="height:20px"></span><span style="height:24px"></span><span style="height:14px"></span><span style="height:6px"></span><span style="height:10px"></span><span style="height:18px"></span><span style="height:16px"></span><span style="height:14px"></span><span style="height:10px"></span><span style="height:12px"></span><span style="height:16px"></span><span style="height:8px"></span></div>
-          <a href="pages/src/Audio_chem.mp3" download class="el-icon-btn"><i class="fa-solid fa-arrow-down"></i></a>
+          <a href="src/Audio_chem.mp3" download class="el-icon-btn"><i class="fa-solid fa-arrow-down"></i></a>
         </div>
-        <audio id="komAudio1"><source src="pages/src/Audio_chem.mp3" type="audio/mpeg"></audio>
+        <audio id="komAudioChem" src="src/Audio_chem.mp3"></audio>
         <script>
-          const audioKom1 = document.getElementById('komAudio1');
-          document.addEventListener("visibilitychange", () => { if (document.hidden) { audioKom1.pause(); audioKom1.currentTime = 0; } });
-          window.addEventListener("pagehide", () => { audioKom1.pause(); audioKom1.currentTime = 0; });
-          document.querySelectorAll('a').forEach(link => { link.addEventListener('click', () => { audioKom1.pause(); audioKom1.currentTime = 0; }); });
+          const audioChem = document.getElementById('komAudioChem');
+          document.addEventListener("visibilitychange", () => { if (document.hidden) { audioChem.pause(); audioChem.currentTime = 0; } });
+          window.addEventListener("pagehide", () => { audioChem.pause(); audioChem.currentTime = 0; });
+          document.querySelectorAll('a').forEach(link => { link.addEventListener('click', () => { audioChem.pause(); audioChem.currentTime = 0; }); });
         </script>
       </div>
       <div class="el-panel">
@@ -900,7 +903,7 @@ body::before {
         <div class="el-toggle-row">Speaker boost<div class="el-toggle"></div></div>
       </div>
     </div>
-    <div class="continue-wrapper"><a href="#" class="continue-btn" onclick="(function(){var a=document.getElementById('komAudio1');a.pause();a.currentTime=0;showPage(11);})(); return false;"><i class="fa-solid fa-arrow-right"></i>Продолжение</a></div>
+    <div class="continue-wrapper"><a href="#" class="continue-btn" onclick="(function(){var a=document.getElementById('komAudioChem');a.pause();a.currentTime=0;showPage(11);})(); return false;"><i class="fa-solid fa-arrow-right"></i>Продолжение</a></div>
   </div>
 </div>
 
@@ -909,9 +912,12 @@ body::before {
   <div class="container">
     <h1 class="slide-title">ИОННАЯ РЕШЁТКА</h1>
     <div class="crystals-row"><div class="crystal-card"><img src="img/kom4.png"><p class="crystal-desc">Каждый ион окружён шестью противоположными – это типичная ионная решётка с координационным числом 6</p></div><div class="crystal-card"><img src="img/kom5.png"><p class="crystal-desc">Координационное число – 8, то есть каждый ион окружён восемью противоположными</p></div><div class="crystal-card"><img src="img/kom6.png"><p class="crystal-desc">Это ионная решётка с высокой симметрией и плотной упаковкой</p></div></div>
-    <audio id="komAudio_p11"><source src="pages/src/Audio_chem.mp3" type="audio/mpeg"></audio>
-    <div class="audio-ctrl-row"><button class="tts-btn green audio-start-btn" onclick="(function(){var a=document.getElementById('komAudio_p11');a.currentTime=0;a.play();})()"><span class="blink-hand">&#9654;</span> Старт аудио</button><button class="tts-btn red audio-stop-btn" onclick="(function(){var a=document.getElementById('komAudio_p11');a.pause();a.currentTime=0;})()">&#9632; Стоп</button></div>
-    <div class="continue-wrapper"><a href="#" class="try-btn" onclick="(function(){var a=document.getElementById('komAudio_p11');a.pause();a.currentTime=0;showPage(13);})(); return false;"><i class="fa-solid fa-flask"></i> Попробовать</a></div>
+    <audio id="komAudioChem_p11" src="src/Audio_chem.mp3"></audio>
+    <div class="audio-ctrl-row">
+      <button class="tts-btn green audio-start-btn" onclick="playAudio('komAudioChem_p11')"><span class="blink-hand">&#9654;</span> Старт аудио</button>
+      <button class="tts-btn red audio-stop-btn" onclick="stopAudio('komAudioChem_p11')">&#9632; Стоп</button>
+    </div>
+    <div class="continue-wrapper"><a href="#" class="try-btn" onclick="(function(){var a=document.getElementById('komAudioChem_p11');a.pause();a.currentTime=0;showPage(13);})(); return false;"><i class="fa-solid fa-flask"></i> Попробовать</a></div>
   </div>
 </div>
 
@@ -999,19 +1005,19 @@ body::before {
         <div class="el-textbox">
           <textarea class="el-textarea" id="typewriter16" rows="6" placeholder="Start typing here or paste any text you want to turn into lifelike speech…"></textarea>
           <script>(function(){const text16="Перед вами схема строения вулкана. Внутри земной коры находится магма – расплавленные горные породы. Она поднимается по жерлу и выходит наружу в виде лавы через кратер. Вулканический пепел и породы выбрасываются в атмосферу, формируя облако. Иногда магма прорывается через боковой кратер. Всё это – проявление внутренней активности Земли";const textarea16=document.getElementById("typewriter16");let index16=0,started16=false;function type16(){if(index16<text16.length){textarea16.value+=text16.charAt(index16);index16++;setTimeout(type16,40);}}const observer16=new MutationObserver(function(){const page16=document.getElementById('page16');if(page16&&page16.classList.contains('active')&&!started16){started16=true;textarea16.value='';index16=0;type16();}});document.addEventListener('DOMContentLoaded',function(){observer16.observe(document.body,{subtree:true,attributes:true,attributeFilter:['class']});});})();</script>
-          <div class="el-generate-row"><button class="el-generate-btn" onclick="document.getElementById('komAudio2').play()"><i class="fa-solid fa-arrow-up"></i></button></div>
+          <div class="el-generate-row"><button class="el-generate-btn" onclick="document.getElementById('komAudioGeo').play()"><i class="fa-solid fa-arrow-up"></i></button></div>
         </div>
         <div class="el-result-bar">
-          <button class="el-play-btn" onclick="document.getElementById('komAudio2').play()"><i class="fa-solid fa-play"></i></button>
+          <button class="el-play-btn" onclick="document.getElementById('komAudioGeo').play()"><i class="fa-solid fa-play"></i></button>
           <div class="el-waveform"><span style="height:8px"></span><span style="height:6px"></span><span style="height:14px"></span><span style="height:12px"></span><span style="height:12px"></span><span style="height:10px"></span><span style="height:8px"></span><span style="height:22px"></span><span style="height:8px"></span><span style="height:24px"></span><span style="height:18px"></span><span style="height:6px"></span><span style="height:6px"></span><span style="height:8px"></span><span style="height:12px"></span><span style="height:12px"></span><span style="height:22px"></span><span style="height:24px"></span><span style="height:6px"></span><span style="height:22px"></span><span style="height:12px"></span><span style="height:22px"></span><span style="height:18px"></span><span style="height:12px"></span><span style="height:20px"></span><span style="height:24px"></span><span style="height:14px"></span><span style="height:6px"></span><span style="height:10px"></span><span style="height:18px"></span><span style="height:16px"></span><span style="height:14px"></span><span style="height:10px"></span><span style="height:12px"></span><span style="height:16px"></span><span style="height:8px"></span></div>
-          <a href="pages/src/Audio_geo.mp3" download class="el-icon-btn"><i class="fa-solid fa-arrow-down"></i></a>
+          <a href="src/Audio_geo.mp3" download class="el-icon-btn"><i class="fa-solid fa-arrow-down"></i></a>
         </div>
-        <audio id="komAudio2"><source src="pages/src/Audio_geo.mp3" type="audio/mpeg"></audio>
+        <audio id="komAudioGeo" src="src/Audio_geo.mp3"></audio>
         <script>
-          const audioKom2 = document.getElementById('komAudio2');
-          document.addEventListener("visibilitychange", () => { if (document.hidden) { audioKom2.pause(); audioKom2.currentTime = 0; } });
-          window.addEventListener("pagehide", () => { audioKom2.pause(); audioKom2.currentTime = 0; });
-          document.querySelectorAll('a').forEach(link => { link.addEventListener('click', () => { audioKom2.pause(); audioKom2.currentTime = 0; }); });
+          const audioGeo = document.getElementById('komAudioGeo');
+          document.addEventListener("visibilitychange", () => { if (document.hidden) { audioGeo.pause(); audioGeo.currentTime = 0; } });
+          window.addEventListener("pagehide", () => { audioGeo.pause(); audioGeo.currentTime = 0; });
+          document.querySelectorAll('a').forEach(link => { link.addEventListener('click', () => { audioGeo.pause(); audioGeo.currentTime = 0; }); });
         </script>
       </div>
       <div class="el-panel">
@@ -1029,7 +1035,7 @@ body::before {
         <div class="el-toggle-row">Speaker boost<div class="el-toggle"></div></div>
       </div>
     </div>
-    <div class="continue-wrapper"><a href="#" class="continue-btn" onclick="(function(){var a=document.getElementById('komAudio2');a.pause();a.currentTime=0;showPage(17);})(); return false;"><i class="fa-solid fa-arrow-right"></i>Продолжение</a></div>
+    <div class="continue-wrapper"><a href="#" class="continue-btn" onclick="(function(){var a=document.getElementById('komAudioGeo');a.pause();a.currentTime=0;showPage(17);})(); return false;"><i class="fa-solid fa-arrow-right"></i>Продолжение</a></div>
   </div>
 </div>
 
@@ -1039,9 +1045,12 @@ body::before {
     <h1 class="slide-title">СТРОЕНИЕ ВУЛКАНА</h1>
     <div class="volcano-layout"><div class="volcano-left"><p><span class="volcano-term">Жерло</span> – трубообразный канал, по которому магма изливается на поверхность</p><br><p><span class="volcano-term">Вулканический очаг</span> – подземный резервуар магмы</p></div><div style="flex:1; text-align:center; min-width:280px;"><img src="img/kom7.png" alt="Строение вулкана" style="max-width:100%;"></div><div class="volcano-right"><p><span class="volcano-term">Кратер</span> (от греч. «кратер» – чаша) – чашеобразное углубление на плоской вершине вулкана</p><br><p><span class="volcano-term">Боковой кратер</span> – побочный кратер вулкана, расположенный на его склоне и представляющий собой окончание выводного канала, отходящего от центрального жерла</p></div></div>
     <div class="volcano-bottom"><p><span class="volcano-term">Вулкан</span> – возвышенность (чаще всего гора конусообразной формы), возникающая над каналами и трещинами в земной коре, по которым на земную поверхность извергаются лава, пепел, горячие газы, пары воды и обломки горных пород</p></div>
-    <audio id="komAudio_p17"><source src="pages/src/Audio_geo.mp3" type="audio/mpeg"></audio>
-    <div class="audio-ctrl-row"><button class="tts-btn green audio-start-btn" onclick="(function(){var a=document.getElementById('komAudio_p17');a.currentTime=0;a.play();})()"><span class="blink-hand">&#9654;</span> Старт аудио</button><button class="tts-btn red audio-stop-btn" onclick="(function(){var a=document.getElementById('komAudio_p17');a.pause();a.currentTime=0;})()">&#9632; Стоп</button></div>
-    <div class="continue-wrapper"><a href="#" class="try-btn" onclick="(function(){var a=document.getElementById('komAudio_p17');a.pause();a.currentTime=0;showPage(19);})(); return false;"><i class="fa-solid fa-arrow-right"></i><i class="fa-solid fa-flask"></i> Попробовать</a></div>
+    <audio id="komAudioGeo_p17" src="src/Audio_geo.mp3"></audio>
+    <div class="audio-ctrl-row">
+      <button class="tts-btn green audio-start-btn" onclick="playAudio('komAudioGeo_p17')"><span class="blink-hand">&#9654;</span> Старт аудио</button>
+      <button class="tts-btn red audio-stop-btn" onclick="stopAudio('komAudioGeo_p17')">&#9632; Стоп</button>
+    </div>
+    <div class="continue-wrapper"><a href="#" class="try-btn" onclick="(function(){var a=document.getElementById('komAudioGeo_p17');a.pause();a.currentTime=0;showPage(19);})(); return false;"><i class="fa-solid fa-arrow-right"></i><i class="fa-solid fa-flask"></i> Попробовать</a></div>
   </div>
 </div>
 
@@ -1087,6 +1096,25 @@ body::before {
     document.querySelectorAll('.page').forEach(page => { page.classList.remove('active'); });
     document.getElementById('page' + pageNum).classList.add('active');
     window.scrollTo(0, 0);
+  }
+
+  // Универсальные функции для управления аудио
+  function playAudio(id) {
+    var audio = document.getElementById(id);
+    if (audio) {
+      audio.currentTime = 0;
+      audio.play().catch(function(e) {
+        console.log('Ошибка воспроизведения:', e);
+      });
+    }
+  }
+
+  function stopAudio(id) {
+    var audio = document.getElementById(id);
+    if (audio) {
+      audio.pause();
+      audio.currentTime = 0;
+    }
   }
 
   // ==================== ELEVENLABS АЛГОРИТМ (общая функция) ====================
