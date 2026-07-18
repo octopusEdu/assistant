@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>Демо · Межпредметный навигатор | Биология · Химия · География · Человек и мир</title>
+<title>Межпредметный навигатор | Биология · Химия · География · Человек и мир</title>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;600;700&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
@@ -47,6 +47,7 @@ body {
   padding: 0 0 70px;
 }
 
+/* ---------- HEADER ---------- */
 header {
   background: var(--t700);
   padding: 34px 32px 26px;
@@ -73,16 +74,6 @@ header {
   font-size: 13px;
   white-space:nowrap;
 }
-.demo-badge {
-  background: #ffd93d;
-  color: #5a3e00;
-  padding: 6px 16px;
-  border-radius: 20px;
-  font-weight: 700;
-  font-size: 12px;
-  white-space:nowrap;
-  font-family: 'Unbounded', sans-serif;
-}
 .howto-btn {
   background: var(--coral);
   color: #4a1f0e;
@@ -96,6 +87,7 @@ header {
 }
 .howto-btn:hover { background: var(--coral-dark); color:white; }
 
+/* ---------- ONBOARDING ---------- */
 .onboard-wrap { max-width: 1360px; margin: 22px auto 0; padding: 0 24px; }
 .onboard {
   background: var(--card-bg);
@@ -127,6 +119,7 @@ header {
   border: 1px dashed var(--t300); border-radius: 12px; padding: 10px 14px;
 }
 
+/* ---------- COMPASS ---------- */
 .compass-wrap { max-width: 1360px; margin: 22px auto 0; padding: 0 24px; }
 .compass-card {
   background: #ffffff;
@@ -140,8 +133,8 @@ header {
 .compass-title-block h3 { font-family:'Unbounded', sans-serif; font-size: 16px; color: var(--t800); margin-bottom: 8px; }
 .compass-title-block p { font-size: 13px; color: var(--ink-soft); line-height:1.55; margin-bottom: 10px; }
 .compass-current { font-size: 13px; font-weight: 700; color: var(--coral-dark); background: var(--coral-bg); display:inline-block; padding: 5px 12px; border-radius: 14px; }
-.compass-svg-holder { flex-shrink: 0; }
-.compass-svg-holder svg { display:block; }
+.compass-svg-holder { flex: 0 1 440px; width: 100%; max-width: 440px; margin: 0 auto; }
+.compass-svg-holder svg { display:block; width: 100%; height: auto; }
 .ring-seg { cursor: pointer; transition: opacity .15s, filter .15s; stroke: #ffffff; stroke-width: 1.4; }
 .ring-seg:hover { filter: brightness(1.12); }
 .ring-seg.active-seg { stroke: var(--coral); stroke-width: 3; }
@@ -152,6 +145,7 @@ header {
 .compass-center text { fill: white; font-family:'Unbounded', sans-serif; font-size: 10.5px; font-weight:700; pointer-events:none; }
 .compass-center:hover circle { fill: var(--coral-dark); }
 
+/* ---------- FILTERS ---------- */
 .filters-wrap { max-width: 1360px; margin: 20px auto 0; padding: 0 24px; }
 .filters-card {
   background: white;
@@ -202,6 +196,7 @@ header {
 .btn-outline { background: transparent; color: var(--t600); border: 1.5px solid var(--t300); }
 .btn-outline:hover { background: var(--t50); }
 
+/* ---------- RESULTS ---------- */
 .results-bar { max-width: 1360px; margin: 16px auto 0; padding: 0 24px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;}
 .results-count { font-size: 13px; color: var(--ink-soft); }
 .cards-grid {
@@ -433,12 +428,18 @@ header {
       <div class="header-title">Межпредметный навигатор<span>Биология · Химия · География · Человек и мир</span></div>
     </div>
     <div class="header-right">
-      <span class="demo-badge"><i class="fa-solid fa-wand-magic-sparkles"></i> ДЕМО</span>
-      <button class="howto-btn" onclick="toggleOnboard()">Как этим пользоваться?</button>
-      <div class="header-count" id="totalCount">7 параграфов · в полной версии 30+</div>
+      <button class="howto-btn" id="howtoBtn" onclick="toggleOnboard()">Как этим пользоваться?</button>
+      <span class="howto-btn" style="background:var(--sand); color:#7a4a1a; cursor:default;">Демо · 1 пример на предмет</span>
+      <div class="header-count" id="totalCount">Загрузка…</div>
     </div>
   </div>
 </header>
+
+<div class="onboard-wrap" style="margin-top:14px;">
+  <div class="onboard" style="display:block; padding:16px 22px;">
+    <p style="font-size:13.5px; color:var(--ink-soft); line-height:1.55;"><i class="fa-solid fa-circle-info" style="color:var(--t600);"></i> Это демо-версия навигатора: в базе — по одному параграфу на каждый предмет (Биология, Химия, География, Человек и мир), чтобы показать принцип работы карточек, компаса и фильтров. Полная версия наполняется по такому же образцу для всех параграфов курса.</p>
+  </div>
+</div>
 
 <div class="onboard-wrap">
   <div class="onboard" id="onboardPanel">
@@ -462,17 +463,15 @@ header {
       </div>
       <div class="onboard-item">
         <div class="onboard-num">5</div>
-        <p><strong>Каждая связь содержит блок «Как связать на практике»</strong> — конкретную методическую подсказку (в каком классе тема идёт раньше, как согласовать календарные планы).</p>
+        <p><strong>Каждая связь теперь содержит блок «<i class="fa-solid fa-puzzle-piece"></i> Как связать на практике»</strong> — конкретную методическую подсказку (в каком классе тема идёт раньше, как согласовать календарные планы, что за приём использовать), а также ссылку <i class="fa-solid fa-book"></i> на официальное учебное пособие с портала <a href="https://e-padruchnik.adu.by/" target="_blank" rel="noopener" style="color:var(--t700);font-weight:600;">e-padruchnik.adu.by</a>, где лежит параграф-партнёр.</p>
       </div>
     </div>
     <div class="legend-row">
       <span class="legend-chip"><span class="legend-dot content"></span>содержательная связь</span>
       <span class="legend-chip"><span class="legend-dot operational"></span>операционная связь</span>
-      <span class="legend-chip"><i class="fa-solid fa-leaf"></i> Биология&nbsp;&nbsp;<i class="fa-solid fa-flask"></i> Химия&nbsp;&nbsp;<i class="fa-solid fa-compass"></i> География&nbsp;&nbsp;<i class="fa-solid fa-earth-europe"></i> Человек и мир</span>
+      <span class="legend-chip"><i class="fa-solid fa-leaf"></i> Биология&nbsp;&nbsp;<i class="fa-solid fa-flask"></i> Химия&nbsp;&nbsp;<i class="fa-solid fa-compass"></i> География&nbsp;&nbsp;<i class="fa-solid fa-earth-europe"></i> Человек и мир&nbsp;&nbsp;<i class="fa-solid fa-atom"></i> Физика&nbsp;&nbsp;<i class="fa-solid fa-scroll"></i> История&nbsp;&nbsp;<i class="fa-solid fa-ruler-combined"></i> Математика</span>
     </div>
-    <div class="fun-fact">
-      <i class="fa-solid fa-info-circle"></i> <strong>Это демо-версия.</strong> В полной версии — более 30 параграфов с перекрёстными связями по всем предметам.
-    </div>
+    <div class="fun-fact" id="funFact"></div>
   </div>
 </div>
 
@@ -510,7 +509,7 @@ header {
     <div class="filter-group" style="flex:1">
       <div class="filter-label">Поиск по теме или номеру §</div>
       <div class="search-wrap">
-        <input type="text" class="search-input" id="searchInput" placeholder="например: фотосинтез, кислоты…">
+        <input type="text" class="search-input" id="searchInput" placeholder="например: фотосинтез, кислоты, §19…">
         <button class="btn" onclick="doSearch()">Найти</button>
         <button class="btn btn-outline" onclick="resetAll()">Сбросить</button>
       </div>
@@ -526,7 +525,7 @@ header {
 
 <script>
 /* ============================================================
-   ДЕМО-ДАННЫЕ: по одному параграфу на класс (5–11)
+   ДАННЫЕ: параграфы и перекрёстные связи
    ============================================================ */
 const allParagraphs = [];
 function addParagraph(subject, cls, number, theme, connections) {
@@ -535,7 +534,7 @@ function addParagraph(subject, cls, number, theme, connections) {
 
 const typeMeta = {
   "исторический контекст": "content",
-  "образ/метафора": "content",
+  "понятийная связь": "content",
   "модель/расчёт": "operational",
   "эксперимент/наблюдение": "operational",
   "проект": "operational"
@@ -544,76 +543,77 @@ const subjectIcon = {
   "Биология": '<i class="fa-solid fa-leaf"></i>',
   "Химия": '<i class="fa-solid fa-flask"></i>',
   "География": '<i class="fa-solid fa-compass"></i>',
-  "Человек и мир": '<i class="fa-solid fa-earth-europe"></i>'
+  "Человек и мир": '<i class="fa-solid fa-earth-europe"></i>',
+  "Физика": '<i class="fa-solid fa-atom"></i>',
+  "История": '<i class="fa-solid fa-scroll"></i>',
+  "Математика": '<i class="fa-solid fa-ruler-combined"></i>'
 };
+// Юникод-глифы Font Awesome для использования внутри SVG <text> (компас)
 const subjectGlyph = {
   "Биология": "\uf06c",
   "Химия": "\uf0c3",
   "География": "\uf14e",
-  "Человек и мир": "\uf7a2"
+  "Человек и мир": "\uf7a2",
+  "Физика": "\uf5d2",
+  "История": "\uf70e",
+  "Математика": "\uf546"
 };
 
+const bookCatalog = "https://e-padruchnik.adu.by/";
 const bookLinks = {
-  "Биология-6": {title:"Лисов Н.Д. «Биология. 6 класс»", url:"#"},
-  "Биология-7": {title:"Лисов Н.Д. «Биология. 7 класс»", url:"#"},
-  "Биология-8": {title:"«Биология. 8 класс»", url:"#"},
-  "Биология-9": {title:"«Биология. 9 класс»", url:"#"},
-  "Биология-10": {title:"«Биология. 10 класс»", url:"#"},
-  "Биология-11": {title:"«Биология. 11 класс»", url:"#"},
-  "Химия-7": {title:"«Химия. 7 класс»", url:"#"},
-  "Химия-8": {title:"«Химия. 8 класс»", url:"#"},
-  "Химия-9": {title:"«Химия. 9 класс»", url:"#"},
-  "Химия-10": {title:"«Химия. 10 класс»", url:"#"},
-  "Химия-11": {title:"«Химия. 11 класс»", url:"#"},
-  "География-6": {title:"«География. 6 класс»", url:"#"},
-  "География-7": {title:"«География. 7 класс»", url:"#"},
-  "География-8": {title:"«География. 8 класс»", url:"#"},
-  "География-9": {title:"«География. 9 класс»", url:"#"},
-  "География-10": {title:"«География. 10 класс»", url:"#"},
-  "География-11": {title:"«География. 11 класс»", url:"#"},
-  "Человек и мир-5": {title:"«Человек и мир. 5 класс»", url:"#"}
+  "Биология-6": {title:"Лисов Н.Д. «Биология. 6 класс»", url:"https://e-padruchnik.adu.by/books/biologija/Biologiya_Lisov_6kl_rus_2021.pdf"},
+  "Биология-7": {title:"Лисов Н.Д. «Биология. 7 класс»", url:"https://e-padruchnik.adu.by/books/biologija/Biologiya_7kl_Lisov_rus_2022.pdf"},
+  "Биология-8": {title:"«Биология. 8 класс»", url: bookCatalog},
+  "Биология-9": {title:"«Биология. 9 класс»", url: bookCatalog},
+  "Биология-10": {title:"«Биология. 10 класс»", url: bookCatalog},
+  "Биология-11": {title:"«Биология. 11 класс»", url: bookCatalog},
+  "Химия-7": {title:"Шиманович И.Е. и др. «Химия. 7 класс»", url:"https://e-padruchnik.adu.by/books/himija/Himiya_7kl_Shimanovich_rus_2023.pdf"},
+  "Химия-8": {title:"Шиманович И.Е. и др. «Химия. 8 класс»", url:"https://e-padruchnik.adu.by/books/himija/Himiya_8kl_Shimanovich_rus_2024.pdf"},
+  "Химия-9": {title:"«Химия. 9 класс»", url: bookCatalog},
+  "Химия-10": {title:"«Химия. 10 класс» (органическая химия)", url: bookCatalog},
+  "Химия-11": {title:"«Химия. 11 класс»", url: bookCatalog},
+  "География-6": {title:"Кольмакова Е.Г., Пикулик В.В. «География. Физическая география. 6 класс»", url: bookCatalog},
+  "География-7": {title:"Кольмакова Е.Г., Лопух П.С., Сарычева О.В. «География. Материки и океаны. 7 класс»", url:"https://e-padruchnik.adu.by/books/geografija/Geografiya_7kl_Kolmakova_rus_2023.pdf"},
+  "География-8": {title:"Лопух П.С. и др. «География. Страны и народы. 8 класс»", url:"https://e-padruchnik.adu.by/books/geografija/Geografiya_8kl_Lopuh_rus_2019.pdf"},
+  "География-9": {title:"«География Беларуси. 9 класс»", url: bookCatalog},
+  "География-10": {title:"«География. Социально-экономическая география мира. 10 класс»", url: bookCatalog},
+  "География-11": {title:"«География. Глобальные проблемы человечества. 11 класс»", url: bookCatalog},
+  "Человек и мир-5": {title:"«Человек и мир. 5 класс»", url: bookCatalog},
+  "Физика-7": {title:"«Физика. 7 класс»", url: bookCatalog},
+  "Физика-8": {title:"«Физика. 8 класс»", url: bookCatalog},
+  "Физика-9": {title:"«Физика. 9 класс»", url: bookCatalog},
+  "Физика-10": {title:"«Физика. 10 класс»", url: bookCatalog},
+  "История-5": {title:"«Всемирная история Древнего мира. 5 класс»", url: bookCatalog},
+  "История-7": {title:"«Всемирная история Нового времени. 7 класс»", url: bookCatalog},
+  "История-8": {title:"«Всемирная история Нового времени. 8 класс»", url: bookCatalog},
+  "История-9": {title:"«История Беларуси. 9 класс»", url: bookCatalog},
+  "Математика-5": {title:"«Математика. 5 класс»", url: bookCatalog}
 };
 function getBook(subject, cls){
   const b = bookLinks[subject + "-" + cls];
-  return b || {title: `Пособие «${subject}. ${cls} класс»`, url: "#"};
+  return b || {title: `Пособие «${subject}. ${cls} класс»`, url: bookCatalog};
 }
 
-// === 5 класс: Человек и мир ===
-addParagraph("Человек и мир", 5, "§1", "Природа Земли и человек", [
-  { linkedSubject: "География", linkedClass: 11, linkedTheme: "Глобальные экологические проблемы", intersection: "Загрязнение, вырубка лесов", type: "образ/метафора", format: "дискуссия", task: "Привести 3 примера положительного и 3 отрицательного влияния человека", crossRef: "Учитель географии (11 класс): тема «Глобальные экологические проблемы»", howTo: "В 5 классе закладывается эмоциональное отношение к природе, в 11-м оно превращается в аналитический разбор проблем." }
-]);
-
-// === 6 класс: Биология ===
+// === ДЕМО-ВЕРСИЯ: по одному примеру на предмет ===
+// === БИОЛОГИЯ ===
 addParagraph("Биология", 6, "§1", "Живые организмы", [
-  { linkedSubject: "Химия", linkedClass: 8, linkedTheme: "Органические вещества", intersection: "Белки, жиры, углеводы – основа жизни", type: "эксперимент/наблюдение", format: "лабораторная работа", task: "Обнаружение крахмала в клубне картофеля с помощью йода", crossRef: "Учитель химии (8 класс): тема «Углеводы, их свойства»", howTo: "В 6 классе понятия даются на бытовом уровне, в 8-м — химический разбор. Учителю химии стоит сослаться на опыт с йодом из 6 класса." }
+  { linkedSubject: "Химия", linkedClass: 8, linkedTheme: "Органические вещества", intersection: "Белки, жиры, углеводы – основа жизни", type: "эксперимент/наблюдение", format: "лабораторная работа", task: "Обнаружение крахмала в клубне картофеля с помощью йода", crossRef: "Учитель химии (8 класс): тема «Углеводы, их свойства»", howTo: "В 6 классе понятия «белки, жиры, углеводы» даются на бытовом уровне, а строгий химический разбор этих веществ ученики получат только в 8 классе. Учителю химии стоит прямо сослаться на опыт с йодом из 6 класса («помните, как искали крахмал в картофеле?») и объяснить его химическую суть — так тема не будет восприниматься с нуля." },
+  { linkedSubject: "Человек и мир", linkedClass: 5, linkedTheme: "Разнообразие тел живой и неживой природы", intersection: "Общий принцип различения живого и неживого как база для темы «Живые организмы»", type: "понятийная связь", format: "повторение в начале урока", task: "Вспомнить из курса 5 класса, чем живые тела отличаются от неживых, и привести 3 собственных примера", crossRef: "Учитель «Человек и мир» (5 класс): тема «Тела живой и неживой природы»", howTo: "«Человек и мир» в 5 классе даёт самое общее деление на живое/неживое, а биология 6 класса детализирует именно живую часть этой схемы. 5-минутное повторение в начале §1 связывает материал двух курсов и сокращает время на повторное объяснение уже знакомого деления." }
 ]);
 
-// === 7 класс: Химия ===
-addParagraph("Химия", 7, "§1", "Химия — наука о веществах", [
-  { linkedSubject: "Физика", linkedClass: 8, linkedTheme: "Агрегатные состояния вещества", intersection: "Твёрдое, жидкое, газообразное", type: "эксперимент/наблюдение", format: "демонстрация", task: "Нагреть лёд → вода → пар, зафиксировать температуры", crossRef: "Учитель физики (8 класс): тема «Агрегатные переходы»", howTo: "Химия вводит понятие агрегатных состояний первой, физика через год добавляет количественную часть." }
+// === ХИМИЯ ===
+addParagraph("Химия", 8, "§31", "Периодический закон Д. И. Менделеева", [{ linkedSubject: "История", linkedClass: 8, linkedTheme: "Наука и техника XIX века", intersection: "Предсказание новых элементов", type: "исторический контекст", format: "рассказ", task: "Рассказать о предсказании экаалюминия – будущего галлия", crossRef: "Учитель истории (8 класс): тема «Наука и техника XIX века»", howTo: "Периодический закон в химии 8 класса и «Наука и техника XIX века» в истории того же класса — повод согласовать календарные планы: если история проходит свою тему на 2-3 недели раньше химии, ученики придут уже с представлением об эпохе научных открытий и смогут сами предположить, почему открытие Менделеева стало возможным именно тогда." }]);
+
+// === ГЕОГРАФИЯ ===
+addParagraph("География", 6, "§1", "Стороны горизонта. Компас. Азимут", [{ linkedSubject: "Математика", linkedClass: 5, linkedTheme: "Углы. Транспортир", intersection: "Измерение азимута транспортиром", type: "модель/расчёт", format: "практикум", task: "Определить азимут на 3 объекта во дворе школы", crossRef: "Учитель математики (5 класс): тема «Углы. Транспортир»", howTo: "Тема углов и транспортира в математике 5 класса идёт на год раньше азимута в географии 6-го — классическая пропедевтика. Учителю географии достаточно на §1 напомнить правило измерения угла транспортиром и сразу перейти к специфике — отсчёту от направления на север." }]);
+
+// === ЧЕЛОВЕК И МИР ===
+addParagraph("Человек и мир", 5, "§15", "Эпоха Великих географических открытий", [
+  { linkedSubject: "История", linkedClass: 7, linkedTheme: "Великие географические открытия", intersection: "Обмен товарами, растениями и болезнями между материками", type: "исторический контекст", format: "дискуссия", task: "Объяснить, что такое «колумбов обмен» и привести 2 примера", crossRef: "Учитель истории (7 класс): тема «Великие географические открытия»", howTo: "Обе темы — по сути про одни и те же события, но в 5 классе это природоведческий взгляд (что нашли), а в истории 7-го — социально-политический (что это изменило). Идеальный вариант — межпредметный проект «Колумбов обмен», начатый в 5 классе и получивший развитие на истории в 7-м." },
+  { linkedSubject: "География", linkedClass: 7, linkedTheme: "Открытие и исследование материков", intersection: "Маршруты экспедиций Колумба, Магеллана как географические объекты на карте", type: "проект", format: "контурная карта", task: "Нанести на контурную карту маршруты трёх экспедиций эпохи Великих географических открытий, упомянутых в 5 классе", crossRef: "Учитель географии (7 класс): тема «Открытие и исследование материков»", howTo: "В 7 классе на географии при изучении материков логично сразу нанести на карту маршруты путешественников, о которых говорили ещё в 5 классе — текстовый рассказ 5 класса превращается в наглядную карту 7-го." }
 ]);
 
-// === 8 класс: География ===
-addParagraph("География", 8, "§20", "Энергетика. Производство электроэнергии", [
-  { linkedSubject: "Физика", linkedClass: 8, linkedTheme: "Электрический ток. Мощность", intersection: "Принцип работы электростанций", type: "модель/расчёт", format: "исследование", task: "Сравнить КПД тепловой, гидро- и атомной электростанции", crossRef: "Учитель физики (8 класс): тема «Электрический ток. Мощность»", howTo: "Физика даёт понятия тока и мощности раньше географии, ученики на географии уже смогут объяснять КПД через знакомую формулу." }
-]);
-
-// === 9 класс: Биология ===
-addParagraph("Биология", 9, "§11", "Зрительная сенсорная система", [
-  { linkedSubject: "Физика", linkedClass: 8, linkedTheme: "Линзы. Построение изображений", intersection: "Хрусталик работает как линза", type: "модель/расчёт", format: "построение", task: "Построить ход лучей в глазу и в собирающей линзе, сравнить", crossRef: "Учитель физики (8 класс): тема «Линзы. Построение изображений»", howTo: "Линзы изучаются на год раньше зрительной системы — берём готовый чертёж линзы и достраиваем глаз." }
-]);
-
-// === 10 класс: Химия ===
-addParagraph("Химия", 10, "§39", "Жиры", [
-  { linkedSubject: "Биология", linkedClass: 10, linkedTheme: "Строение клеточной мембраны", intersection: "Строение клеточных мембран", type: "образ/метафора", format: "схема", task: "Нарисовать фосфолипидный бислой с гидрофильными головками", crossRef: "Учитель биологии (10 класс): тема «Строение клеточной мембраны»", howTo: "Химия даёт строение фосфолипида, биология сразу переходит к его функции в мембране." }
-]);
-
-// === 11 класс: География ===
-addParagraph("География", 11, "§6", "Антропогенное изменение климата", [
-  { linkedSubject: "Химия", linkedClass: 11, linkedTheme: "Экологические проблемы. Парниковый эффект", intersection: "CO₂, метан, их источники", type: "модель/расчёт", format: "исследование", task: "Построить график роста CO₂ по данным NOAA за 50 лет", crossRef: "Учитель химии (11 класс): тема «Экологические проблемы. Парниковый эффект»", howTo: "Химия объясняет механизм парникового эффекта на уровне молекул, география — глобальные тенденции и статистику." }
-]);
-
-document.getElementById("totalCount").textContent = `${allParagraphs.length} параграфов · в полной версии 30+`;
+document.getElementById("totalCount").textContent = `${allParagraphs.length} параграфа с перекрёстными связями`;
 
 /* ============================================================
    СОСТОЯНИЕ И ИНИЦИАЛИЗАЦИЯ
@@ -625,12 +625,18 @@ const SUBJECTS = ["Биология","Химия","География","Чело
 document.addEventListener("DOMContentLoaded", () => {
   bindFilters();
   buildCompass();
+  buildFunFact();
   render();
   document.getElementById("searchInput").addEventListener("keyup", e=>{ if(e.key==="Enter") doSearch(); });
 });
 
 function toggleOnboard(){
   document.getElementById("onboardPanel").classList.toggle("open");
+}
+
+function buildFunFact(){
+  document.getElementById("funFact").innerHTML =
+    "<i class=\"fa-solid fa-lightbulb\"></i> Заметили: в компасе почти нет колец «Химии» на 5–6 классах, а «Человек и мир» есть только в 5 классе? Это не ошибка — так устроена программа РБ: химия начинается с 7 класса, а «Человек и мир» на следующий год разделяется на биологию, географию и другие предметы.";
 }
 
 /* ============================================================
@@ -671,7 +677,7 @@ function buildCompass(){
   const ringWidth = (rOuter-rInner) / CLASSES.length;
   const maxCount = Math.max(1, ...SUBJECTS.flatMap(s => CLASSES.map(c => countFor(s,c))));
 
-  let svg = `<svg viewBox="0 0 500 500" width="440" height="440" xmlns="http://www.w3.org/2000/svg">`;
+  let svg = `<svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">`;
 
   SUBJECTS.forEach(subject => {
     const a0 = quadrantAngles[subject], a1 = a0+90;
@@ -687,12 +693,14 @@ function buildCompass(){
     });
   });
 
+  // ring labels along the NE seam
   CLASSES.forEach((cls, ci) => {
     const r = rInner + ci*ringWidth + ringWidth/2;
     const [x,y] = polar(cx,cy,r,45);
     svg += `<text class="compass-ring-label" x="${x}" y="${y}" text-anchor="middle">${cls}</text>`;
   });
 
+  // quadrant icon labels
   const iconR = rOuter + 18;
   SUBJECTS.forEach(subject => {
     const mid = quadrantAngles[subject]+45;
@@ -700,6 +708,7 @@ function buildCompass(){
     svg += `<text class="compass-quad-label" x="${x}" y="${y}" text-anchor="middle" font-size="16" font-family="'Font Awesome 6 Free'" font-weight="900">${subjectGlyph[subject]}</text>`;
   });
 
+  // center reset button
   svg += `<g class="compass-center" onclick="compassClick('all','all')">
     <circle cx="${cx}" cy="${cy}" r="${rInner-6}"></circle>
     <text x="${cx}" y="${cy-4}" text-anchor="middle">ВСЕ</text>
@@ -829,7 +838,7 @@ function render(){
             <div class="conn-task"><strong><i class="fa-solid fa-flask-vial"></i> Задание:</strong> ${c.task}</div>
             ${c.crossRef ? `<div class="cross-ref"><i class="fa-solid fa-paperclip"></i> ${c.crossRef}</div>` : ''}
             ${c.howTo ? `<div class="conn-howto"><strong><i class="fa-solid fa-puzzle-piece"></i> Как связать на практике:</strong> ${c.howTo}</div>` : ''}
-            <a class="book-link" href="${book.url}" target="_blank" rel="noopener"><i class="fa-solid fa-book"></i> ${book.title}</a>
+            <a class="book-link" href="${book.url}" target="_blank" rel="noopener"><i class="fa-solid fa-book"></i> ${book.title} · e-padruchnik.adu.by</a>
           </div>`;
         }).join("")}
       </div>
@@ -844,7 +853,7 @@ function render(){
 }
 
 /* ============================================================
-   СКАЧИВАНИЕ КАРТОЧКИ
+   СКАЧИВАНИЕ КАРТОЧКИ (полностью на стороне браузера, без AI и ключей)
    ============================================================ */
 async function downloadCard(id){
   const para = allParagraphs.find(p=>p.id===id);
@@ -868,10 +877,10 @@ async function downloadCard(id){
         <div class="dl-task"><strong>Задание ученику:</strong> ${c.task}</div>
         ${c.crossRef ? `<p style="margin-top:8px;"><i class="fa-solid fa-paperclip"></i> ${c.crossRef}</p>` : ''}
         ${c.howTo ? `<p style="margin-top:8px;"><strong>Как связать на практике:</strong> ${c.howTo}</p>` : ''}
-        <p style="margin-top:6px;font-size:11px;color:#4d8480;"><i class="fa-solid fa-book"></i> ${book.title}</p>
+        <p style="margin-top:6px;font-size:11px;color:#4d8480;"><i class="fa-solid fa-book"></i> ${book.title} · e-padruchnik.adu.by</p>
       </div>`;
     }).join('')}
-    <div class="footer-note"><i class="fa-solid fa-compass"></i> Межпредметный навигатор · демо-версия</div>
+    <div class="footer-note"><i class="fa-solid fa-compass"></i> Межпредметный навигатор · карточка для учебного планирования</div>
   `;
   container.style.position = "fixed"; container.style.top = "0"; container.style.left = "0"; container.style.opacity = "1"; container.style.zIndex = "99999";
   try{
@@ -883,7 +892,7 @@ async function downloadCard(id){
     link.click();
     showToast('<i class="fa-solid fa-circle-check"></i> Карточка скачана!');
   }catch(e){
-    showToast('<i class="fa-solid fa-circle-xmark"></i> Не получилось создать карточку.');
+    showToast('<i class="fa-solid fa-circle-xmark"></i> Не получилось создать карточку: '+e.message);
   }
   container.style.top = "-9999px"; container.style.left = "-9999px"; container.style.opacity = "0";
 }
