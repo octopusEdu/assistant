@@ -231,6 +231,21 @@
     .link-card i { color: var(--teal-500); }
     .tts-title i { color: var(--teal-600); }
     .blink-hand i { color: var(--teal-600); }
+	@media (max-width: 768px) {
+  .images-row {
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+  .image-card {
+    max-width: 100% !important;
+    margin-bottom: 20px;
+  }
+  .image-card img {
+    width: 100% !important;
+    height: auto !important;
+    max-width: 300px;
+  }
+}
 	
   </style>
 </head>
