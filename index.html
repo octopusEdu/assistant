@@ -264,6 +264,19 @@
             letter-spacing: 0.3px;
         }
         .card .demo-badge { margin-left: 10px; }
+
+		 .footer {
+  background: linear-gradient(135deg, #0d9488 0%, #0891b2 100%);
+  color: white;
+  text-align: center;
+  padding: 28px 20px;
+  margin-top: 48px;
+  border-radius: 16px 16px 0 0;
+  font-family: 'Nunito', sans-serif;
+  position: relative; /* или static */
+  clear: both;
+  width: 100%;
+}
     </style>
 </head>
 <body>
@@ -372,7 +385,15 @@
     <div class="azilka-input-area"><input type="text" id="azilkaInput" placeholder="Спросить совет или прикол..." autocomplete="off"><button class="azilka-send" id="azilkaSendBtn">➤</button></div>
 </div>
 <button class="azilka-floating-btn" id="azilkaToggleBtn"><i class="fa-regular fa-face-grin"></i></button>
-
+<!-- ═══════════════════════════════════════════
+  ФУТЕР
+════════════════════════════════════════════ -->
+<footer class="footer">
+  <div>
+    <span class="footer-icon"><i class="fa-regular fa-envelope"></i></span>
+    <span class="footer-email">octopusedu25@gmail.com</span>
+  </div>
+</footer>
 <script>
     // === Константа для ключа (демо-режим — отключено) ===
     const API_KEY_STORAGE_KEY = 'gen_api_key';
